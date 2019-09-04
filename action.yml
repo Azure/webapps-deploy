@@ -1,0 +1,26 @@
+# web app action
+name: 'Azure WebApp'
+description: 'Deploy Web Apps to Azure'
+inputs: 
+  publish-profile:
+    description: 'Publish profile (*.publishsettings) file contents with Web Deploy secrets'
+    required: false
+  app-name:
+    description: 'Name of the Azure Web App'
+    required: true
+  package:
+    description: 'Path to package or folder. *.zip, *.war, *.jar or a folder to deploy'
+    required: false
+    default: '.'
+  slot-name:
+    description: 'Enter an existing Slot other than the Production slot'
+    required: false
+    default: 'production'
+outputs:
+  webapp-url:
+    description: 'URL to work with your webapp'
+branding:
+  icon: 'webapp.svg'
+runs:
+  using: 'node12'
+  main: 'lib/main.js'
