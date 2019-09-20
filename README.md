@@ -15,7 +15,7 @@ The definition of this Github Action is in [action.yml](https://github.com/Azure
 ## Dependencies on other Github Actions
 
 * [Checkout](https://github.com/actions/checkout) Checkout your Git repository content into Github Actions agent.
-* [Azure Login](https://github.com/Azure/actions) Login with your Azure credentials for Web app deployment authentication. Once login is done, the next set of Azure actions in the workflow can re-use the same session within the job.
+* Authenticate using [Azure Web App Publish Profile](https://github.com/projectkudu/kudu/wiki/Deployment-credentials#site-credentials-aka-publish-profile-credentials) or using [Azure Login](https://github.com/Azure/actions)
 * Environment setup actions
   * [Setup DotNet](https://github.com/actions/setup-dotnet) Sets up a dotnet environment by optionally downloading and caching a version of dotnet by SDK version and adding to PATH .
   * [Setup Node](https://github.com/actions/setup-node) sets up a node environment by optionally downloading and caching a version of node - npm by version spec and add to PATH
@@ -23,7 +23,7 @@ The definition of this Github Action is in [action.yml](https://github.com/Azure
   * [Setup Java](https://github.com/actions/setup-java) sets up Java app environment optionally downloading and caching a version of java by version and adding to PATH. Downloads from [Azul's Zulu distribution](http://static.azul.com/zulu/bin/).
   
   
-## Create Azure function app and Deploy using GitHub Actions
+## Create Azure Web App and deploy using GitHub Actions
 1. Follow the tutorial [Azure Web Apps Quickstart](https://docs.microsoft.com/en-us/azure/app-service/overview#next-steps)
 2. Pick a template from the following table depends on your Azure web app **runtime** and place the template to `.github/workflows/` in your project repository.
 3. Change `app-name` to your Web app name.
@@ -65,7 +65,7 @@ jobs:
         npm run test --if-present
        
     - name: 'Run Azure webapp deploy action using publish profile credentials'
-      uses: azure/webapps-deploy@master
+      uses: azure/webapps-deploy@v1
       with: 
         app-name: node-rn
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
@@ -87,6 +87,8 @@ Follow the steps to configure the secret:
     
 
 ### Sample workflow to build and deploy a Node.js app to Azure WebApp using Azure service principal
+
+  * [Azure Login](https://github.com/Azure/actions) Login with your Azure credentials for Web app deployment authentication. Once login is done, the next set of Azure actions in the workflow can re-use the same session within the job.
 
 ```yaml
 
@@ -118,9 +120,14 @@ jobs:
         npm run test --if-present
                
     # deploy web app using Azure credentials
-    - uses: azure/webapps-deploy@master
+    - uses: azure/webapps-deploy@v1
       with:
         app-name: 'node-rn'
+
+    # Azure logout 
+    - name: logout
+      run: |
+        az logout
 
 ```
 
@@ -140,6 +147,14 @@ Follow the steps to configure the secret:
                             --sdk-auth
                             
   # Replace {subscription-id}, {resource-group} with the subscription, resource group details of the WebApp
+```
+  * You can further scope down the Azure Credentials to the Web App using scope attribute. For example, 
+  ```
+   az ad sp create-for-rbac --name "myApp" --role contributor \
+                            --scopes /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Web/sites/{app-name} \
+                            --sdk-auth
+
+  # Replace {subscription-id}, {resource-group}, and {app-name} with the names of your subscription, resource group, and Azure Web App.
 ```
   * Now in the workflow file in your branch: `.github/workflows/workflow.yml` replace the secret in Azure login action with your secret (Refer to the example above)
 
