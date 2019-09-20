@@ -21,6 +21,7 @@ outputs:
     description: 'URL to work with your webapp'
 branding:
   icon: 'webapp.svg'
+  color: 'blue'
 runs:
   using: 'node12'
   main: 'lib/main.js'
