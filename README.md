@@ -133,7 +133,7 @@ jobs:
 
 #### Configure deployment credentials:
 
-For any credentials like Azure Service Principal, Publish Profile etc add them as [secrets](https://developer.github.com/actions/managing-workflows/storing-secrets/) in the GitHub repository and then use them in the workflow.
+For any credentials like Azure Service Principal, Publish Profile etc add them as [secrets](https://help.github.com/en/articles/virtual-environments-for-github-actions#creating-and-using-secrets-encrypted-variables) in the GitHub repository and then use them in the workflow.
 
 The above example uses user-level credentials i.e., Azure Service Principal for deployment. 
 
@@ -147,6 +147,17 @@ Follow the steps to configure the secret:
                             --sdk-auth
                             
   # Replace {subscription-id}, {resource-group} with the subscription, resource group details of the WebApp
+  
+  # The command should output a JSON object similar to this:
+
+  {
+    "clientId": "<GUID>",
+    "clientSecret": "<GUID>",
+    "subscriptionId": "<GUID>",
+    "tenantId": "<GUID>",
+    (...)
+  }
+  
 ```
   * You can further scope down the Azure Credentials to the Web App using scope attribute. For example, 
   ```
