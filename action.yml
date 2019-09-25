@@ -1,5 +1,5 @@
 # web app action
-name: 'Azure WebApp'
+name: 'Azure WebApp Action'
 description: 'Deploy Web Apps to Azure'
 inputs: 
   publish-profile:
