@@ -104,7 +104,7 @@ jobs:
     - name: 'Checkout Github Action' 
       uses: actions/checkout@master
    
-    - uses: azure/login@v1
+    - uses: azure/actions/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
