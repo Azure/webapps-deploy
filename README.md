@@ -88,7 +88,7 @@ Follow the steps to configure the secret:
 
 ### Sample workflow to build and deploy a Node.js app to Azure WebApp using Azure service principal
 
-  * [Azure Login](https://github.com/Azure/actions) Login with your Azure credentials for Web app deployment authentication. Once login is done, the next set of Azure actions in the workflow can re-use the same session within the job.
+  * [Azure Login](https://github.com/Azure/login) Login with your Azure credentials for Web app deployment authentication. Once login is done, the next set of Azure actions in the workflow can re-use the same session within the job.
 
 ```yaml
 
