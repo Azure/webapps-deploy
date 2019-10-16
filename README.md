@@ -4,7 +4,7 @@ With the Azure App Service Actions for GitHub, you can automate your workflow to
 
 Get started today with a [free Azure account](https://azure.com/free/open-source)!
 
-This repository contains GitHub Action for [webapps-deploy](https://github.com/Azure/webapps-deploy/blob/master/action.yml) to deploy to an Azure WebApp (Windows or Linux). Supports deploying *.jar, *.war, *.zip or a folder.
+This repository contains GitHub Action for [webapps-deploy](https://github.com/Azure/webapps-deploy) to deploy to an Azure WebApp (Windows or Linux). Supports deploying *.jar, *.war, *.zip or a folder.
 
 If you are looking for a Github Action to deploy your customized image into an Azure Webapps container, consider using [webapps-container-deploy](https://github.com/Azure/webapps-container-deploy) action.
 
@@ -104,7 +104,7 @@ jobs:
     - name: 'Checkout Github Action' 
       uses: actions/checkout@master
    
-    - uses: azure/actions/login@master
+    - uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
