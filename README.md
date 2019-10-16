@@ -4,7 +4,7 @@ With the Azure App Service Actions for GitHub, you can automate your workflow to
 
 Get started today with a [free Azure account](https://azure.com/free/open-source)!
 
-This repository contains GitHub Action for [Azure WebApp](https://github.com/Azure/webapps-deploy/blob/master/action.yml) to deploy to an Azure WebApp (Windows or Linux). Supports deploying *.jar, *.war, *.zip or a folder.
+This repository contains GitHub Action for [webapps-deploy](https://github.com/Azure/webapps-deploy/blob/master/action.yml) to deploy to an Azure WebApp (Windows or Linux). Supports deploying *.jar, *.war, *.zip or a folder.
 
 If you are looking for a Github Action to deploy your customized image into an Azure Webapps container, consider using [webapps-container-deploy](https://github.com/Azure/webapps-container-deploy) action.
 
@@ -15,7 +15,7 @@ The definition of this Github Action is in [action.yml](https://github.com/Azure
 ## Dependencies on other Github Actions
 
 * [Checkout](https://github.com/actions/checkout) Checkout your Git repository content into Github Actions agent.
-* Authenticate using [Azure Web App Publish Profile](https://github.com/projectkudu/kudu/wiki/Deployment-credentials#site-credentials-aka-publish-profile-credentials) or using [Azure Login](https://github.com/Azure/actions)
+* Authenticate using [Azure Web App Publish Profile](https://github.com/projectkudu/kudu/wiki/Deployment-credentials#site-credentials-aka-publish-profile-credentials) or using [Azure Login](https://github.com/Azure/login)
 * Environment setup actions
   * [Setup DotNet](https://github.com/actions/setup-dotnet) Sets up a dotnet environment by optionally downloading and caching a version of dotnet by SDK version and adding to PATH .
   * [Setup Node](https://github.com/actions/setup-node) sets up a node environment by optionally downloading and caching a version of node - npm by version spec and add to PATH
@@ -88,7 +88,7 @@ Follow the steps to configure the secret:
 
 ### Sample workflow to build and deploy a Node.js app to Azure WebApp using Azure service principal
 
-  * [Azure Login](https://github.com/Azure/actions) Login with your Azure credentials for Web app deployment authentication. Once login is done, the next set of Azure actions in the workflow can re-use the same session within the job.
+  * [Azure Login](https://github.com/Azure/login) Login with your Azure credentials for Web app deployment authentication. Once login is done, the next set of Azure actions in the workflow can re-use the same session within the job.
 
 ```yaml
 
