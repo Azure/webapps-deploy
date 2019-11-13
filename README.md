@@ -31,11 +31,11 @@ The definition of this Github Action is in [action.yml](https://github.com/Azure
 
 |  Runtime | Template |
 |------------|---------|
-| DotNet     | [dotnet.yml](https://github.com/Azure/actions-workflow-samples/blob/master/asp.net-core-webapp-on-azure.yml) | 
-| Node       | [node.yml](https://github.com/Azure/actions-workflow-samples/blob/master/node.js-webapp-on-azure.yml) | 
-| Java | [java_jar.yml](https://github.com/Azure/actions-workflow-samples/blob/master/java-jar-webapp-on-azure.yml) | 
-| Java      | [java_war.yml](https://github.com/Azure/actions-workflow-samples/blob/master/java-war-webapp-on-azure.yml) |
-| Python     | [python.yml](https://github.com/Azure/actions-workflow-samples/blob/master/python-webapp-on-azure.yml) | 
+| DotNet     | [dotnet.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/asp.net-core-webapp-on-azure.yml) | 
+| Node       | [node.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/node.js-webapp-on-azure.yml) | 
+| Java | [java_jar.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/java-jar-webapp-on-azure.yml) | 
+| Java      | [java_war.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/java-war-webapp-on-azure.yml) |
+| Python     | [python.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/python-webapp-on-azure.yml) | 
 
 
 ### Sample workflow to build and deploy a Node.js Web app to Azure using publish profile
