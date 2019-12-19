@@ -1,6 +1,6 @@
 # web app action
 name: 'Azure WebApp Action'
-description: 'Deploy Web Apps to Azure'
+description: 'Deploy Web Apps to Azure. github.com/Azure/Actions'
 inputs: 
   publish-profile:
     description: 'Publish profile (*.publishsettings) file contents with Web Deploy secrets'

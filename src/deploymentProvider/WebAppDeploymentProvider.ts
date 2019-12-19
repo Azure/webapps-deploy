@@ -1,15 +1,15 @@
 import * as core from '@actions/core';
-import * as utility from 'pipelines-appservice-lib/lib/Utilities/utility.js';
-import * as zipUtility from 'pipelines-appservice-lib/lib/Utilities/ziputility.js';
+import * as utility from 'azure-actions-utility/utility.js';
+import * as zipUtility from 'azure-actions-utility/ziputility.js';
 
-import { AzureAppService } from 'pipelines-appservice-lib/lib/ArmRest/azure-app-service';
-import { AzureAppServiceUtility } from 'pipelines-appservice-lib/lib/RestUtilities/AzureAppServiceUtility';
+import { AzureAppService } from 'azure-actions-appservice-rest/Arm/azure-app-service';
+import { AzureAppServiceUtility } from 'azure-actions-appservice-rest/Utilities/AzureAppServiceUtility';
 import { IWebAppDeploymentProvider } from './IWebAppDeploymentProvider';
-import { Kudu } from 'pipelines-appservice-lib/lib/KuduRest/azure-app-kudu-service';
-import { KuduServiceUtility } from 'pipelines-appservice-lib/lib/RestUtilities/KuduServiceUtility';
-import { PackageType } from "pipelines-appservice-lib/lib/Utilities/packageUtility";
+import { Kudu } from 'azure-actions-appservice-rest/Kudu/azure-app-kudu-service';
+import { KuduServiceUtility } from 'azure-actions-appservice-rest/Utilities/KuduServiceUtility';
+import { PackageType } from "azure-actions-utility/packageUtility";
 import { TaskParameters } from '../taskparameters';
-import { addAnnotation } from 'pipelines-appservice-lib/lib/RestUtilities/AnnotationUtility';
+import { addAnnotation } from 'azure-actions-appservice-rest/Utilities/AnnotationUtility';
 
 var parseString = require('xml2js').parseString;
 
@@ -95,6 +95,7 @@ export class WebAppDeploymentProvider implements IWebAppDeploymentProvider {
         if(!!this.appService) {
             await addAnnotation(this.taskParams.endpoint, this.appService, isDeploymentSuccess);
         }
+        
         this.activeDeploymentID = await this.kuduServiceUtility.updateDeploymentStatus(isDeploymentSuccess, null, {'type': 'Deployment', slotName: this.taskParams.slotName});
         core.debug('Active DeploymentId :'+ this.activeDeploymentID);
         if(!!isDeploymentSuccess) {
@@ -117,7 +118,14 @@ export class WebAppDeploymentProvider implements IWebAppDeploymentProvider {
     }
 
     private async initializeForPublishProfile() {
-        let scmCreds: scmCredentials = await this.getCredsFromXml(TaskParameters.getTaskParams().publishProfileContent);
+        let scmCreds: scmCredentials;
+        try {
+            scmCreds = await this.getCredsFromXml(TaskParameters.getTaskParams().publishProfileContent);
+        } catch(error) {
+            core.error("Failed to fetch credentials from Publish Profile. For more details on how to set publish profile credentials refer https://aka.ms/create-secrets-for-GitHub-workflows");
+            throw error;
+        }
+
         this.kuduService = new Kudu(scmCreds.uri, scmCreds.username, scmCreds.password);
         this.kuduServiceUtility = new KuduServiceUtility(this.kuduService);
     }
@@ -130,6 +138,7 @@ export class WebAppDeploymentProvider implements IWebAppDeploymentProvider {
             }
             res = result.publishData.publishProfile[0].$;
         });
+
         let creds: scmCredentials = {
             uri: res.publishUrl.split(":")[0],
             username: res.userName,
@@ -137,11 +146,12 @@ export class WebAppDeploymentProvider implements IWebAppDeploymentProvider {
         };
         
         // masking kudu password
-        console.log(`::add-mask::${creds.password}`);
+        core.setSecret('${creds.password}');
 
         if(creds.uri.indexOf("scm") < 0) {
             throw new Error("Publish profile does not contain kudu URL");
         }
+
         creds.uri = `https://${creds.uri}`;
 
         // setting application url
