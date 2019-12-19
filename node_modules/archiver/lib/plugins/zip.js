@@ -29,7 +29,8 @@ var Zip = function(options) {
   });
 
   this.supports = {
-    directory: true
+    directory: true,
+    symlink: true
   };
 
   this.engine = new engine(options);
