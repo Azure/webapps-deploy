@@ -3,6 +3,8 @@ import * as crypto from "crypto";
 
 import { DEPLOYMENT_PROVIDER_TYPES, WebAppDeploymentProvider } from "./deploymentProvider/WebAppDeploymentProvider";
 
+import { AuthorizerFactory } from "azure-actions-webclient/AuthorizerFactory";
+import { IAuthorizer } from 'azure-actions-webclient/Authorizer/IAuthorizer';
 import { TaskParameters } from "./taskparameters";
 
 var prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
@@ -17,7 +19,8 @@ async function main() {
     let userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
     core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
 
-    let taskParams: TaskParameters = TaskParameters.getTaskParams();
+    let endpoint: IAuthorizer = !!core.getInput('publish-profile') ? null : await AuthorizerFactory.getAuthorizer();
+    let taskParams: TaskParameters = TaskParameters.getTaskParams(endpoint);
     let type = DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE;
 
     // get app kind
@@ -34,8 +37,8 @@ async function main() {
     await deploymentProvider.DeployWebAppStep();
   }
   catch(error) {
-    core.debug("Deployment Failed with Error: " + error);
     isDeploymentSuccess = false;
+    core.error("Deployment Failed with Error: " + error);
     core.setFailed(error);
   }
   finally {

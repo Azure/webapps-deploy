@@ -4,9 +4,11 @@
   "description": "Deploy to webapp",
   "main": "lib/main.js",
   "dependencies": {
-    "@actions/core": "^1.0.0",
+    "@actions/core": "^1.2.0",
     "@types/q": "^1.5.2",
-    "pipelines-appservice-lib": "^1.0.8"
+    "azure-actions-appservice-rest": "^1.0.7",
+    "azure-actions-utility": "^1.0.3",
+    "azure-actions-webclient": "^1.0.8"
   },
   "devDependencies": {
     "@types/node": "^12.0.10",
