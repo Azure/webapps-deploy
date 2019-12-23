@@ -6,7 +6,7 @@
   "dependencies": {
     "@actions/core": "^1.2.0",
     "@types/q": "^1.5.2",
-    "azure-actions-appservice-rest": "^1.0.7",
+    "azure-actions-appservice-rest": "^1.0.8",
     "azure-actions-utility": "^1.0.3",
     "azure-actions-webclient": "^1.0.8"
   },
