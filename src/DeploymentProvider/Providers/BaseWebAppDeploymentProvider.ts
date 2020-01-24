@@ -39,6 +39,24 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
         }
     }
 
+    abstract DeployWebAppStep(): void;
+
+    public async UpdateDeploymentStatus(isDeploymentSuccess: boolean) {
+        if(!!this.appService) {
+            await addAnnotation(this.actionParams.endpoint, this.appService, isDeploymentSuccess);
+        }
+        
+        this.activeDeploymentID = await this.kuduServiceUtility.updateDeploymentStatus(isDeploymentSuccess, null, {'type': 'Deployment', slotName: this.actionParams.slotName});
+        core.debug('Active DeploymentId :'+ this.activeDeploymentID);
+
+        if(!!isDeploymentSuccess && !!this.deploymentID && !!this.activeDeploymentID) {
+            await this.kuduServiceUtility.postZipDeployOperation(this.deploymentID, this.activeDeploymentID);
+        }
+        
+        console.log('App Service Application URL: ' + this.applicationURL);
+        core.setOutput('webapp-url', this.applicationURL);
+    }
+
     private async initializeForSPN() {        
         this.appService = new AzureAppService(this.actionParams.endpoint, this.actionParams.resourceGroupName, this.actionParams.appName, this.actionParams.slotName);
         this.appServiceUtility = new AzureAppServiceUtility(this.appService);
@@ -57,24 +75,6 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
         this.kuduServiceUtility = new KuduServiceUtility(this.kuduService);
         
         this.applicationURL = publishProfile.appUrl;
-    }
-
-    abstract DeployWebAppStep(): void;
-
-    public async UpdateDeploymentStatus(isDeploymentSuccess: boolean) {
-        if(!!this.appService) {
-            await addAnnotation(this.actionParams.endpoint, this.appService, isDeploymentSuccess);
-        }
-        
-        this.activeDeploymentID = await this.kuduServiceUtility.updateDeploymentStatus(isDeploymentSuccess, null, {'type': 'Deployment', slotName: this.actionParams.slotName});
-        core.debug('Active DeploymentId :'+ this.activeDeploymentID);
-
-        if(!!isDeploymentSuccess && !!this.deploymentID && !!this.activeDeploymentID) {
-            await this.kuduServiceUtility.postZipDeployOperation(this.deploymentID, this.activeDeploymentID);
-        }
-        
-        console.log('App Service Application URL: ' + this.applicationURL);
-        core.setOutput('webapp-url', this.applicationURL);
     }
 }
 
