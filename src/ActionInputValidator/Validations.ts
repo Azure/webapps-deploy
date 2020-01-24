@@ -90,7 +90,7 @@ export function validateContainerInputs() {
     else if(!actionParams.images) {
         throw new Error("For single-container, just specify a valid image name. For multi-container specifying a Docker-Compose file is mandatory and specifying image names is optional. Provide image names if the tags in Docker-Compose file need to be substituted.")
     }
-    else if(actionParams.images.split(";").length > 1) {
+    else if(actionParams.images.split("\n").length > 1) {
         throw new Error("Multiple images indicate multi-container deployment type, but Docker-compose file is absent.")
     }
 }
