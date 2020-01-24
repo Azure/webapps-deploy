@@ -1,21 +1,30 @@
 # web app action
-name: 'Azure WebApp Action'
-description: 'Deploy Web Apps to Azure. github.com/Azure/Actions'
+name: 'Azure WebApp'
+description: 'Deploy Web Apps/ Containertized Web Apps to Azure. github.com/Azure/Actions'
 inputs: 
-  publish-profile:
-    description: 'Publish profile (*.publishsettings) file contents with Web Deploy secrets'
-    required: false
   app-name:
     description: 'Name of the Azure Web App'
     required: true
-  package:
-    description: 'Path to package or folder. *.zip, *.war, *.jar or a folder to deploy'
+  publish-profile:
+    description: 'Applies to Web App only: Publish profile (*.publishsettings) file contents with Web Deploy secrets'
     required: false
-    default: '.'
   slot-name:
     description: 'Enter an existing Slot other than the Production slot'
     required: false
     default: 'production'
+  package:
+    description: 'Applies to Web App only: Path to package or folder. *.zip, *.war, *.jar or a folder to deploy'
+    required: false
+    default: '.'
+  images:
+    description: "Applies to Web App Containers only: Specify the fully qualified container image(s) name. For example, 'myregistry.azurecr.io/nginx:latest' or 'python:3.7.2-alpine/'. For multi-container scenario multiple container image names can be provided (multi-line separated)"
+    required: true
+  configuration-file:
+    description: 'Applies to Web App Containers only: Path of the Docker-Compose file. Should be a fully qualified path or relative to the default working directory. Required for multi-container scenario'
+    required: false
+  startup-command:
+    description: 'Enter the start up command. For ex. dotnet run or dotnet run'
+    required: false
 outputs:
   webapp-url:
     description: 'URL to work with your webapp'

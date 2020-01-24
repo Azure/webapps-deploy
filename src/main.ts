@@ -1,11 +1,13 @@
 import * as core from '@actions/core';
 import * as crypto from "crypto";
 
-import { DEPLOYMENT_PROVIDER_TYPES, WebAppDeploymentProvider } from "./deploymentProvider/WebAppDeploymentProvider";
+import { ActionParameters, WebAppKind, appKindMap } from "./actionparameters";
 
 import { AuthorizerFactory } from "azure-actions-webclient/AuthorizerFactory";
+import { DEPLOYMENT_PROVIDER_TYPES } from "./DeploymentProvider/Providers/BaseWebAppDeploymentProvider";
+import { DeploymentProviderFactory } from './DeploymentProvider/DeploymentProviderFactory';
 import { IAuthorizer } from 'azure-actions-webclient/Authorizer/IAuthorizer';
-import { TaskParameters } from "./taskparameters";
+import { ValidatorFactory } from './ActionInputValidator/ValidatorFactory';
 
 var prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
 
@@ -19,16 +21,23 @@ async function main() {
     let userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
     core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
 
+    // Initialize action inputs
     let endpoint: IAuthorizer = !!core.getInput('publish-profile') ? null : await AuthorizerFactory.getAuthorizer();
-    let taskParams: TaskParameters = TaskParameters.getTaskParams(endpoint);
-    let type = DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE;
+    let actionParams: ActionParameters = ActionParameters.getActionParams(endpoint);
+    let type: DEPLOYMENT_PROVIDER_TYPES = null;
 
-    // get app kind
-    if(!!taskParams.endpoint) {
-      await taskParams.getResourceDetails();
+    if(!!endpoint) {
       type = DEPLOYMENT_PROVIDER_TYPES.SPN;
     }
-    var deploymentProvider = new WebAppDeploymentProvider(type);
+    else {
+      type = DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE;
+    }
+
+    // Validate action inputs
+    let validator = await ValidatorFactory.getValidator(type);
+    await validator.validate();
+
+    var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
 
     core.debug("Predeployment Step Started");
     await deploymentProvider.PreDeploymentStep();

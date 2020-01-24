@@ -1,23 +1,36 @@
 {
   "name": "webapps-deploy",
-  "version": "1.0.0",
-  "description": "Deploy to webapp",
+  "version": "2.0.0",
+  "description": "Deploy web apps and containerized web apps to Azure",
   "main": "lib/main.js",
-  "dependencies": {
-    "@actions/core": "^1.2.0",
-    "@types/q": "^1.5.2",
-    "azure-actions-appservice-rest": "^1.0.8",
-    "azure-actions-utility": "^1.0.3",
-    "azure-actions-webclient": "^1.0.8"
-  },
-  "devDependencies": {
-    "@types/node": "^12.0.10",
-    "typescript": "^3.5.2"
-  },
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Azure/webapps-deploy.git"
+  },
+  "keywords": [
+    "action",
+    "webapp",
+    "container"
+  ],
   "author": "Sumiran Aggarwal",
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Azure/webapps-deploy/issues"
+  },
+  "homepage": "https://github.com/Azure/webapps-deploy#readme",
+  "devDependencies": {
+    "@types/node": "^13.1.7",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.1",
+    "actions-secret-parser": "^1.0.2",
+    "azure-actions-appservice-rest": "^1.0.8",
+    "azure-actions-utility": "^1.0.3",
+    "azure-actions-webclient": "^1.0.8"
+  }
 }
