@@ -28,9 +28,9 @@
   },
   "dependencies": {
     "@actions/core": "^1.2.1",
-    "actions-secret-parser": "^1.0.2",
+    "actions-secret-parser": "^1.0.3",
     "azure-actions-appservice-rest": "^1.0.8",
     "azure-actions-utility": "^1.0.3",
-    "azure-actions-webclient": "^1.0.8"
+    "azure-actions-webclient": "^1.0.10"
   }
 }
