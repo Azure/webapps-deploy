@@ -12,7 +12,7 @@ import { appNameIsRequired } from "./Validations";
 
 export class ValidatorFactory {
     public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator> {
-        let actionParams = ActionParameters.getActionParams();
+        let actionParams: ActionParameters = ActionParameters.getActionParams();
         
         if(type == DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
             return new PublishProfileWebAppValidator();
