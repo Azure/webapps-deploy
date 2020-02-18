@@ -33,9 +33,9 @@ export function validateAppDetails() {
 
     if(!!actionParams.appName || (!!actionParams.slotName && actionParams.slotName !== 'production')) {
         let creds: ScmCredentials = PublishProfile.getPublishProfile(actionParams.publishProfileContent).creds;
-        let splitUsername: string[] = creds.username.substring(1).split("__");
-        let appNameMatch: boolean = !actionParams.appName || actionParams.appName === splitUsername[0];
-        let slotNameMatch: boolean = actionParams.slotName === 'production' || actionParams.slotName === splitUsername[1];
+        let splitUsername: string[] = creds.username.toUpperCase().substring(1).split("__");
+        let appNameMatch: boolean = !actionParams.appName || actionParams.appName.toUpperCase() === splitUsername[0];
+        let slotNameMatch: boolean = actionParams.slotName === 'production' || actionParams.slotName.toUpperCase() === splitUsername[1];
         if(!appNameMatch || !slotNameMatch) {
             throw new Error("Publish profile is invalid for app-name and slot-name provided. Provide correct publish profile credentials for app.");
         }
