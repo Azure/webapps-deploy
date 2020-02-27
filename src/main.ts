@@ -47,8 +47,7 @@ async function main() {
   }
   catch(error) {
     isDeploymentSuccess = false;
-    core.error("Deployment Failed with Error: " + error);
-    core.setFailed(error);
+    core.setFailed("Deployment Failed with Error: " + error);
   }
   finally {
       if(deploymentProvider != null) {
@@ -57,6 +56,7 @@ async function main() {
       
       // Reset AZURE_HTTP_USER_AGENT
       core.exportVariable('AZURE_HTTP_USER_AGENT', prefix);
+      
       core.debug(isDeploymentSuccess ? "Deployment Succeeded" : "Deployment failed");
   }
 }
