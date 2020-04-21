@@ -4,7 +4,7 @@ With the Azure App Service Actions for GitHub, you can automate your workflow to
 
 Get started today with a [free Azure account](https://azure.com/free/open-source)!
 
-This repository contains GitHub Action for Azure WebApp to deploy to an Azure WebApp (Windows or Linux). Supports deploying *.jar, *.war, *.zip or a folder. 
+This repository contains GitHub Action for Azure WebApp to deploy to an Azure WebApp (Windows or Linux). Supports deploying *.jar, *.war, *.zip or a folder.
 
 You can also use this Github Action to deploy your customized image into an Azure Webapps container.
 
@@ -24,7 +24,7 @@ The definition of this Github Action is in [action.yml](https://github.com/Azure
   * [Setup Python](https://github.com/actions/setup-python) sets up Python environment by optionally installing a version of python and adding to PATH.
   * [Setup Java](https://github.com/actions/setup-java) sets up Java app environment optionally downloading and caching a version of java by version and adding to PATH. Downloads from [Azul's Zulu distribution](http://static.azul.com/zulu/bin/).
 * To build and deploy a containerized app, use [docker-login](https://github.com/Azure/docker-login) to log in to a private container registry such as [Azure Container registry](https://azure.microsoft.com/en-us/services/container-registry/). 
-Once login is done, the next set of Actions in the workflow can perform tasks such as building, tagging and pushing containers. 
+Once login is done, the next set of Actions in the workflow can perform tasks such as building, tagging and pushing containers.
 
   
 ## Create Azure Web App and deploy using GitHub Actions
@@ -55,9 +55,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     # checkout the repo
-    - name: 'Checkout Github Action' 
+    - name: 'Checkout Github Action'
       uses: actions/checkout@master
-    
+
     - name: Setup Node 10.x
       uses: actions/setup-node@v1
       with:
@@ -67,13 +67,13 @@ jobs:
         npm install
         npm run build --if-present
         npm run test --if-present
-       
+
     - name: 'Run Azure webapp deploy action using publish profile credentials'
       uses: azure/webapps-deploy@v2
       with: 
         app-name: node-rn
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
-        
+
 
 ```
 
@@ -108,34 +108,34 @@ jobs:
     # checkout the repo
     - name: 'Checkout Github Action' 
       uses: actions/checkout@master
-    
+
     - name: 'Login via Azure CLI'
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
+
     - uses: azure/docker-login@v1
       with:
         login-server: contoso.azurecr.io
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
-    
+
     - run: |
         docker build . -t contoso.azurecr.io/nodejssampleapp:${{ github.sha }}
-        docker push contoso.azurecr.io/nodejssampleapp:${{ github.sha }} 
-      
+        docker push contoso.azurecr.io/nodejssampleapp:${{ github.sha }}
+
     - uses: azure/webapps-deploy@v2
       with:
         app-name: 'node-rnc'
         images: 'contoso.azurecr.io/nodejssampleapp:${{ github.sha }}'
-    
+
 ```
 
-#### Configure deployment credentials:
+#### Configure deployment credentials
 
 For any credentials like Azure Service Principal, Publish Profile etc add them as [secrets](https://help.github.com/en/articles/virtual-environments-for-github-actions#creating-and-using-secrets-encrypted-variables) in the GitHub repository and then use them in the workflow.
 
-The above example uses user-level credentials i.e., Azure Service Principal for deployment. 
+The above example uses user-level credentials i.e., Azure Service Principal for deployment.
 
 Follow the steps to configure the secret:
   * Define a new secret under your repository settings, Add secret menu
@@ -169,6 +169,39 @@ Follow the steps to configure the secret:
 ```
   * Now in the workflow file in your branch: `.github/workflows/workflow.yml` replace the secret in Azure login action with your secret (Refer to the example above)
 
+#### Configure web app private registry credentials
+
+This sample assumes the `node-rnc` web application has been previously configured to authenticate against the private registry. If you wish to set private registry authentication settings on the workflow, you can either use:
+
+* The command [az webapp config container](https://docs.microsoft.com/cli/azure/webapp/config/container?view=azure-cli-latest#az-webapp-config-container-set) to configure the registry url, username and password.
+
+* Setup the authentication settings using [azure/appservice-settings action](https://github.com/Azure/appservice-settings), like this for example
+
+```yaml
+...
+    - name: Set Web App ACR authentication
+      uses: Azure/appservice-settings@v1
+      with:
+      app-settings-json: |
+        [
+            {
+                "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+                "value": "${{ secrets.REGISTRY_PASSWORD }}",
+                "slotSetting": false
+            },
+            {
+                "name": "DOCKER_REGISTRY_SERVER_URL",
+                "value": "https://contoso.azurecr.io",
+                "slotSetting": false
+            },
+            {
+                "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+                "value": "${{ secrets.REGISTRY_USERNAME  }}",
+                "slotSetting": false
+            }
+        ]
+...
+````
 
 # Contributing
 
@@ -183,4 +216,3 @@ provided by the bot. You will only need to do this once across all repos using o
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
