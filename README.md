@@ -25,15 +25,16 @@ The definition of this Github Action is in [action.yml](https://github.com/Azure
   * [Setup Java](https://github.com/actions/setup-java) sets up Java app environment optionally downloading and caching a version of java by version and adding to PATH. Downloads from [Azul's Zulu distribution](http://static.azul.com/zulu/bin/).
 * To build and deploy a containerized app, use [docker-login](https://github.com/Azure/docker-login) to log in to a private container registry such as [Azure Container registry](https://azure.microsoft.com/en-us/services/container-registry/). 
 Once login is done, the next set of Actions in the workflow can perform tasks such as building, tagging and pushing containers. 
-
-Note: For first time users, workflow samples with sample app code and deployment procedure for various technologies are given at (https://github.com/Azure/actions-workflow-samples/tree/master/AppService).
-
-For Eg: If You want to deploy a Node.js app, You can follow the link https://github.com/Azure-Samples/node_express_app in the sample workflow templates.
   
 ## Create Azure Web App and deploy using GitHub Actions
-1. Create a web app on Azure app service.It can be done using Azure portal or cloudshell in the portal. To use cloudshell, follow the tutorial [Azure Web Apps Quickstart](https://docs.microsoft.com/en-us/azure/app-service/overview#next-steps). 
+
+## Note: 
+For first time users, workflow samples with sample app code and deployment procedure for various **runtime** environments are given at (https://github.com/Azure/actions-workflow-samples/tree/master/AppService).
+For Eg: If You want to deploy a Java WAR based app, You can follow the link https://github.com/Azure-Samples/Java-application-petstore-ee7 in the sample workflow templates.
+
+1. Create a web app on Azure app service. Follow the tutorial [Azure Web Apps Quickstart](https://docs.microsoft.com/en-us/azure/app-service/overview#next-steps). 
 2. Pick a template from the following table depends on your Azure web app **runtime** and place the template to `.github/workflows/` in your project repository.
-3. Change `app-name` to your Web app name configured in the Azure 
+3. Change `app-name` to your Web app name created in the first step.
 4. Commit and push your project to GitHub repository, you should see a new GitHub Action initiated in **Actions** tab.
 
 |  Runtime | Template |
@@ -140,7 +141,7 @@ For any credentials like Azure Service Principal, Publish Profile etc add them a
 
 The above example uses user-level credentials i.e., Azure Service Principal for deployment.
 
-Prerequisites:
+## Prerequisites:
   * You should have installed Azure cli on your local machine to run the command or use the cloudshell in the Azure portal. To install       Azure cli, follow [Install Azure Cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). To use       cloudshell, follow().
   
 
