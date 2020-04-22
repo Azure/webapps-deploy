@@ -141,7 +141,7 @@ For any credentials like Azure Service Principal, Publish Profile etc add them a
 The above example uses user-level credentials i.e., Azure Service Principal for deployment.
 
 ## Prerequisites:
-  * You should have installed Azure cli on your local machine to run the command or use the cloudshell in the Azure portal. To install       Azure cli, follow [Install Azure Cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). To use       cloudshell, follow(https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart).
+  * You should have installed Azure cli on your local machine to run the command or use the cloudshell in the Azure portal. To install       Azure cli, follow [Install Azure Cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). To use       cloudshell, follow [CloudShell Quickstart](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart).
   
 
 Follow the steps to configure the secret:
