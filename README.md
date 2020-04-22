@@ -146,7 +146,7 @@ The above example uses user-level credentials i.e., Azure Service Principal for 
 
 Follow the steps to configure the secret:
   * Define a new secret under your repository settings, Add secret menu
-  * Run the command Azure cli command.
+  * Run the below Azure cli command.
 ```bash  
 
    az ad sp create-for-rbac --name "myApp" --role contributor \
