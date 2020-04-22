@@ -28,8 +28,7 @@ Once login is done, the next set of Actions in the workflow can perform tasks su
   
 ## Create Azure Web App and deploy using GitHub Actions
 
-## Note: 
-For first time users, workflow samples with sample app code and deployment procedure for various **runtime** environments are given at (https://github.com/Azure/actions-workflow-samples/tree/master/AppService).
+Note: Workflow samples with sample application code and deployment procedure for various **runtime** environments are given at (https://github.com/Azure/actions-workflow-samples/tree/master/AppService).
 For Eg: If You want to deploy a Java WAR based app, You can follow the link https://github.com/Azure-Samples/Java-application-petstore-ee7 in the sample workflow templates.
 
 1. Create a web app on Azure app service. Follow the tutorial [Azure Web Apps Quickstart](https://docs.microsoft.com/en-us/azure/app-service/overview#next-steps). 
@@ -142,7 +141,7 @@ For any credentials like Azure Service Principal, Publish Profile etc add them a
 The above example uses user-level credentials i.e., Azure Service Principal for deployment.
 
 ## Prerequisites:
-  * You should have installed Azure cli on your local machine to run the command or use the cloudshell in the Azure portal. To install       Azure cli, follow [Install Azure Cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). To use       cloudshell, follow().
+  * You should have installed Azure cli on your local machine to run the command or use the cloudshell in the Azure portal. To install       Azure cli, follow [Install Azure Cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). To use       cloudshell, follow(https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart).
   
 
 Follow the steps to configure the secret:
