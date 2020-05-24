@@ -31,7 +31,7 @@ Once login is done, the next set of Actions in the workflow can perform tasks su
 Note: Workflow samples with sample application code and deployment procedure for various **runtime** environments are given at (https://github.com/Azure/actions-workflow-samples/tree/master/AppService).
 For Eg: If You want to deploy a Java WAR based app, You can follow the link https://github.com/Azure-Samples/Java-application-petstore-ee7 in the sample workflow templates.
 
-1. Create a web app on Azure app service. Follow the tutorial [Azure Web Apps Quickstart](https://docs.microsoft.com/en-us/azure/app-service/overview#next-steps). 
+1. Create a web app in Azure using app service. Follow the tutorial [Azure Web Apps Quickstart](https://docs.microsoft.com/en-us/azure/app-service/overview#next-steps). 
 2. Pick a template from the following table depends on your Azure web app **runtime** and place the template to `.github/workflows/` in your project repository.
 3. Change `app-name` to your Web app name created in the first step.
 4. Commit and push your project to GitHub repository, you should see a new GitHub Action initiated in **Actions** tab.
