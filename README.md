@@ -25,12 +25,15 @@ The definition of this Github Action is in [action.yml](https://github.com/Azure
   * [Setup Java](https://github.com/actions/setup-java) sets up Java app environment optionally downloading and caching a version of java by version and adding to PATH. Downloads from [Azul's Zulu distribution](http://static.azul.com/zulu/bin/).
 * To build and deploy a containerized app, use [docker-login](https://github.com/Azure/docker-login) to log in to a private container registry such as [Azure Container registry](https://azure.microsoft.com/en-us/services/container-registry/). 
 Once login is done, the next set of Actions in the workflow can perform tasks such as building, tagging and pushing containers. 
-
   
 ## Create Azure Web App and deploy using GitHub Actions
-1. Follow the tutorial [Azure Web Apps Quickstart](https://docs.microsoft.com/en-us/azure/app-service/overview#next-steps)
+
+Note: Workflow samples with sample application code and deployment procedure for various **runtime** environments are given at (https://github.com/Azure/actions-workflow-samples/tree/master/AppService).
+For Eg: If You want to deploy a Java WAR based app, You can follow the link https://github.com/Azure-Samples/Java-application-petstore-ee7 in the sample workflow templates.
+
+1. Create a web app in Azure using app service. Follow the tutorial [Azure Web Apps Quickstart](https://docs.microsoft.com/en-us/azure/app-service/overview#next-steps). 
 2. Pick a template from the following table depends on your Azure web app **runtime** and place the template to `.github/workflows/` in your project repository.
-3. Change `app-name` to your Web app name.
+3. Change `app-name` to your Web app name created in the first step.
 4. Commit and push your project to GitHub repository, you should see a new GitHub Action initiated in **Actions** tab.
 
 |  Runtime | Template |
@@ -135,11 +138,15 @@ jobs:
 
 For any credentials like Azure Service Principal, Publish Profile etc add them as [secrets](https://help.github.com/en/articles/virtual-environments-for-github-actions#creating-and-using-secrets-encrypted-variables) in the GitHub repository and then use them in the workflow.
 
-The above example uses user-level credentials i.e., Azure Service Principal for deployment. 
+The above example uses user-level credentials i.e., Azure Service Principal for deployment.
+
+## Prerequisites:
+  * You should have installed Azure cli on your local machine to run the command or use the cloudshell in the Azure portal. To install       Azure cli, follow [Install Azure Cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). To use       cloudshell, follow [CloudShell Quickstart](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart).
+  
 
 Follow the steps to configure the secret:
   * Define a new secret under your repository settings, Add secret menu
-  * Paste the contents of the below [az cli](https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest) command as the value of secret variable, for example 'AZURE_CREDENTIALS'
+  * Run the below Azure cli command.
 ```bash  
 
    az ad sp create-for-rbac --name "myApp" --role contributor \
@@ -159,6 +166,7 @@ Follow the steps to configure the secret:
   }
   
 ```
+  * Paste the contents of the above [az cli](https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest) command as the value of  secret variable, for example 'AZURE_CREDENTIALS'
   * You can further scope down the Azure Credentials to the Web App using scope attribute. For example, 
   ```
    az ad sp create-for-rbac --name "myApp" --role contributor \
