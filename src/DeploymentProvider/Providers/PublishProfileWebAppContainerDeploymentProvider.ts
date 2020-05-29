@@ -1,6 +1,6 @@
 import { BaseWebAppDeploymentProvider } from './BaseWebAppDeploymentProvider';
 
-export class WebAppContainerDeploymentProvider extends BaseWebAppDeploymentProvider {
+export class PublishProfileWebAppContainerDeploymentProvider extends BaseWebAppDeploymentProvider {
     
     public async DeployWebAppStep() {
         let appName: string = this.actionParams.appName;
