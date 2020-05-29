@@ -2,7 +2,7 @@ import { ActionParameters, WebAppKind } from "../actionparameters";
 
 import { DEPLOYMENT_PROVIDER_TYPES } from "./Providers/BaseWebAppDeploymentProvider";
 import { IWebAppDeploymentProvider } from "./Providers/IWebAppDeploymentProvider";
-import { WebAppContainerDeploymentProvider } from "./Providers/WebAppContainerDeployment";
+import { WebAppContainerDeploymentProvider } from "./Providers/WebAppContainerDeploymentProvider";
 import { WebAppDeploymentProvider } from "./Providers/WebAppDeploymentProvider";
 
 export class DeploymentProviderFactory {
@@ -11,7 +11,12 @@ export class DeploymentProviderFactory {
         
         // For publish profile type app kind is not available so we directly return WebAppDeploymentProvider
         if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
-            return new WebAppDeploymentProvider(type);
+            if (ActionParameters.getActionParams().images) {
+                return new WebAppContainerDeploymentProvider(type);
+            }
+            else{
+                return new WebAppDeploymentProvider(type);
+            }
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
             let kind = ActionParameters.getActionParams().kind;            

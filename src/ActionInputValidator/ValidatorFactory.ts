@@ -4,6 +4,7 @@ import { AzureResourceFilterUtility } from "azure-actions-appservice-rest/Utilit
 import { DEPLOYMENT_PROVIDER_TYPES } from "../DeploymentProvider/Providers/BaseWebAppDeploymentProvider";
 import { IValidator } from "./ActionValidators/IValidator";
 import { PublishProfileWebAppValidator } from "./ActionValidators/PublishProfileWebAppValidator";
+import { PublishProfileContainerWebAppValidator } from "./ActionValidators/PublishProfileContainerWebAppValidator";
 import { SpnLinuxContainerWebAppValidator } from "./ActionValidators/SpnLinuxContainerWebAppValidator";
 import { SpnLinuxWebAppValidator } from "./ActionValidators/SpnLinuxWebAppValidator";
 import { SpnWindowsContainerWebAppValidator } from "./ActionValidators/SpnWindowsContainerWebAppValidator";
@@ -15,7 +16,12 @@ export class ValidatorFactory {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
         
         if(type == DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
-            return new PublishProfileWebAppValidator();
+            if (!!actionParams.packageInput) {
+                return new PublishProfileWebAppValidator();
+            } 
+            else {
+                return new PublishProfileContainerWebAppValidator();
+            }
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
             // app-name is required to get resource details

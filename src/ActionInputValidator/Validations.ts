@@ -17,12 +17,7 @@ export function appNameIsRequired(appname: string) {
 // Error if image info is provided
 export function containerInputsNotAllowed(images: string, configFile: string, isPublishProfile: boolean = false) {
     if(!!images || !!configFile) {
-        if(!!isPublishProfile) {
-            throw new Error("Container Deployment is not supported with publish profile credentails. Instead add an Azure login action before this action. For more details refer https://github.com/azure/login");
-        }
-        else {
-            throw new Error(`This is not a container web app. Please remove inputs like images and configuration-file which are only relevant for container deployment.`);
-        }
+        throw new Error(`This is not a container web app. Please remove inputs like images and configuration-file which are only relevant for container deployment.`);
     }
 }
 
@@ -60,6 +55,14 @@ export function packageNotAllowed(apppackage: string) {
 export function multiContainerNotAllowed(configFile: string) {
     if(!!configFile) {
         throw new Error("Multi container support is not available for windows containerized web app.");
+    }
+}
+
+// Error if image name is not provided
+export function validateSingleContainerInputs() {
+    let actionParams: ActionParameters = ActionParameters.getActionParams();
+    if(!actionParams.images) {
+        throw new Error("Image name not provided for a single-container. Provide a valid image name");
     }
 }
 
