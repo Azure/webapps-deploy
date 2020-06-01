@@ -16,11 +16,11 @@ export class ValidatorFactory {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
         
         if(type == DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
-            if (!!actionParams.packageInput) {
-                return new PublishProfileWebAppValidator();
+            if (!!actionParams.images) {
+                return new PublishProfileContainerWebAppValidator();
             } 
             else {
-                return new PublishProfileContainerWebAppValidator();
+                return new PublishProfileWebAppValidator();
             }
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {

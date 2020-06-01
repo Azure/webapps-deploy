@@ -12,7 +12,7 @@ export class DeploymentProviderFactory {
         
         // For publish profile type app kind is not available so we directly return WebAppDeploymentProvider
         if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
-            if (ActionParameters.getActionParams().images) {
+            if (!!ActionParameters.getActionParams().images) {
                 return new PublishProfileWebAppContainerDeploymentProvider(type);
             }
             else{
