@@ -9,18 +9,16 @@ import { PublishProfileWebAppContainerDeploymentProvider } from "./Providers/Pub
 export class DeploymentProviderFactory {
 
     public static getDeploymentProvider(type: DEPLOYMENT_PROVIDER_TYPES) : IWebAppDeploymentProvider {
-        
-        // For publish profile type app kind is not available so we directly return WebAppDeploymentProvider
         if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
             if (!!ActionParameters.getActionParams().images) {
                 return new PublishProfileWebAppContainerDeploymentProvider(type);
             }
-            else{
+            else {
                 return new WebAppDeploymentProvider(type);
             }
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
-            let kind = ActionParameters.getActionParams().kind;            
+            let kind = ActionParameters.getActionParams().kind;
             switch(kind) {
                 case WebAppKind.Linux:
                 case WebAppKind.Windows:
