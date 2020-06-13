@@ -1,6 +1,9 @@
 var core = require("@actions/core");
 
 import { FormatType, SecretParser } from 'actions-secret-parser';
+import { Kudu } from 'azure-actions-appservice-rest/Kudu/azure-app-kudu-service';
+
+import RuntimeConstants from '../RuntimeConstants';
 
 export interface ScmCredentials {
     uri: string;
@@ -11,6 +14,8 @@ export interface ScmCredentials {
 export class PublishProfile {
     private _creds: ScmCredentials;
     private _appUrl: string;
+    private _appOS: string;
+    private _kuduService: any;
     private static _publishProfile: PublishProfile;
 
     private constructor(publishProfileContent: string) {
@@ -26,6 +31,8 @@ export class PublishProfile {
                 throw new Error("Publish profile does not contain kudu URL");
             }
             this._creds.uri = `https://${this._creds.uri}`;
+            this._kuduService = new Kudu(this._creds.uri, this._creds.username, this._creds.password);
+            this.setAppOS();
         } catch(error) {
             core.error("Failed to fetch credentials from Publish Profile. For more details on how to set publish profile credentials refer https://aka.ms/create-secrets-for-GitHub-workflows");
             throw error;
@@ -46,4 +53,18 @@ export class PublishProfile {
     public get appUrl(): string {
         return this._appUrl;
     }
+
+    public get kuduService() {
+        return this._kuduService;
+    }
+
+    public get appOS() {
+        return this._appOS;
+    }
+
+    private async setAppOS() {
+        const appRuntimeDetails = await this._kuduService.getAppRuntime();
+        this._appOS = appRuntimeDetails[RuntimeConstants.system][RuntimeConstants.osName];
+    }
+
 }

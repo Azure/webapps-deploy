@@ -10,15 +10,17 @@ import { SpnLinuxWebAppValidator } from "./ActionValidators/SpnLinuxWebAppValida
 import { SpnWindowsContainerWebAppValidator } from "./ActionValidators/SpnWindowsContainerWebAppValidator";
 import { SpnWindowsWebAppValidator } from "./ActionValidators/SpnWindowsWebAppValidator";
 import { appNameIsRequired } from "./Validations";
+import { PublishProfile } from "../Utilities/PublishProfile";
+import RuntimeConstants from "../RuntimeConstants";
 
 export class ValidatorFactory {
     public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator> {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
-        
-        if(type == DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
+        if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
+            await this.setResourceDetails(actionParams);
             if (!!actionParams.images) {
                 return new PublishProfileContainerWebAppValidator();
-            } 
+            }
             else {
                 return new PublishProfileWebAppValidator();
             }
@@ -27,7 +29,6 @@ export class ValidatorFactory {
             // app-name is required to get resource details
             appNameIsRequired(actionParams.appName);
             await this.getResourceDetails(actionParams);
-            
             switch(actionParams.kind) {
                 case WebAppKind.Linux:
                     return new SpnLinuxWebAppValidator();
@@ -44,13 +45,19 @@ export class ValidatorFactory {
         else {
             throw new Error("Valid credentails are not available. Add Azure Login action before this action or provide publish-profile input.");
         }
-    }    
+    }
 
     private static async getResourceDetails(params: ActionParameters) {
         let appDetails = await AzureResourceFilterUtility.getAppDetails(params.endpoint, params.appName);
         params.resourceGroupName = appDetails["resourceGroupName"];
         params.realKind = appDetails["kind"];
         params.kind = appKindMap.get(params.realKind);
-        params.isLinux = params.realKind.indexOf("linux") > -1; 
+        params.isLinux = params.realKind.indexOf("linux") > -1;
     }
-} 
+
+    private static async setResourceDetails(actionParams: ActionParameters) {
+        const publishProfile: PublishProfile = PublishProfile.getPublishProfile(actionParams.publishProfileContent);
+        const appOS: string = publishProfile.appOS;
+        actionParams.isLinux = appOS.includes(RuntimeConstants.Unix) || appOS.includes(RuntimeConstants.Unix.toLowerCase());
+    }
+}

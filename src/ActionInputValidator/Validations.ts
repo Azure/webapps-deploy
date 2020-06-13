@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 
 import { Package, exist } from "azure-actions-utility/packageUtility";
 import { PublishProfile, ScmCredentials } from "../Utilities/PublishProfile";
-
+import RuntimeConstants from '../RuntimeConstants';
 import { ActionParameters } from "../actionparameters";
 
 import fs = require('fs');
@@ -60,7 +60,7 @@ export function multiContainerNotAllowed(configFile: string) {
 
 // Error if image name is not provided
 export function validateSingleContainerInputs() {
-    let actionParams: ActionParameters = ActionParameters.getActionParams();
+    const actionParams: ActionParameters = ActionParameters.getActionParams();
     if(!actionParams.images) {
         throw new Error("Image name not provided for a single-container. Provide a valid image name");
     }
@@ -107,5 +107,14 @@ export async function validatePackageInput() {
     let isMSBuildPackage = await actionParams.package.isMSBuildPackage();           
     if(isMSBuildPackage) {
         throw new Error(`Deployment of msBuild generated package is not supported. Please change package format.`);
+    }
+}
+
+// windows container app not allowed for publish profile auth scheme
+export async function windowsContainerAppNotAllowedForPublishProfile() {
+    const publishProfile: PublishProfile = PublishProfile.getPublishProfile(this.actionParams.publishProfileContent);
+    const appOS: string = publishProfile.appOS;
+    if (appOS.includes(RuntimeConstants.Windows) || appOS.includes(RuntimeConstants.Windows.toLowerCase())) {
+        throw new Error("Publish profile auth scheme is not supported for Windows container Apps.");
     }
 }

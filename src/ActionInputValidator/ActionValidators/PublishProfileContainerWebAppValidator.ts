@@ -1,15 +1,14 @@
-import { packageNotAllowed, multiContainerNotAllowed, startupCommandNotAllowed, validateSingleContainerInputs } from "../Validations";
+import { packageNotAllowed, windowsContainerAppNotAllowedForPublishProfile, multiContainerNotAllowed, startupCommandNotAllowed, validateSingleContainerInputs } from "../Validations";
 import { ActionParameters } from "../../actionparameters";
 import { IValidator } from "./IValidator";
 
 export class PublishProfileContainerWebAppValidator implements IValidator {
     async validate(): Promise<void> {
-
         const actionParams: ActionParameters = ActionParameters.getActionParams();
-
+        
         packageNotAllowed(actionParams.packageInput);
-
-        // TODO: windows not allowed
+        
+        windowsContainerAppNotAllowedForPublishProfile();
 
         multiContainerNotAllowed(actionParams.multiContainerConfigFile);
         
@@ -17,4 +16,5 @@ export class PublishProfileContainerWebAppValidator implements IValidator {
 
         validateSingleContainerInputs();
     }
+
 }
