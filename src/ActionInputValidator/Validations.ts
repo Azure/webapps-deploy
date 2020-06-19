@@ -62,7 +62,7 @@ export function multiContainerNotAllowed(configFile: string) {
 export function validateSingleContainerInputs() {
     const actionParams: ActionParameters = ActionParameters.getActionParams();
     if(!actionParams.images) {
-        throw new Error("Image name not provided for a single-container. Provide a valid image name");
+        throw new Error("Image name not provided for container. Provide a valid image name");
     }
 }
 
