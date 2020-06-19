@@ -63,8 +63,13 @@ export class PublishProfile {
     }
 
     private async setAppOS() {
-        const appRuntimeDetails = await this._kuduService.getAppRuntime();
-        this._appOS = appRuntimeDetails[RuntimeConstants.system][RuntimeConstants.osName];
+        try {
+            const appRuntimeDetails = await this._kuduService.getAppRuntime();
+            this._appOS = appRuntimeDetails[RuntimeConstants.system][RuntimeConstants.osName];
+        }
+        catch(error) {
+            throw Error(`Internal Server Error: ${error}`);
+        }
     }
 
 }
