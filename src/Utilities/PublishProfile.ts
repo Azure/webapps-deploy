@@ -68,7 +68,7 @@ export class PublishProfile {
             this._appOS = appRuntimeDetails[RuntimeConstants.system][RuntimeConstants.osName];
         }
         catch(error) {
-            throw Error(`Internal Server Error: ${error}`);
+            throw Error("Internal Server Error. Please try again\n" + error);
         }
     }
 
