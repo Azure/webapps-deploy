@@ -4,7 +4,7 @@ import { AuthorizerFactory } from "azure-actions-webclient/AuthorizerFactory";
 import { ValidatorFactory } from '../ActionInputValidator/ValidatorFactory';
 import { DeploymentProviderFactory } from '../DeploymentProvider/DeploymentProviderFactory';
 import { ActionParameters} from "../actionparameters";
-import { PublishProfileWebAppValidator } from "../ActionInputValidator/ActionValidators/PublishProfileWebAppValidator";
+import { PublishProfileWebAppValidator } from '../ActionInputValidator/ActionValidators/PublishProfileWebAppValidator';
 import { WebAppDeploymentProvider } from '../DeploymentProvider/Providers/WebAppDeploymentProvider';
 
 jest.mock('@actions/core');
