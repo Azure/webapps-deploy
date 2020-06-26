@@ -112,8 +112,9 @@ export async function validatePackageInput() {
 
 // windows container app not allowed for publish profile auth scheme
 export async function windowsContainerAppNotAllowedForPublishProfile() {
-    const publishProfile: PublishProfile = PublishProfile.getPublishProfile(this.actionParams.publishProfileContent);
-    const appOS: string = publishProfile.appOS;
+    const actionParams = ActionParameters.getActionParams();
+    const publishProfile: PublishProfile = PublishProfile.getPublishProfile(actionParams.publishProfileContent);
+    const appOS: string = await publishProfile.getAppOS();
     if (appOS.includes(RuntimeConstants.Windows) || appOS.includes(RuntimeConstants.Windows.toLowerCase())) {
         throw new Error("Publish profile auth scheme is not supported for Windows container Apps.");
     }

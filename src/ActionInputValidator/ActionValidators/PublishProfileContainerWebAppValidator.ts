@@ -8,7 +8,7 @@ export class PublishProfileContainerWebAppValidator implements IValidator {
         
         packageNotAllowed(actionParams.packageInput);
         
-        windowsContainerAppNotAllowedForPublishProfile();
+        await windowsContainerAppNotAllowedForPublishProfile();
 
         multiContainerNotAllowed(actionParams.multiContainerConfigFile);
         
