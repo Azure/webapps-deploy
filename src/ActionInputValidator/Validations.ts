@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 
 import { Package, exist } from "azure-actions-utility/packageUtility";
 import { PublishProfile, ScmCredentials } from "../Utilities/PublishProfile";
-
+import RuntimeConstants from '../RuntimeConstants';
 import { ActionParameters } from "../actionparameters";
 
 import fs = require('fs');
@@ -17,12 +17,7 @@ export function appNameIsRequired(appname: string) {
 // Error if image info is provided
 export function containerInputsNotAllowed(images: string, configFile: string, isPublishProfile: boolean = false) {
     if(!!images || !!configFile) {
-        if(!!isPublishProfile) {
-            throw new Error("Container Deployment is not supported with publish profile credentails. Instead add an Azure login action before this action. For more details refer https://github.com/azure/login");
-        }
-        else {
-            throw new Error(`This is not a container web app. Please remove inputs like images and configuration-file which are only relevant for container deployment.`);
-        }
+        throw new Error(`This is not a container web app. Please remove inputs like images and configuration-file which are only relevant for container deployment.`);
     }
 }
 
@@ -60,6 +55,14 @@ export function packageNotAllowed(apppackage: string) {
 export function multiContainerNotAllowed(configFile: string) {
     if(!!configFile) {
         throw new Error("Multi container support is not available for windows containerized web app.");
+    }
+}
+
+// Error if image name is not provided
+export function validateSingleContainerInputs() {
+    const actionParams: ActionParameters = ActionParameters.getActionParams();
+    if(!actionParams.images) {
+        throw new Error("Image name not provided for container. Provide a valid image name");
     }
 }
 
@@ -104,5 +107,15 @@ export async function validatePackageInput() {
     let isMSBuildPackage = await actionParams.package.isMSBuildPackage();           
     if(isMSBuildPackage) {
         throw new Error(`Deployment of msBuild generated package is not supported. Please change package format.`);
+    }
+}
+
+// windows container app not allowed for publish profile auth scheme
+export async function windowsContainerAppNotAllowedForPublishProfile() {
+    const actionParams = ActionParameters.getActionParams();
+    const publishProfile: PublishProfile = PublishProfile.getPublishProfile(actionParams.publishProfileContent);
+    const appOS: string = await publishProfile.getAppOS();
+    if (appOS.includes(RuntimeConstants.Windows) || appOS.includes(RuntimeConstants.Windows.toLowerCase())) {
+        throw new Error("Publish profile auth scheme is not supported for Windows container Apps.");
     }
 }

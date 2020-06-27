@@ -4,7 +4,7 @@ import { AuthorizerFactory } from "azure-actions-webclient/AuthorizerFactory";
 import { ValidatorFactory } from '../ActionInputValidator/ValidatorFactory';
 import { DeploymentProviderFactory } from '../DeploymentProvider/DeploymentProviderFactory';
 import { ActionParameters} from "../actionparameters";
-import { PublishProfileWebAppValidator } from '../ActionInputValidator/ActionValidators/PublishProfileWebAppValidator';;
+import { PublishProfileWebAppValidator } from '../ActionInputValidator/ActionValidators/PublishProfileWebAppValidator';
 import { WebAppDeploymentProvider } from '../DeploymentProvider/Providers/WebAppDeploymentProvider';
 
 jest.mock('@actions/core');
@@ -35,9 +35,9 @@ describe('Test azure-webapps-deploy', () => {
         }
             return '';
         });
-        let getValidatorFactorySpy = jest.spyOn(ValidatorFactory, 'getValidator');
+        let getValidatorFactorySpy = jest.spyOn(ValidatorFactory, 'getValidator').mockImplementation(async _type => new PublishProfileWebAppValidator());
         let ValidatorFactoryValidateSpy = jest.spyOn(PublishProfileWebAppValidator.prototype, 'validate');
-        let getDeploymentProviderSpy = jest.spyOn(DeploymentProviderFactory, 'getDeploymentProvider');
+        let getDeploymentProviderSpy = jest.spyOn(DeploymentProviderFactory, 'getDeploymentProvider').mockImplementation(type => new WebAppDeploymentProvider(type));
         let deployWebAppStepSpy = jest.spyOn(WebAppDeploymentProvider.prototype, 'DeployWebAppStep');
         let updateDeploymentStatusSpy = jest.spyOn(WebAppDeploymentProvider.prototype, 'UpdateDeploymentStatus');
 
@@ -49,13 +49,12 @@ describe('Test azure-webapps-deploy', () => {
         }
 
         expect(getAuthorizerSpy).not.toHaveBeenCalled(); // When publish profile is given as input getAuthorizer is not called
-        expect(getActionParamsSpy).toHaveBeenCalledTimes(2);
+        expect(getActionParamsSpy).toHaveBeenCalledTimes(1);
         expect(getInputSpy).toHaveBeenCalledTimes(1);
         expect(getValidatorFactorySpy).toHaveBeenCalledTimes(1);
         expect(ValidatorFactoryValidateSpy).toHaveBeenCalledTimes(1);
         expect(getDeploymentProviderSpy).toHaveBeenCalledTimes(1);
         expect(deployWebAppStepSpy).toHaveBeenCalled();
         expect(updateDeploymentStatusSpy).toHaveBeenCalled();
-
     });
 });
