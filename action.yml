@@ -6,7 +6,7 @@ inputs:
     description: 'Name of the Azure Web App'
     required: true
   publish-profile:
-    description: 'Applies to Web Apps and Web App Containers on linux only. Multi container scenario not supported. Publish profile (*.publishsettings) file contents with Web Deploy secrets'
+    description: 'Applies to Web Apps and Web App Containers(linux). Multi container scenario not supported. Publish profile (*.publishsettings) file contents with Web Deploy secrets'
     required: false
   slot-name:
     description: 'Enter an existing Slot other than the Production slot'
