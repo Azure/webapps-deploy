@@ -79,6 +79,39 @@ jobs:
         
 
 ```
+### Sample workflow to build and deploy a Node.js app to Containerized WebApp using publish profile
+
+```yaml
+
+on: [push]
+
+name: Linux_Container_Node_Workflow
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # checkout the repo
+    - name: 'Checkout Github Action' 
+      uses: actions/checkout@master
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: contoso.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    
+    - run: |
+        docker build . -t contoso.azurecr.io/nodejssampleapp:${{ github.sha }}
+        docker push contoso.azurecr.io/nodejssampleapp:${{ github.sha }} 
+      
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'node-rnc'
+        publish-profile: ${{ secrets.azureWebAppPublishProfile }}
+        images: 'contoso.azurecr.io/nodejssampleapp:${{ github.sha }}'
+        
+```
 
 #### Configure deployment credentials:
 
