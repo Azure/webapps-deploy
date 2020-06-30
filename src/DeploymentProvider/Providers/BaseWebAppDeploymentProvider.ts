@@ -68,10 +68,9 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
     }
 
     private async initializeForPublishProfile() {
-        let publishProfile: PublishProfile = PublishProfile.getPublishProfile(this.actionParams.publishProfileContent);
-        let scmCreds: ScmCredentials = publishProfile.creds;
+        const publishProfile: PublishProfile = PublishProfile.getPublishProfile(this.actionParams.publishProfileContent);
         
-        this.kuduService = new Kudu(scmCreds.uri, scmCreds.username, scmCreds.password);
+        this.kuduService = publishProfile.kuduService;
         this.kuduServiceUtility = new KuduServiceUtility(this.kuduService);
         
         this.applicationURL = publishProfile.appUrl;
