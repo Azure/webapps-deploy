@@ -70,15 +70,15 @@ jobs:
         app-name: node-rn
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
         
-
-```
-
 ```
 ### Sample workflow to build and deploy a Node.js app to Containerized WebApp using publish profile
 
 ```yaml
+
 on: [push]
+
 name: Linux_Container_Node_Workflow
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
