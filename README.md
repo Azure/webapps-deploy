@@ -105,7 +105,7 @@ jobs:
         docker build . -t contoso.azurecr.io/nodejssampleapp:${{ github.sha }}
         docker push contoso.azurecr.io/nodejssampleapp:${{ github.sha }} 
       
-    - uses: azure/webapps-deploy@v2
+    - uses: azure/webapps-deploy@v2.1
       with:
         app-name: 'node-rnc'
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
