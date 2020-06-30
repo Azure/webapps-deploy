@@ -17,7 +17,7 @@ The definition of this Github Action is in [action.yml](https://github.com/Azure
 ## Dependencies on other Github Actions
 
 * [Checkout](https://github.com/actions/checkout) Checkout your Git repository content into Github Actions agent.
-* Authenticate using [Azure Web App Publish Profile](https://github.com/projectkudu/kudu/wiki/Deployment-credentials#site-credentials-aka-publish-profile-credentials) or using [Azure Login](https://github.com/Azure/login)
+* Authenticate using [Azure Web App Publish Profile](https://github.com/projectkudu/kudu/wiki/Deployment-credentials#site-credentials-aka-publish-profile-credentials) or using [Azure Login](https://github.com/Azure/login). Action supports publish profile for [Azure Web Apps](https://azure.microsoft.com/en-us/services/app-service/web/) (both Windows and Linux) and [Azure Web Apps for Containers](https://azure.microsoft.com/en-us/services/app-service/containers/) (Linux only). Action does not support multi-container scenario with publish profile.
 * To build app code in a specific language based environment, use setup actions 
   * [Setup DotNet](https://github.com/actions/setup-dotnet) Sets up a dotnet environment by optionally downloading and caching a version of dotnet by SDK version and adding to PATH .
   * [Setup Node](https://github.com/actions/setup-node) sets up a node environment by optionally downloading and caching a version of node - npm by version spec and add to PATH
@@ -78,6 +78,39 @@ jobs:
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
         
 
+```
+### Sample workflow to build and deploy a Node.js app to Containerized WebApp using publish profile
+
+```yaml
+
+on: [push]
+
+name: Linux_Container_Node_Workflow
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # checkout the repo
+    - name: 'Checkout Github Action' 
+      uses: actions/checkout@master
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: contoso.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    
+    - run: |
+        docker build . -t contoso.azurecr.io/nodejssampleapp:${{ github.sha }}
+        docker push contoso.azurecr.io/nodejssampleapp:${{ github.sha }} 
+      
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'node-rnc'
+        publish-profile: ${{ secrets.azureWebAppPublishProfile }}
+        images: 'contoso.azurecr.io/nodejssampleapp:${{ github.sha }}'
+        
 ```
 
 #### Configure deployment credentials:
