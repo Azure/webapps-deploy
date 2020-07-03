@@ -210,7 +210,39 @@ Follow the steps to configure the secret:
 ```
   * Now in the workflow file in your branch: `.github/workflows/workflow.yml` replace the secret in Azure login action with your secret (Refer to the example above)
 
+#### Configure web app private registry credentials
 
+This sample assumes the `node-rnc` web application has been previously configured to authenticate against the private registry. If you wish to set private registry authentication settings on the workflow, you can either use:
+
+* The command [az webapp config container](https://docs.microsoft.com/cli/azure/webapp/config/container?view=azure-cli-latest#az-webapp-config-container-set) to configure the registry url, username and password.
+
+* Setup the authentication settings using [azure/appservice-settings action](https://github.com/Azure/appservice-settings), like this for example
+
+```yaml
+...
+    - name: Set Web App ACR authentication
+      uses: Azure/appservice-settings@v1
+      with:
+      app-settings-json: |
+        [
+            {
+                "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+                "value": "${{ secrets.REGISTRY_PASSWORD }}",
+                "slotSetting": false
+            },
+            {
+                "name": "DOCKER_REGISTRY_SERVER_URL",
+                "value": "https://contoso.azurecr.io",
+                "slotSetting": false
+            },
+            {
+                "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+                "value": "${{ secrets.REGISTRY_USERNAME  }}",
+                "slotSetting": false
+            }
+        ]
+...
+````
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
