@@ -219,7 +219,6 @@ This sample assumes the `node-rnc` web application has been previously configure
 * Setup the authentication settings using [azure/appservice-settings action](https://github.com/Azure/appservice-settings), like this for example
 
 ```yaml
-...
     - name: Set Web App ACR authentication
       uses: Azure/appservice-settings@v1
       with:
@@ -241,7 +240,6 @@ This sample assumes the `node-rnc` web application has been previously configure
                 "slotSetting": false
             }
         ]
-...
 ````
 # Contributing
 
