@@ -13,7 +13,7 @@ export enum WebAppKind {
 export const appKindMap = new Map([
     [ 'app', WebAppKind.Windows ],
     [ 'app,linux', WebAppKind.Linux ],
-    [ 'app,container,xenon', WebAppKind.WindowsContainer ],
+    [ 'app,container,windows', WebAppKind.WindowsContainer ],
     [ 'app,linux,container', WebAppKind.LinuxContainer ]
 ]);
 
