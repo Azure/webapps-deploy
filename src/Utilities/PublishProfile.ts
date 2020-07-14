@@ -65,7 +65,7 @@ export class PublishProfile {
                 core.debug(`App Runtime OS: ${this._appOS}`);
             }
         } catch(error) {
-            throw Error("Internal Server Error. Please try again\n" + error);
+            throw Error("Failed to get app runtime OS\n" + JSON.stringify(error));
         }
         return this._appOS;
     }
