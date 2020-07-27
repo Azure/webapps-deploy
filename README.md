@@ -6,17 +6,17 @@ Get started today with a [free Azure account](https://azure.com/free/open-source
 
 This repository contains GitHub Action for Azure WebApp to deploy to an Azure WebApp (Windows or Linux). Supports deploying *.jar, *.war, *.zip or a folder. 
 
-You can also use this Github Action to deploy your customized image into an Azure Webapps container.
+You can also use this GitHub Action to deploy your customized image into an Azure Webapps container.
 
 For deploying container images to Kubernetes, consider using [Kubernetes deploy](https://github.com/Azure/k8s-deploy) action. This action requires that the cluster context be set earlier in the workflow by using either the [Azure/aks-set-context](https://github.com/Azure/aks-set-context/tree/releases/v1) action or the [Azure/k8s-set-context](https://github.com/Azure/k8s-set-context/tree/releases/v1) action.
 
-The definition of this Github Action is in [action.yml](https://github.com/Azure/webapps-deploy/blob/master/action.yml).
+The definition of this GitHub Action is in [action.yml](https://github.com/Azure/webapps-deploy/blob/master/action.yml).
 
 # End-to-End Sample Workflows
 
-## Dependencies on other Github Actions
+## Dependencies on other GitHub Actions
 
-* [Checkout](https://github.com/actions/checkout) Checkout your Git repository content into Github Actions agent.
+* [Checkout](https://github.com/actions/checkout) Checkout your Git repository content into GitHub Actions agent.
 * Authenticate using [Azure Web App Publish Profile](https://github.com/projectkudu/kudu/wiki/Deployment-credentials#site-credentials-aka-publish-profile-credentials) or using [Azure Login](https://github.com/Azure/login). Action supports publish profile for [Azure Web Apps](https://azure.microsoft.com/en-us/services/app-service/web/) (both Windows and Linux) and [Azure Web Apps for Containers](https://azure.microsoft.com/en-us/services/app-service/containers/) (Linux only). Action does not support multi-container scenario with publish profile.
 * To build app code in a specific language based environment, use setup actions 
   * [Setup DotNet](https://github.com/actions/setup-dotnet) Sets up a dotnet environment by optionally downloading and caching a version of dotnet by SDK version and adding to PATH .
