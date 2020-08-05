@@ -10,7 +10,7 @@ You can also use this Github Action to deploy your customized image into an Azur
 
 For deploying container images to Kubernetes, consider using [Kubernetes deploy](https://github.com/Azure/k8s-deploy) action. This action requires that the cluster context be set earlier in the workflow by using either the [Azure/aks-set-context](https://github.com/Azure/aks-set-context/tree/releases/v1) action or the [Azure/k8s-set-context](https://github.com/Azure/k8s-set-context/tree/releases/v1) action.
 
-The definition of this Github Action is in [action.yml](https://github.com/Azure/webapps-deploy/blob/master/action.yml). Currently startup-command supported for Linux App Scenarios and not for Windows Apps. Also, startup-command is not supported for Publish Profile auth scheme.
+The definition of this Github Action is in [action.yml](https://github.com/Azure/webapps-deploy/blob/master/action.yml). Currently startup-command is supported for Linux App Scenarios and not for Windows Apps. Also, startup-command is not supported for Publish Profile auth scheme.
 
 # End-to-End Sample Workflows
 
