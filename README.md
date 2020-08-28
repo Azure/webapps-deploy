@@ -121,6 +121,7 @@ The above example uses app-level credentials i.e., publish profile file for depl
 
 Follow the steps to configure the secret:
   * Download the publish profile for the WebApp from the portal (Get Publish profile option)
+  * While deploying to slot, download the publish profile for slot. Also specify the `slot-name` field with the name of the slot.
   * Define a new secret under your repository settings, Add secret menu
   * Paste the contents for the downloaded publish profile file into the secret's value field
   * Now in the workflow file in your branch: `.github/workflows/workflow.yml` replace the secret for the input `publish-profile:` of the deploy Azure WebApp action (Refer to the example above)
