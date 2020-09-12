@@ -223,24 +223,25 @@ This sample assumes the `node-rnc` web application has been previously configure
     - name: Set Web App ACR authentication
       uses: Azure/appservice-settings@v1
       with:
-      app-settings-json: |
-        [
-            {
-                "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
-                "value": "${{ secrets.REGISTRY_PASSWORD }}",
-                "slotSetting": false
-            },
-            {
-                "name": "DOCKER_REGISTRY_SERVER_URL",
-                "value": "https://contoso.azurecr.io",
-                "slotSetting": false
-            },
-            {
-                "name": "DOCKER_REGISTRY_SERVER_USERNAME",
-                "value": "${{ secrets.REGISTRY_USERNAME  }}",
-                "slotSetting": false
-            }
-        ]
+       app-name: 'node-rnc'
+       app-settings-json: |
+         [
+             {
+                 "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+                 "value": "${{ secrets.REGISTRY_PASSWORD }}",
+                 "slotSetting": false
+             },
+             {
+                 "name": "DOCKER_REGISTRY_SERVER_URL",
+                 "value": "https://contoso.azurecr.io",
+                 "slotSetting": false
+             },
+             {
+                 "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+                 "value": "${{ secrets.REGISTRY_USERNAME  }}",
+                 "slotSetting": false
+             }
+         ]
 ````
 # Contributing
 
