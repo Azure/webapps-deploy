@@ -26,11 +26,13 @@ NOTE: you must have write permissions to the repository in question. If you're u
   * [Setup Python](https://github.com/actions/setup-python) sets up Python environment by optionally installing a version of python and adding to PATH.
   * [Setup Java](https://github.com/actions/setup-java) sets up Java app environment optionally downloading and caching a version of java by version and adding to PATH. Downloads from [Azul's Zulu distribution](http://static.azul.com/zulu/bin/).
 * To build and deploy a containerized app, use [docker-login](https://github.com/Azure/docker-login) to log in to a private container registry such as [Azure Container registry](https://azure.microsoft.com/services/container-registry/).
+
 Once login is done, the next set of Actions in the workflow can perform tasks such as building, tagging and pushing containers.
   
 ## Create Azure Web App and deploy using GitHub Actions
 
-Note: Workflow samples with sample application code and deployment procedure for various **runtime** environments are given at (https://github.com/Azure/actions-workflow-samples/tree/master/AppService).
+Note: Workflow samples with sample application code and deployment procedure for various **runtime** environments are given at https://github.com/Azure/actions-workflow-samples/tree/master/AppService.
+
 For example, if You want to deploy a Java WAR based app, You can follow the link https://github.com/Azure-Samples/Java-application-petstore-ee7 in the sample workflow templates.
 
 1. Create a web app in Azure using app service. Follow the tutorial [Azure Web Apps Quickstart](https://docs.microsoft.com/azure/app-service/overview#next-steps).
@@ -40,11 +42,11 @@ For example, if You want to deploy a Java WAR based app, You can follow the link
 
 |  Runtime | Template |
 |------------|---------|
-| DotNet     | [dotnet.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/asp.net-core-webapp-on-azure.yml) | 
-| Node       | [node.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/node.js-webapp-on-azure.yml) | 
-| Java | [java_jar.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/java-jar-webapp-on-azure.yml) | 
+| DotNet     | [dotnet.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/asp.net-core-webapp-on-azure.yml) |
+| Node       | [node.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/node.js-webapp-on-azure.yml) |
+| Java | [java_jar.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/java-jar-webapp-on-azure.yml) |
 | Java      | [java_war.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/java-war-webapp-on-azure.yml) |
-| Python     | [python.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/python-webapp-on-azure.yml) | 
+| Python     | [python.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/python-webapp-on-azure.yml) |
 | DOCKER     | [docker.yml](https://github.com/Azure/actions-workflow-samples/blob/master/AppService/docker-webapp-container-on-azure.yml) |
 
 ### Sample workflow to build and deploy a Node.js Web app to Azure using publish profile
@@ -128,10 +130,9 @@ Follow the steps to configure the secret:
 
 ### Sample workflow to build and deploy a Node.js app to Containerized WebApp using Azure service principal
 
-* [Azure Login](https://github.com/Azure/login) Login with your Azure credentials for Web app deployment authentication. Once login is done, the next set of Azure actions in the workflow can re-use the same session within the job.
+Use [Azure Login](https://github.com/Azure/login) with a service principal that's authorized for Web app deployment. Once login is done, the next set of Azure actions in the workflow can re-use the same session within the job.
 
 ```yaml
-
 on: [push]
 
 name: Linux_Container_Node_Workflow
@@ -141,7 +142,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     # checkout the repo
-    - name: 'Checkout Github Action' 
+    - name: 'Checkout Github Action'
       uses: actions/checkout@master
 
     - name: 'Login via Azure CLI'
@@ -167,13 +168,7 @@ jobs:
 
 #### Configure deployment credentials:
 
-For any credentials like Azure Service Principal, Publish Profile etc add them as [secrets](https://help.github.com/en/articles/virtual-environments-for-github-actions#creating-and-using-secrets-encrypted-variables) in the GitHub repository and then use them in the workflow.
-
-The above example uses user-level credentials i.e., Azure Service Principal for deployment.
-
-## Create a service principal and secret:
-
-The previous sample workflow depends on a [secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `AZURE_CREDENTIALS` in your repository. The value of this secret is expected to be a JSON object that represents a service principal (an identifer for an application or process) that authenticates the workflow with Azure.
+The previous sample workflow depends on user-level credentials stored as a [secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `AZURE_CREDENTIALS` in your repository. The value of this secret is expected to be a JSON object that represents a service principal (an identifer for an application or process) that authenticates the workflow with Azure.
 
 To function correctly, this service principal must be assigned the [Contributor]((https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor)) role for the web app or the resource group that contains the web app.
 
