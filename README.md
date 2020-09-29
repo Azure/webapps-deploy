@@ -19,12 +19,18 @@ NOTE: you must have write permissions to the repository in question. If you're u
 ## Dependencies on other GitHub Actions
 
 * [Checkout](https://github.com/actions/checkout) Checkout your Git repository content into GitHub Actions agent.
-* Authenticate using [Azure Web App Publish Profile](https://github.com/projectkudu/kudu/wiki/Deployment-credentials#site-credentials-aka-publish-profile-credentials) or using the [Azure Login Action](https://github.com/Azure/login). The action supports using publish profile for [Azure Web Apps](https://azure.microsoft.com/services/app-service/web/) (both Windows and Linux) and [Azure Web Apps for Containers](https://azure.microsoft.com/services/app-service/containers/) (Linux only). The action does not support multi-container scenario with publish profile.
+* Authenticate using [Azure Web App Publish Profile](https://github.com/projectkudu/kudu/wiki/Deployment-credentials#site-credentials-aka-publish-profile-credentials) or using the [Azure Login Action](https://github.com/Azure/login). Examples of both are given later in this article.
+
+    The action supports using publish profile for [Azure Web Apps](https://azure.microsoft.com/services/app-service/web/) (both Windows and Linux) and [Azure Web Apps for Containers](https://azure.microsoft.com/services/app-service/containers/) (Linux only). 
+
+    The action does not support multi-container scenario with publish profile.
+
 * To build app code in a specific language based environment, use setup actions:
   * [Setup DotNet](https://github.com/actions/setup-dotnet) Sets up a dotnet environment by optionally downloading and caching a version of dotnet by SDK version and adding to PATH.
   * [Setup Node](https://github.com/actions/setup-node) sets up a node environment by optionally downloading and caching a version of node - npm by version spec and add to PATH
   * [Setup Python](https://github.com/actions/setup-python) sets up Python environment by optionally installing a version of python and adding to PATH.
   * [Setup Java](https://github.com/actions/setup-java) sets up Java app environment optionally downloading and caching a version of java by version and adding to PATH. Downloads from [Azul's Zulu distribution](http://static.azul.com/zulu/bin/).
+
 * To build and deploy a containerized app, use [docker-login](https://github.com/Azure/docker-login) to log in to a private container registry such as [Azure Container registry](https://azure.microsoft.com/services/container-registry/).
 
 Once login is done, the next set of Actions in the workflow can perform tasks such as building, tagging and pushing containers.
