@@ -29,17 +29,21 @@ export class ValidatorFactory {
             // app-name is required to get resource details
             appNameIsRequired(actionParams.appName);
             await this.getResourceDetails(actionParams);
-            switch(actionParams.kind) {
-                case WebAppKind.Linux:
-                    return new SpnLinuxWebAppValidator();
-                case WebAppKind.Windows:
-                    return new SpnWindowsWebAppValidator();
-                case WebAppKind.LinuxContainer:
+            if (!!actionParams.isLinux) {
+                if (!!actionParams.images) {
                     return new SpnLinuxContainerWebAppValidator();
-                case WebAppKind.WindowsContainer:
+                }
+                else {
+                    return new SpnLinuxWebAppValidator();
+                }
+            }
+            else {
+                if (!!actionParams.images) {
                     return new SpnWindowsContainerWebAppValidator();
-                default:
-                    throw new Error(`Action does not support app service with kind ${actionParams.realKind}.`)
+                }
+                else {
+                    return new SpnWindowsWebAppValidator();
+                }
             }
         }
         else {
@@ -52,7 +56,8 @@ export class ValidatorFactory {
         params.resourceGroupName = appDetails["resourceGroupName"];
         params.realKind = appDetails["kind"];
         params.kind = appKindMap.get(params.realKind);
-        params.isLinux = params.realKind.indexOf("linux") > -1;
+        //app kind linux and kubeapp is supported only on linux environment currently
+        params.isLinux = params.realKind.indexOf("linux") > -1 || params.realKind.indexOf("kubeapp") > -1;
     }
 
     private static async setResourceDetails(actionParams: ActionParameters) {
