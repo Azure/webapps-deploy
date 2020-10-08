@@ -31,7 +31,7 @@
     "ts-jest": "^25.2.1"
   },
   "dependencies": {
-    "@actions/core": "^1.2.1",
+    "@actions/core": "^1.2.6",
     "actions-secret-parser": "^1.0.3",
     "azure-actions-appservice-rest": "^1.2.9",
     "azure-actions-utility": "^1.0.3",
