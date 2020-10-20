@@ -41,6 +41,7 @@ Note: Workflow samples with sample application code and deployment procedure for
 
 For example, if You want to deploy a Java WAR based app, You can follow the link https://github.com/Azure-Samples/Java-application-petstore-ee7 in the sample workflow templates.
 
+0. Review the pre-requisites outlined in the ["Dependencies on Other Github Actions"] (https://github.com/Azure/webapps-deploy#dependencies-on-other-github-actions)section above.
 1. Create a web app in Azure using app service. Follow the tutorial [Azure Web Apps Quickstart](https://docs.microsoft.com/azure/app-service/overview#next-steps).
 2. Pick a template from the following table depends on your Azure web app **runtime** and place the template to `.github/workflows/` in your project repository.
 3. Change `app-name` to your Web app name created in the first step.
