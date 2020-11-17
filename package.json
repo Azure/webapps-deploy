@@ -4,7 +4,7 @@
   "description": "Deploy to webapp",
   "main": "lib/main.js",
   "dependencies": {
-    "@actions/core": "^1.2.0",
+    "@actions/core": "^1.2.6",
     "@types/q": "^1.5.2",
     "azure-actions-appservice-rest": "^1.0.8",
     "azure-actions-utility": "^1.0.3",
