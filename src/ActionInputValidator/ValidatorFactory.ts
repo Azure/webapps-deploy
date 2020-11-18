@@ -35,6 +35,7 @@ export class ValidatorFactory {
                 case WebAppKind.Windows:
                     return new SpnWindowsWebAppValidator();
                 case WebAppKind.LinuxContainer:
+                    console.log(`ak: in case Linuxcontainer: kind: ${actionParams.kind}; realKind: ${actionParams.realKind}`);
                     return new SpnLinuxContainerWebAppValidator();
                 case WebAppKind.WindowsContainer:
                     return new SpnWindowsContainerWebAppValidator();
