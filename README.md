@@ -22,6 +22,8 @@ NOTE: you must have write permissions to the repository in question. If you're u
 * Authenticate using [Azure Web App Publish Profile](https://github.com/projectkudu/kudu/wiki/Deployment-credentials#site-credentials-aka-publish-profile-credentials) or using the [Azure Login Action](https://github.com/Azure/login). Examples of both are given later in this article.
 
     The action supports using publish profile for [Azure Web Apps](https://azure.microsoft.com/services/app-service/web/) (both Windows and Linux) and [Azure Web Apps for Containers](https://azure.microsoft.com/services/app-service/containers/) (Linux only). 
+    
+ **Note: As of October 2020, Linux web apps will need the app setting `WEBSITE_WEBDEPLOY_USE_SCM` set to `true` before downloading the publish profile from the portal. This requirement will be removed in the future.**
 
     The action does not support multi-container scenario with publish profile.
 
@@ -130,7 +132,7 @@ The above example uses app-level credentials i.e., publish profile file for depl
 
 Follow the steps to configure the secret:
 
-* **Note**: As of October 2020, Linux web apps will need the app setting `WEBSITE_WEBDEPLOY_USE_SCM` set to `true` before continuing. This requirement will be removed in the future.
+* **Note: As of October 2020, Linux web apps will need the app setting `WEBSITE_WEBDEPLOY_USE_SCM` set to `true` before continuing with next step of downloading the publish profile. This requirement will be removed in the future.**
 * Download the publish profile for the WebApp from the portal (Get Publish profile option)
 * While deploying to slot, download the publish profile for slot. Also specify the `slot-name` field with the name of the slot.
 * Define a new secret under your repository settings, Add secret menu
