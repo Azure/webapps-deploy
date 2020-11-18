@@ -29,13 +29,13 @@ export class ValidatorFactory {
             // app-name is required to get resource details
             appNameIsRequired(actionParams.appName);
             await this.getResourceDetails(actionParams);
+            console.log(`appKind: ${actionParams.kind}; realKind: ${actionParams.realKind}}`);
             switch(actionParams.kind) {
                 case WebAppKind.Linux:
                     return new SpnLinuxWebAppValidator();
                 case WebAppKind.Windows:
                     return new SpnWindowsWebAppValidator();
                 case WebAppKind.LinuxContainer:
-                    console.log(`ak: in case Linuxcontainer: kind: ${actionParams.kind}; realKind: ${actionParams.realKind}`);
                     return new SpnLinuxContainerWebAppValidator();
                 case WebAppKind.WindowsContainer:
                     return new SpnWindowsContainerWebAppValidator();
