@@ -44,7 +44,7 @@ export class ActionParameters {
         this._startupCommand = core.getInput('startup-command');
         this._endpoint = endpoint;    
 
-        this._sanitizeInputs();
+        //this._sanitizeInputs();
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
