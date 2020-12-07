@@ -43,12 +43,15 @@ export class ActionParameters {
         this._multiContainerConfigFile = core.getInput('configuration-file');
         this._startupCommand = core.getInput('startup-command');
         this._endpoint = endpoint;    
+
+        this._sanitizeInputs();
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
-        if(!this.actionparams) {
+        if (!this.actionparams) {
             this.actionparams = new ActionParameters(!!endpoint ? endpoint : null);
         }
+
         return this.actionparams;
     }
 
@@ -130,5 +133,10 @@ export class ActionParameters {
 
     public get multiContainerConfigFile() {
         return this._multiContainerConfigFile;
+    }
+
+    private _sanitizeInputs() {
+        this._appName = this._appName.toLowerCase();
+        this._slotName = this._slotName.toLowerCase();
     }
 }
