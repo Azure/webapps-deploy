@@ -42,13 +42,14 @@ export class ActionParameters {
         this._images = core.getInput('images');
         this._multiContainerConfigFile = core.getInput('configuration-file');
         this._startupCommand = core.getInput('startup-command');
-        this._endpoint = endpoint;    
+        this._endpoint = endpoint;
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
-        if(!this.actionparams) {
+        if (!this.actionparams) {
             this.actionparams = new ActionParameters(!!endpoint ? endpoint : null);
         }
+
         return this.actionparams;
     }
 
