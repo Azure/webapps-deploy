@@ -42,9 +42,7 @@ export class ActionParameters {
         this._images = core.getInput('images');
         this._multiContainerConfigFile = core.getInput('configuration-file');
         this._startupCommand = core.getInput('startup-command');
-        this._endpoint = endpoint;    
-
-        this._sanitizeInputs();
+        this._endpoint = endpoint;
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
@@ -133,10 +131,5 @@ export class ActionParameters {
 
     public get multiContainerConfigFile() {
         return this._multiContainerConfigFile;
-    }
-
-    private _sanitizeInputs() {
-        this._appName = this._appName.toLowerCase();
-        this._slotName = this._slotName.toLowerCase();
     }
 }
