@@ -46,9 +46,10 @@ export class ActionParameters {
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
-        if(!this.actionparams) {
+        if (!this.actionparams) {
             this.actionparams = new ActionParameters(!!endpoint ? endpoint : null);
         }
+        
         return this.actionparams;
     }
 
