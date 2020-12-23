@@ -123,7 +123,7 @@ jobs:
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
         images: 'contoso.azurecr.io/nodejssampleapp:${{ github.sha }}'
 ```
-Webapps delpoy Actions is supported on both 'AzureUSGovernment' or 'AzureChinaCloud'.Login to the respective Azure Cloud before running Webapps delpoy using [Azure Login](https://github.com/Azure/login)
+Webapps deploy Actions is supported on both 'AzureUSGovernment' or 'AzureChinaCloud'.Login to the respective Azure Cloud before running Webapps deploy using [Azure Login](https://github.com/Azure/login)
 
 #### Configure deployment credentials:
 
