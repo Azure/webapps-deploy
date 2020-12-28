@@ -123,6 +123,7 @@ jobs:
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
         images: 'contoso.azurecr.io/nodejssampleapp:${{ github.sha }}'
 ```
+Webapps deploy Actions is supported for the Azure public cloud as well as Azure government clouds ('AzureUSGovernment' or 'AzureChinaCloud') and Azure Stack ('AzureStack') Hub. Before running this action, login to the respective Azure Cloud  using [Azure Login](https://github.com/Azure/login) by setting appropriate value for the `environment` parameter.
 
 #### Configure deployment credentials:
 
