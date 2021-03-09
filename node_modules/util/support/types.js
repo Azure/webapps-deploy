@@ -3,10 +3,10 @@
 
 'use strict';
 
-var isBuffer = require('./isBuffer');
-
 var isArgumentsObject = require('is-arguments');
 var isGeneratorFunction = require('is-generator-function');
+var whichTypedArray = require('which-typed-array');
+var isTypedArray = require('is-typed-array');
 
 function uncurryThis(f) {
   return f.call.bind(f);
@@ -14,19 +14,6 @@ function uncurryThis(f) {
 
 var BigIntSupported = typeof BigInt !== 'undefined';
 var SymbolSupported = typeof Symbol !== 'undefined';
-var SymbolToStringTagSupported = SymbolSupported && typeof Symbol.toStringTag !== 'undefined';
-var Uint8ArraySupported = typeof Uint8Array !== 'undefined';
-var ArrayBufferSupported = typeof ArrayBuffer !== 'undefined';
-
-if (Uint8ArraySupported && SymbolToStringTagSupported) {
-  var TypedArrayPrototype = Object.getPrototypeOf(Uint8Array.prototype);
-
-  var TypedArrayProto_toStringTag =
-      uncurryThis(
-        Object.getOwnPropertyDescriptor(TypedArrayPrototype,
-                                        Symbol.toStringTag).get);
-
-}
 
 var ObjectToString = uncurryThis(Object.prototype.toString);
 
@@ -55,8 +42,8 @@ function checkBoxedPrimitive(value, prototypeValueOf) {
 }
 
 exports.isArgumentsObject = isArgumentsObject;
-
 exports.isGeneratorFunction = isGeneratorFunction;
+exports.isTypedArray = isTypedArray;
 
 // Taken from here and modified for better browser support
 // https://github.com/sindresorhus/p-is-promise/blob/cda35a513bda03f977ad5cde3a079d237e82d7ef/index.js
@@ -77,7 +64,7 @@ function isPromise(input) {
 exports.isPromise = isPromise;
 
 function isArrayBufferView(value) {
-  if (ArrayBufferSupported && ArrayBuffer.isView) {
+  if (typeof ArrayBuffer !== 'undefined' && ArrayBuffer.isView) {
     return ArrayBuffer.isView(value);
   }
 
@@ -88,129 +75,59 @@ function isArrayBufferView(value) {
 }
 exports.isArrayBufferView = isArrayBufferView;
 
-function isTypedArray(value) {
-  if (Uint8ArraySupported && SymbolToStringTagSupported) {
-    return TypedArrayProto_toStringTag(value) !== undefined;
-  } else {
-    return (
-      isUint8Array(value) ||
-      isUint8ClampedArray(value) ||
-      isUint16Array(value) ||
-      isUint32Array(value) ||
-      isInt8Array(value) ||
-      isInt16Array(value) ||
-      isInt32Array(value) ||
-      isFloat32Array(value) ||
-      isFloat64Array(value) ||
-      isBigInt64Array(value) ||
-      isBigUint64Array(value)
-    );
-  }
-}
-exports.isTypedArray = isTypedArray;
 
 function isUint8Array(value) {
-  if (Uint8ArraySupported && SymbolToStringTagSupported) {
-    return TypedArrayProto_toStringTag(value) === 'Uint8Array';
-  } else {
-    return (
-      ObjectToString(value) === '[object Uint8Array]' ||
-      // If it's a Buffer instance _and_ has a `.buffer` property,
-      // this is an ArrayBuffer based buffer; thus it's an Uint8Array
-      // (Old Node.js had a custom non-Uint8Array implementation)
-      isBuffer(value) && value.buffer !== undefined
-    );
-  }
+  return whichTypedArray(value) === 'Uint8Array';
 }
 exports.isUint8Array = isUint8Array;
 
 function isUint8ClampedArray(value) {
-  if (Uint8ArraySupported && SymbolToStringTagSupported) {
-    return TypedArrayProto_toStringTag(value) === 'Uint8ClampedArray';
-  } else {
-    return ObjectToString(value) === '[object Uint8ClampedArray]';
-  }
+  return whichTypedArray(value) === 'Uint8ClampedArray';
 }
 exports.isUint8ClampedArray = isUint8ClampedArray;
 
 function isUint16Array(value) {
-  if (Uint8ArraySupported && SymbolToStringTagSupported) {
-    return TypedArrayProto_toStringTag(value) === 'Uint16Array';
-  } else {
-    return ObjectToString(value) === '[object Uint16Array]';
-  }
+  return whichTypedArray(value) === 'Uint16Array';
 }
 exports.isUint16Array = isUint16Array;
 
 function isUint32Array(value) {
-  if (Uint8ArraySupported && SymbolToStringTagSupported) {
-    return TypedArrayProto_toStringTag(value) === 'Uint32Array';
-  } else {
-    return ObjectToString(value) === '[object Uint32Array]';
-  }
+  return whichTypedArray(value) === 'Uint32Array';
 }
 exports.isUint32Array = isUint32Array;
 
 function isInt8Array(value) {
-  if (Uint8ArraySupported && SymbolToStringTagSupported) {
-    return TypedArrayProto_toStringTag(value) === 'Int8Array';
-  } else {
-    return ObjectToString(value) === '[object Int8Array]';
-  }
+  return whichTypedArray(value) === 'Int8Array';
 }
 exports.isInt8Array = isInt8Array;
 
 function isInt16Array(value) {
-  if (Uint8ArraySupported && SymbolToStringTagSupported) {
-    return TypedArrayProto_toStringTag(value) === 'Int16Array';
-  } else {
-    return ObjectToString(value) === '[object Int16Array]';
-  }
+  return whichTypedArray(value) === 'Int16Array';
 }
 exports.isInt16Array = isInt16Array;
 
 function isInt32Array(value) {
-  if (Uint8ArraySupported && SymbolToStringTagSupported) {
-    return TypedArrayProto_toStringTag(value) === 'Int32Array';
-  } else {
-    return ObjectToString(value) === '[object Int32Array]';
-  }
+  return whichTypedArray(value) === 'Int32Array';
 }
 exports.isInt32Array = isInt32Array;
 
 function isFloat32Array(value) {
-  if (Uint8ArraySupported && SymbolToStringTagSupported) {
-    return TypedArrayProto_toStringTag(value) === 'Float32Array';
-  } else {
-    return ObjectToString(value) === '[object Float32Array]';
-  }
+  return whichTypedArray(value) === 'Float32Array';
 }
 exports.isFloat32Array = isFloat32Array;
 
 function isFloat64Array(value) {
-  if (Uint8ArraySupported && SymbolToStringTagSupported) {
-    return TypedArrayProto_toStringTag(value) === 'Float64Array';
-  } else {
-    return ObjectToString(value) === '[object Float64Array]';
-  }
+  return whichTypedArray(value) === 'Float64Array';
 }
 exports.isFloat64Array = isFloat64Array;
 
 function isBigInt64Array(value) {
-  if (Uint8ArraySupported && SymbolToStringTagSupported) {
-    return TypedArrayProto_toStringTag(value) === 'BigInt64Array';
-  } else {
-    return ObjectToString(value) === '[object BigInt64Array]';
-  }
+  return whichTypedArray(value) === 'BigInt64Array';
 }
 exports.isBigInt64Array = isBigInt64Array;
 
 function isBigUint64Array(value) {
-  if (Uint8ArraySupported && SymbolToStringTagSupported) {
-    return TypedArrayProto_toStringTag(value) === 'BigUint64Array';
-  } else {
-    return ObjectToString(value) === '[object BigUint64Array]';
-  }
+  return whichTypedArray(value) === 'BigUint64Array';
 }
 exports.isBigUint64Array = isBigUint64Array;
 
@@ -278,13 +195,6 @@ isWeakSetToString.working = (
 );
 function isWeakSet(value) {
   return isWeakSetToString(value);
-  if (typeof WeakSet === 'undefined') {
-    return false;
-  }
-
-  return isWeakSetToString.working
-    ? isWeakSetToString(value)
-    : value instanceof WeakSet;
 }
 exports.isWeakSet = isWeakSet;
 
@@ -405,7 +315,7 @@ function isBoxedPrimitive(value) {
 exports.isBoxedPrimitive = isBoxedPrimitive;
 
 function isAnyArrayBuffer(value) {
-  return Uint8ArraySupported && (
+  return typeof Uint8Array !== 'undefined' && (
     isArrayBuffer(value) ||
     isSharedArrayBuffer(value)
   );
