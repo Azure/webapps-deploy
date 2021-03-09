@@ -43,7 +43,7 @@ export class ValidatorFactory {
             }
         }
         else {
-            throw new Error("Valid credentails are not available. Add Azure Login action before this action or provide publish-profile input.");
+            throw new Error("Valid credentials are not available. Add Azure Login action before this action or provide publish-profile input.");
         }
     }
 
