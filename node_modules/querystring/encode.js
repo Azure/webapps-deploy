@@ -54,7 +54,7 @@ module.exports = function(obj, sep, eq, name) {
       } else {
         return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
       }
-    }).join(sep);
+    }).filter(Boolean).join(sep);
 
   }
 
