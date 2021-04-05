@@ -31,7 +31,7 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 let folderPath = await utility.generateTemporaryFolderForDeployment(false, webPackage, PackageType.jar);
                 let output = await utility.archiveFolderForDeployment(false, folderPath);
                 webPackage = output.webDeployPkg;
-                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName, commitMessage:this.actionParams.commitMessage });
+                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName, commitMessage: this.actionParams.commitMessage });
                 break;
 
             case PackageType.folder:
