@@ -20,7 +20,9 @@ async function main() {
     let actionName = 'DeployWebAppToAzure';
     let userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
     core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
-
+    core.debug(`${process.env.GITHUB_REPOSITORY}`);
+    core.debug(`${process.env.GITHUB_ACTOR}`);
+    core.debug(`${process.env}`);
     // Initialize action inputs
     let endpoint: IAuthorizer = !!core.getInput('publish-profile') ? null : await AuthorizerFactory.getAuthorizer();
     ActionParameters.getActionParams(endpoint);
