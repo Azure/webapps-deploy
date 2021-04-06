@@ -15,8 +15,7 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
         // kudu warm up
         await this.kuduServiceUtility.warmpUp(); 
-        core.debug("commit-message is :");
-        core.debug(this.actionParams.commitMessage);
+        
 
         let packageType = appPackage.getPackageType();
 
@@ -37,6 +36,8 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 break;
 
             case PackageType.folder:
+                core.debug("commit-message is :");
+                core.debug(this.actionParams.commitMessage);
                 let tempPackagePath = utility.generateTemporaryFolderOrZipPath(`${process.env.RUNNER_TEMP}`, false);
                 webPackage = await zipUtility.archiveFolder(webPackage, "", tempPackagePath) as string;
                 core.debug("Compressed folder into zip " +  webPackage);
