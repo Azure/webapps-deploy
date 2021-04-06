@@ -39,7 +39,7 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 webPackage = await zipUtility.archiveFolder(webPackage, "", tempPackagePath) as string;
                 core.debug("Compressed folder into zip " +  webPackage);
                 core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage); 
-                console.log(this.actionParams.commitMessage);
+                console.log("commit-message is :" + this.actionParams.commitMessage);
                 this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName, commitMessage: this.actionParams.commitMessage });
                 break;
                 
