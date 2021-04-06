@@ -1,4 +1,4 @@
-# web app action
+\# web app action
 name: 'Azure WebApp'
 description: 'Deploy Web Apps/Containerized Web Apps to Azure. github.com/Azure/Actions'
 inputs: 
@@ -12,6 +12,10 @@ inputs:
     description: 'Enter an existing Slot other than the Production slot'
     required: false
     default: 'production'
+  commit-message:
+     description: 'commit message'
+     required: false
+     default: ${{ github.event.head_commit.message }}
   package:
     description: 'Applies to Web App only: Path to package or folder. *.zip, *.war, *.jar or a folder to deploy'
     required: false
