@@ -60,6 +60,9 @@ export class ActionParameters {
     public get commitMessage(){
         return this._commitMessage;
     }
+    public set commitMessage(commitMessage: string) {
+        this._commitMessage = commitMessage;
+    }
     public get packageInput() {
         return this._packageInput;
     }
