@@ -15,7 +15,8 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
         // kudu warm up
         await this.kuduServiceUtility.warmpUp(); 
-        console.log("commit-message is :" + this.actionParams.commitMessage);
+        console.log("commit-message is :");
+        console.log(this.actionParams.commitMessage);
 
         let packageType = appPackage.getPackageType();
 
