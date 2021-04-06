@@ -22,7 +22,7 @@ async function main() {
     core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
     core.debug(`${process.env.GITHUB_REPOSITORY}`);
     core.debug(`${process.env.GITHUB_ACTOR}`);
-    core.debug(`${JSON.stringify(process)}`);
+    core.debug(`${JSON.stringify(process.release)}`);
     // Initialize action inputs
     let endpoint: IAuthorizer = !!core.getInput('publish-profile') ? null : await AuthorizerFactory.getAuthorizer();
     ActionParameters.getActionParams(endpoint);
