@@ -23,7 +23,7 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 core.debug("Initiated deployment via kudu service for webapp war package : "+ webPackage);    
                 var warName = utility.getFileNameFromPath(webPackage, ".war");
                 this.deploymentID = await this.kuduServiceUtility.deployUsingWarDeploy(webPackage, 
-                    { slotName: this.actionParams.slotName , commitMessage:this.actionParams.commitMessage }, warName);
+                    { slotName: this.actionParams.slotName , commitMessage: this.actionParams.commitMessage }, warName);
                 break;
 
             case PackageType.jar:
@@ -39,12 +39,12 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 webPackage = await zipUtility.archiveFolder(webPackage, "", tempPackagePath) as string;
                 core.debug("Compressed folder into zip " +  webPackage);
                 core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage); 
-                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName, commitMessage:this.actionParams.commitMessage });
+                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName, commitMessage: this.actionParams.commitMessage });
                 break;
                 
             case PackageType.zip:
                 core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage); 
-                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName , commitMessage:this.actionParams.commitMessage});
+                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName , commitMessage: this.actionParams.commitMessage});
                 break;
 
             default:
