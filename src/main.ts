@@ -42,7 +42,7 @@ async function main() {
     const github = require('@actions/github');
  
     const context = github.context;
-    core.info(context);
+    console.log('context:'+ context);
     var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
     core.debug("Predeployment Step Started");
     await deploymentProvider.PreDeploymentStep();
