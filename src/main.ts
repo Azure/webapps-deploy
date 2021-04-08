@@ -1,4 +1,6 @@
 import * as core from '@actions/core';
+// import * as Webhooks from '@octokit/webhooks';
+
 import * as crypto from "crypto";
 
 import { ActionParameters, WebAppKind, appKindMap } from "./actionparameters";
@@ -37,8 +39,11 @@ async function main() {
     let validator = await ValidatorFactory.getValidator(type);
     await validator.validate();
 
+    const github = require('@actions/github');
+ 
+    const context = github.context;
+    core.info(context);
     var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
-
     core.debug("Predeployment Step Started");
     await deploymentProvider.PreDeploymentStep();
 
