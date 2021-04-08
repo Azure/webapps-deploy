@@ -41,7 +41,7 @@ async function main() {
 
     const github = require('@actions/github');
  
-    const context = github.payload;
+    const context = github.context.payload;
     for (const key of Object.keys(context)) {
       const value = context[key]
       console.log(`${key} -> ${value}`)
