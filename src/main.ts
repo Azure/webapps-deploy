@@ -38,16 +38,7 @@ async function main() {
     // Validate action inputs
     let validator = await ValidatorFactory.getValidator(type);
     await validator.validate();
-
-    const github = require('@actions/github');
- 
-    const message = github.context.payload.head_commit.message;
-    console.log(message);
-  //   for (const key of Object.keys(context)) {
-  //     const value = context[key]
-  //     console.log(`${key} -> ${value}`)
-  //  }
-    // console.log(context);
+  
     var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
     core.debug("Predeployment Step Started");
     await deploymentProvider.PreDeploymentStep();
