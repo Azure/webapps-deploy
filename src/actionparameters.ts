@@ -1,7 +1,9 @@
 import * as core from '@actions/core';
+
 import { IAuthorizer } from "azure-actions-webclient/Authorizer/IAuthorizer";
 import { Package } from 'azure-actions-utility/packageUtility';
 const github = require('@actions/github');
+
 export enum WebAppKind {
     Windows,
     Linux,
