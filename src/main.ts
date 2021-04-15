@@ -38,7 +38,14 @@ export async function main() {
     await validator.validate();
 
     var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
-
+    const github = require('@actions/github');
+    const context = github.context;
+    console.log(context);
+    for (const key of Object.keys(context)) {
+      const value = context[key]
+      console.log(`${key} -> ${value}`)
+    }
+ 
     core.debug("Predeployment Step Started");
     await deploymentProvider.PreDeploymentStep();
 
