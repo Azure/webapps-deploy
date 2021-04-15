@@ -37,7 +37,6 @@ export async function main() {
     let validator = await ValidatorFactory.getValidator(type);
     await validator.validate();
 
-    var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
     const github = require('@actions/github');
     const context = github.context;
     console.log(context);
@@ -45,6 +44,8 @@ export async function main() {
       const value = context[key]
       console.log(`${key} -> ${value}`)
     }
+    var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
+    
  
     core.debug("Predeployment Step Started");
     await deploymentProvider.PreDeploymentStep();
