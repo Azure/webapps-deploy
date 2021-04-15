@@ -42,7 +42,7 @@ export class ActionParameters {
         this._images = core.getInput('images');
         this._multiContainerConfigFile = core.getInput('configuration-file');
         this._startupCommand = core.getInput('startup-command');
-        this._commitMessage = github.context.payload.head_commit.message;
+        this._commitMessage = github.context.eventName === 'push'? github.context.payload.head_commit.message: "";
         this._endpoint = endpoint;    
     }
 
