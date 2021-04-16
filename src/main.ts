@@ -32,18 +32,10 @@ export async function main() {
     else {
       type = DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE;
     }
-
     // Validate action inputs
     let validator = await ValidatorFactory.getValidator(type);
     await validator.validate();
 
-    const github = require('@actions/github');
-    const context = github.context;
-    console.log('context:'+ context);
-    for (const key of Object.keys(context)) {
-      const value = context[key]
-      console.log(`${key} -> ${value}`)
-    }
     var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
     
  
