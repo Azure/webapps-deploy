@@ -32,13 +32,11 @@ export async function main() {
     else {
       type = DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE;
     }
-
     // Validate action inputs
     let validator = await ValidatorFactory.getValidator(type);
     await validator.validate();
-
     var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
-
+    
     core.debug("Predeployment Step Started");
     await deploymentProvider.PreDeploymentStep();
 
