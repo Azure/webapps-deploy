@@ -5,6 +5,7 @@ import * as zipUtility from 'azure-actions-utility/ziputility.js';
 import { Package, PackageType } from "azure-actions-utility/packageUtility";
 
 import { BaseWebAppDeploymentProvider } from './BaseWebAppDeploymentProvider';
+import { addAnnotation } from 'azure-actions-appservice-rest/Utilities/AnnotationUtility';
 
 export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
@@ -30,7 +31,7 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 let folderPath = await utility.generateTemporaryFolderForDeployment(false, webPackage, PackageType.jar);
                 let output = await utility.archiveFolderForDeployment(false, folderPath);
                 webPackage = output.webDeployPkg;
-                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage);
+                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName });
                 break;
 
             case PackageType.folder:
@@ -38,12 +39,12 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 webPackage = await zipUtility.archiveFolder(webPackage, "", tempPackagePath) as string;
                 core.debug("Compressed folder into zip " +  webPackage);
                 core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage); 
-                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage);
+                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName });
                 break;
                 
             case PackageType.zip:
                 core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage); 
-                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage);
+                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName });
                 break;
 
             default:
@@ -66,5 +67,14 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         else {
             core.debug(`Skipped updating appCommandLine. Current value is: ${currentStartupCommand}`);
         }
+    }
+
+    public async UpdateDeploymentStatus(isDeploymentSuccess: boolean) {
+        if(!!this.appService) {
+            await addAnnotation(this.actionParams.endpoint, this.appService, isDeploymentSuccess);
+        }
+        
+        console.log('App Service Application URL: ' + this.applicationURL);
+        core.setOutput('webapp-url', this.applicationURL);
     }
 }

@@ -29,25 +29,21 @@ export class ValidatorFactory {
             // app-name is required to get resource details
             appNameIsRequired(actionParams.appName);
             await this.getResourceDetails(actionParams);
-            if (!!actionParams.isLinux) {
-                if (!!actionParams.images) {
-                    return new SpnLinuxContainerWebAppValidator();
-                }
-                else {
+            switch(actionParams.kind) {
+                case WebAppKind.Linux:
                     return new SpnLinuxWebAppValidator();
-                }
-            }
-            else {
-                if (!!actionParams.images) {
-                    return new SpnWindowsContainerWebAppValidator();
-                }
-                else {
+                case WebAppKind.Windows:
                     return new SpnWindowsWebAppValidator();
-                }
+                case WebAppKind.LinuxContainer:
+                    return new SpnLinuxContainerWebAppValidator();
+                case WebAppKind.WindowsContainer:
+                    return new SpnWindowsContainerWebAppValidator();
+                default:
+                    throw new Error(`Action does not support app service with kind ${actionParams.realKind}.`)
             }
         }
         else {
-            throw new Error("Valid credentails are not available. Add Azure Login action before this action or provide publish-profile input.");
+            throw new Error("Valid credentials are not available. Add Azure Login action before this action or provide publish-profile input.");
         }
     }
 
@@ -56,8 +52,7 @@ export class ValidatorFactory {
         params.resourceGroupName = appDetails["resourceGroupName"];
         params.realKind = appDetails["kind"];
         params.kind = appKindMap.get(params.realKind);
-        //app kind linux and kubeapp is supported only on linux environment currently
-        params.isLinux = params.realKind.indexOf("linux") > -1 || params.realKind.indexOf("kubeapp") > -1;
+        params.isLinux = params.realKind.indexOf("linux") > -1;
     }
 
     private static async setResourceDetails(actionParams: ActionParameters) {

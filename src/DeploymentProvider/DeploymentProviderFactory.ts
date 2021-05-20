@@ -18,11 +18,16 @@ export class DeploymentProviderFactory {
             }
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
-            if (!!ActionParameters.getActionParams().images) {
-                return new WebAppContainerDeploymentProvider(type);
-            }
-            else {
-                return new WebAppDeploymentProvider(type);
+            let kind = ActionParameters.getActionParams().kind;
+            switch(kind) {
+                case WebAppKind.Linux:
+                case WebAppKind.Windows:
+                    return new WebAppDeploymentProvider(type);
+                case WebAppKind.LinuxContainer:
+                case WebAppKind.WindowsContainer:
+                    return new WebAppContainerDeploymentProvider(type);
+                default:
+                    throw new Error("No deployment provider supporting app kind: " + kind);
             }
         }
         else {
