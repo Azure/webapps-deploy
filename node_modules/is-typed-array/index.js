@@ -2,7 +2,7 @@
 
 var forEach = require('foreach');
 var availableTypedArrays = require('available-typed-arrays');
-var callBound = require('es-abstract/helpers/callBound');
+var callBound = require('call-bind/callBound');
 
 var $toString = callBound('Object.prototype.toString');
 var hasSymbols = require('has-symbols')();
