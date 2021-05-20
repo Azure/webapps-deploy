@@ -8,7 +8,7 @@ patUser=$7
 getPayLoad() {
     cat <<EOF
 {
-    "event_type": "ManageAzurePolicyPR", 
+    "event_type": "webapps-deployPR", 
     "client_payload": 
     {
         "action": "CreateSecret", 
