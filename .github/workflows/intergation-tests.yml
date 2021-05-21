@@ -29,6 +29,7 @@ jobs:
            github.event.pull_request.base.ref == 'releases/v0' || steps.extract_branch.outputs.branchname == 'releases/v0' ||
            github.event.pull_request.base.ref == 'releases/v1' || steps.extract_branch.outputs.branchname == 'releases/v1' ||
            github.event.pull_request.base.ref == 'releases/v2' || steps.extract_branch.outputs.branchname == 'releases/v2' ||
-           github.event.pull_request.base.ref == 'main' || steps.extract_branch.outputs.branchname == 'main'
+           github.event.pull_request.base.ref == 'users/balaga-gayatri/prchecks' || steps.extract_branch.outputs.branchname == 'users/balaga-gayatri/prchecks' ||
+           github.event.pull_request.base.ref == 'master' || steps.extract_branch.outputs.branchname == 'master'
           run: |
               bash ./IntegrationTests/.github/workflows/InvokeL2RepoDispatchEvent.sh ${{ secrets.L2_REPO_TOKEN }} ${{ github.event.pull_request.head.sha }} ${{ github.repository }} ${{ github.event.pull_request.number }} ${{ github.event.pull_request.head.ref }} ${{ github.event.pull_request.base.ref }} ${{ secrets.L2_REPO_USER }}           
