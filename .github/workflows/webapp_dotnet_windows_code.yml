@@ -34,7 +34,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        ref: users/balaga-gayatri/prchecksrepo
+        ref: users/balaga-gayatri/commit-message-fix
 
     - name: Set Node.js 12.x for GitHub Action
       uses: actions/setup-node@v1
