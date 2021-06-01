@@ -44,9 +44,9 @@ jobs:
     - name: Install dependencies
       run: |
         pwd
-        echo "${{ env.CURRENT_BRANCH }}" 
+        ls
         python -m pip install --upgrade pip
-        pip install -r /home/runner/work/webapps-deploy/Azure-Samples/pythonSample_thecatsaidno/requirements.txt
+        pip install -r /home/runner/work/webapps-deploy/webapps-deploy/pythonSample_thecatsaidno/requirements.txt
     - name: Azure authentication
       uses: azure/login@v1
       with:
