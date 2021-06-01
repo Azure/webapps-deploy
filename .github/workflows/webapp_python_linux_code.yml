@@ -25,7 +25,7 @@ env:
   AZURE_WEBAPP_NAME: pyhonwebapplima # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: '.'         # set this to the path to your web app project, defaults to the repository root
   PYTHON_VERSION: '3.7'                  # set this to the python version to use
-  CURRENT_BRANCH: ${GITHUB_REF##*/}
+  CURRENT_BRANCH: azure/webapps-deploy@"${GITHUB_REF##*/}"
 
 jobs:
   build:
@@ -44,6 +44,7 @@ jobs:
     - name: Install dependencies
       run: |
         pwd
+        echo "${{ env.CURRENT_BRANCH }}" 
         python -m pip install --upgrade pip
         pip install -r /home/runner/work/azure-actions-integration-tests/pythonSample_thecatsaidno/requirements.txt
     - name: Azure authentication
@@ -51,7 +52,7 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_WEBAPP_SPN }}
     - name: Deploy Web App using GH Action azure/webapps-deploy
-      uses: azure/webapps-deploy@ ${{ env.CURRENT_BRANCH }} 
+      uses: ${{ env.CURRENT_BRANCH }} 
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         #publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
