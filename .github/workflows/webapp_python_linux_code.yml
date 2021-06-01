@@ -52,7 +52,7 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_WEBAPP_SPN }}
     - name: Deploy Web App using GH Action azure/webapps-deploy
-      uses: ${{ env.CURRENT_BRANCH }} 
+      uses: azure/webapps-deploy@"${GITHUB_REF##*/}"
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         #publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
