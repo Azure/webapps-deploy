@@ -46,7 +46,7 @@ jobs:
         pwd
         echo "${{ env.CURRENT_BRANCH }}" 
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r /home/runner/work/webapps-deploy/Azure-Samples/pythonSample_thecatsaidno/requirements.txt
     - name: Azure authentication
       uses: azure/login@v1
       with:
