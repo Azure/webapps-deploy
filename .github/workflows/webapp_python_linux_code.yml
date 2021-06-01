@@ -46,13 +46,13 @@ jobs:
         pwd
         echo "${{ env.CURRENT_BRANCH }}" 
         python -m pip install --upgrade pip
-        pip install -r /home/runner/work/azure-actions-integration-tests/pythonSample_thecatsaidno/requirements.txt
+        pip install -r requirements.txt
     - name: Azure authentication
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_WEBAPP_SPN }}
     - name: Deploy Web App using GH Action azure/webapps-deploy
-      uses: azure/webapps-deploy@v2
+      uses: azure/webapps-deploy@users/balaga-gayatri/prchecksrepo
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         #publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
