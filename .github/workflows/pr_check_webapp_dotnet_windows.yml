@@ -1,4 +1,4 @@
-name: check_Webapp_python_linux
+name: pr_check_webapp_dotnet_windows
 
 on:
   push:
@@ -89,4 +89,4 @@ jobs:
       with: 
         app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
         #publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }} # Define secret variable in repository settings as per action documentation
-        package: 'D:\a\azure-actions-integration-tests\azure-actions-integration-tests\dotnetsample\SampleWebApplication\'
+        package: 'D:\a\webapps-deploy\webapps-deploy\dotnetsample\SampleWebApplication\'
