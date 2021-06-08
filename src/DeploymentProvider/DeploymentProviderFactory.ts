@@ -18,8 +18,13 @@ export class DeploymentProviderFactory {
             }
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
-            if (!!ActionParameters.getActionParams().images) {
-                return new WebAppContainerDeploymentProvider(type);
+            if(!!ActionParameters.getActionParams().isLinux){
+                if (!!ActionParameters.getActionParams().images || !!ActionParameters.getActionParams().multiContainerConfigFile) {
+                    return new WebAppContainerDeploymentProvider(type);
+                }
+                else{
+                    return new WebAppDeploymentProvider(type);
+                }
             }
             else {
                 return new WebAppDeploymentProvider(type);
