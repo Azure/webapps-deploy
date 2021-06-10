@@ -1,17 +1,17 @@
 import * as core from "@actions/core";
-import {main} from "../main";
+import {main} from "../src/main";
 import { AuthorizerFactory } from "azure-actions-webclient/AuthorizerFactory";
-import { ValidatorFactory } from '../ActionInputValidator/ValidatorFactory';
-import { DeploymentProviderFactory } from '../DeploymentProvider/DeploymentProviderFactory';
-import { ActionParameters} from "../actionparameters";
-import { PublishProfileWebAppValidator } from '../ActionInputValidator/ActionValidators/PublishProfileWebAppValidator';
-import { WebAppDeploymentProvider } from '../DeploymentProvider/Providers/WebAppDeploymentProvider';
+import { ValidatorFactory } from '../src/ActionInputValidator/ValidatorFactory';
+import { DeploymentProviderFactory } from '../src/DeploymentProvider/DeploymentProviderFactory';
+import { ActionParameters} from "../src/actionparameters";
+import { PublishProfileWebAppValidator } from '../src/ActionInputValidator/ActionValidators/PublishProfileWebAppValidator';
+import { WebAppDeploymentProvider } from '../src/DeploymentProvider/Providers/WebAppDeploymentProvider';
 
 jest.mock('@actions/core');
-jest.mock('../actionparameters');
+jest.mock('../src/actionparameters');
 jest.mock('azure-actions-webclient/AuthorizerFactory');
-jest.mock('../ActionInputValidator/ActionValidators/PublishProfileWebAppValidator');
-jest.mock('../DeploymentProvider/Providers/WebAppDeploymentProvider');
+jest.mock('../src/ActionInputValidator/ActionValidators/PublishProfileWebAppValidator');
+jest.mock('../src/DeploymentProvider/Providers/WebAppDeploymentProvider');
 
 describe('Test azure-webapps-deploy', () => {
 
