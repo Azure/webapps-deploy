@@ -22,6 +22,8 @@ NOTE: you must have write permissions to the repository in question. If you're u
 * Authenticate using [Azure Web App Publish Profile](https://github.com/projectkudu/kudu/wiki/Deployment-credentials#site-credentials-aka-publish-profile-credentials) or using the [Azure Login Action](https://github.com/Azure/login). Examples of both are given later in this article.
 
     The action supports using publish profile for [Azure Web Apps](https://azure.microsoft.com/services/app-service/web/) (both Windows and Linux) and [Azure Web Apps for Containers](https://azure.microsoft.com/services/app-service/containers/) (Linux only). 
+    
+ **Note: As of October 2020, Linux web apps will need the app setting `WEBSITE_WEBDEPLOY_USE_SCM` set to `true` before downloading the publish profile from the portal. This requirement will be removed in the future.**
 
     The action does not support multi-container scenario with publish profile.
 
@@ -41,6 +43,7 @@ Note: Workflow samples with sample application code and deployment procedure for
 
 For example, if You want to deploy a Java WAR based app, You can follow the link https://github.com/Azure-Samples/Java-application-petstore-ee7 in the sample workflow templates.
 
+0. Review the pre-requisites outlined in the ["Dependencies on Other Github Actions"](https://github.com/Azure/webapps-deploy#dependencies-on-other-github-actions) section above.
 1. Create a web app in Azure using app service. Follow the tutorial [Azure Web Apps Quickstart](https://docs.microsoft.com/azure/app-service/overview#next-steps).
 2. Pick a template from the following table depends on your Azure web app **runtime** and place the template to `.github/workflows/` in your project repository.
 3. Change `app-name` to your Web app name created in the first step.
@@ -53,6 +56,7 @@ For example, if You want to deploy a Java WAR based app, You can follow the link
 | Java | [java_jar.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/java-jar-webapp-on-azure.yml) |
 | Java      | [java_war.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/java-war-webapp-on-azure.yml) |
 | Python     | [python.yml](https://github.com/Azure/actions-workflow-samples/tree/master/AppService/python-webapp-on-azure.yml) |
+| PHP        | [php.yml](https://github.com/Azure/actions-workflow-samples/blob/master/AppService/php-webapp-on-azure.yml)
 | DOCKER     | [docker.yml](https://github.com/Azure/actions-workflow-samples/blob/master/AppService/docker-webapp-container-on-azure.yml) |
 
 ### Sample workflow to build and deploy a Node.js Web app to Azure using publish profile
@@ -119,6 +123,7 @@ jobs:
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
         images: 'contoso.azurecr.io/nodejssampleapp:${{ github.sha }}'
 ```
+Webapps deploy Actions is supported for the Azure public cloud as well as Azure government clouds ('AzureUSGovernment' or 'AzureChinaCloud') and Azure Stack ('AzureStack') Hub. Before running this action, login to the respective Azure Cloud  using [Azure Login](https://github.com/Azure/login) by setting appropriate value for the `environment` parameter.
 
 #### Configure deployment credentials:
 
@@ -128,6 +133,7 @@ The above example uses app-level credentials i.e., publish profile file for depl
 
 Follow the steps to configure the secret:
 
+* **Note: As of October 2020, Linux web apps will need the app setting `WEBSITE_WEBDEPLOY_USE_SCM` set to `true` before continuing with next step of downloading the publish profile. This requirement will be removed in the future.**
 * Download the publish profile for the WebApp from the portal (Get Publish profile option)
 * While deploying to slot, download the publish profile for slot. Also specify the `slot-name` field with the name of the slot.
 * Define a new secret under your repository settings, Add secret menu

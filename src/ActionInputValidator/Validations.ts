@@ -26,12 +26,12 @@ export function validateAppDetails() {
 
     let actionParams: ActionParameters = ActionParameters.getActionParams();
 
-    if(!!actionParams.appName || (!!actionParams.slotName && actionParams.slotName !== 'production')) {
+    if(!!actionParams.appName || (!!actionParams.slotName && actionParams.slotName.toLowerCase() !== 'production')) {
         let creds: ScmCredentials = PublishProfile.getPublishProfile(actionParams.publishProfileContent).creds;
         //for kubeapps in publishsettings file username doesn't start with $, for all other apps it starts with $
         let splitUsername: string[] = creds.username.startsWith("$") ? creds.username.toUpperCase().substring(1).split("__") : creds.username.toUpperCase().split("__");
         let appNameMatch: boolean = !actionParams.appName || actionParams.appName.toUpperCase() === splitUsername[0];
-        let slotNameMatch: boolean = actionParams.slotName === 'production' || actionParams.slotName.toUpperCase() === splitUsername[1];
+        let slotNameMatch: boolean = actionParams.slotName.toLowerCase() === 'production' || actionParams.slotName.toUpperCase() === splitUsername[1];
         if(!appNameMatch || !slotNameMatch) {
             throw new Error("Publish profile is invalid for app-name and slot-name provided. Provide correct publish profile credentials for app.");
         }
@@ -55,7 +55,7 @@ export function packageNotAllowed(apppackage: string) {
 // Error if multi container config file is provided
 export function multiContainerNotAllowed(configFile: string) {
     if(!!configFile) {
-        throw new Error("Multi container support is not available for windows containerized web app.");
+        throw new Error("Multi container support is not available for windows containerized web app or with publish profile.");
     }
 }
 
@@ -71,10 +71,10 @@ export function validateSingleContainerInputs() {
 export function validateContainerInputs() {
 
     let actionParams: ActionParameters = ActionParameters.getActionParams();
-    
+
     actionParams.isMultiContainer = false;
 
-    if(!!actionParams.multiContainerConfigFile && exist(actionParams.multiContainerConfigFile)){            
+    if(!!actionParams.multiContainerConfigFile && exist(actionParams.multiContainerConfigFile)){
         let stats: fs.Stats = fs.statSync(actionParams.multiContainerConfigFile);
         if(!stats.isFile()) {
             throw new Error("Docker-compose file path is incorrect.");
@@ -103,9 +103,9 @@ export function validateContainerInputs() {
 export async function validatePackageInput() {
     let actionParams = ActionParameters.getActionParams();
     actionParams.package = new Package(actionParams.packageInput);
-        
+
     // msbuild package deployment is not supported
-    let isMSBuildPackage = await actionParams.package.isMSBuildPackage();           
+    let isMSBuildPackage = await actionParams.package.isMSBuildPackage();
     if(isMSBuildPackage) {
         throw new Error(`Deployment of msBuild generated package is not supported. Please change package format.`);
     }
