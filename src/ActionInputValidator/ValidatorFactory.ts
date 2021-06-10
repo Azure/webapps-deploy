@@ -30,7 +30,7 @@ export class ValidatorFactory {
             appNameIsRequired(actionParams.appName);
             await this.getResourceDetails(actionParams);
             if (!!actionParams.isLinux) {
-                if (!!actionParams.images) {
+                if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
                     return new SpnLinuxContainerWebAppValidator();
                 }
                 else {
