@@ -14,7 +14,8 @@ export const appKindMap = new Map([
     [ 'app', WebAppKind.Windows ],
     [ 'app,linux', WebAppKind.Linux ],
     [ 'app,container,windows', WebAppKind.WindowsContainer ],
-    [ 'app,linux,container', WebAppKind.LinuxContainer ]
+    [ 'app,linux,container', WebAppKind.LinuxContainer ],
+    [ 'api', WebAppKind.Windows ]
 ]);
 
 export class ActionParameters {
