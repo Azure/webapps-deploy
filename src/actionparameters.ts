@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
-
 import { IAuthorizer } from "azure-actions-webclient/Authorizer/IAuthorizer";
 import { Package } from 'azure-actions-utility/packageUtility';
+const github = require('@actions/github');
 
 export enum WebAppKind {
     Windows,
@@ -33,6 +33,7 @@ export class ActionParameters {
     private _startupCommand: string;
     private _isMultiContainer: boolean;
     private _isLinux: boolean;
+    private _commitMessage: string;
 
     private constructor(endpoint: IAuthorizer) {
         this._publishProfileContent = core.getInput('publish-profile');
@@ -42,21 +43,26 @@ export class ActionParameters {
         this._images = core.getInput('images');
         this._multiContainerConfigFile = core.getInput('configuration-file');
         this._startupCommand = core.getInput('startup-command');
-        this._endpoint = endpoint;
+        this._commitMessage = github.context.eventName === 'push'? github.context.payload.head_commit.message: "";
+        this._endpoint = endpoint;    
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
         if (!this.actionparams) {
             this.actionparams = new ActionParameters(!!endpoint ? endpoint : null);
         }
-
+        
         return this.actionparams;
     }
-
     public get appName() {
         return this._appName;
     }
-
+    public get commitMessage(){
+        return this._commitMessage;
+    }
+    public set commitMessage(commitMessage: string) {
+        this._commitMessage = commitMessage;
+    }
     public get packageInput() {
         return this._packageInput;
     }
@@ -132,4 +138,5 @@ export class ActionParameters {
     public get multiContainerConfigFile() {
         return this._multiContainerConfigFile;
     }
+
 }
