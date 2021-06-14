@@ -18,7 +18,7 @@ export class DeploymentProviderFactory {
             }
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
-            if (!!ActionParameters.getActionParams().images) {
+            if(!!ActionParameters.getActionParams().images || (!!ActionParameters.getActionParams().isLinux && !!ActionParameters.getActionParams().multiContainerConfigFile)) {
                 return new WebAppContainerDeploymentProvider(type);
             }
             else {
