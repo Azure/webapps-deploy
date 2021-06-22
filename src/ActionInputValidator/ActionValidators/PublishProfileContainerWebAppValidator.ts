@@ -1,4 +1,4 @@
-import { packageNotAllowed, windowsContainerAppNotAllowedForPublishProfile, multiContainerNotAllowed, startupCommandNotAllowed, validateSingleContainerInputs, validateAppDetails } from "../Validations";
+import { packageNotAllowed, multiContainerNotAllowed, startupCommandNotAllowed, validateSingleContainerInputs, validateAppDetails } from "../Validations";
 import { ActionParameters } from "../../actionparameters";
 import { IValidator } from "./IValidator";
 
@@ -7,8 +7,6 @@ export class PublishProfileContainerWebAppValidator implements IValidator {
         const actionParams: ActionParameters = ActionParameters.getActionParams();
         
         packageNotAllowed(actionParams.packageInput);
-        
-        await windowsContainerAppNotAllowedForPublishProfile();
 
         multiContainerNotAllowed(actionParams.multiContainerConfigFile);
         
