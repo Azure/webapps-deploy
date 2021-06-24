@@ -13,6 +13,7 @@ on:
     branches:
       - master
       - 'releases/*'
+      - users/balaga-gayatri/prchecksrepo
 
 # CONFIGURATION
 # For help, go to https://github.com/Azure/Actions
