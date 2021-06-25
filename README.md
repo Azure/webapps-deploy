@@ -1,6 +1,6 @@
 # GitHub Action for deploying to Azure Web App
 
-With the Azure App Service Actions for GitHub, you can automate your workflow to deploy [Azure Web Apps](https://azure.microsoft.com/services/app-service/web/) or [Azure Web Apps for Containers](https://azure.microsoft.com/services/app-service/containers/) using GitHub Actions.
+With the Azure App Service Actions for GitHub, you can automate your workflow to deploy [Azure Web Apps](https://azure.microsoft.com/services/app-service/web/) or [Azure Web Apps for Containers](https://azure.microsoft.com/services/app-service/containers/) using GitHub Actions. testing
 
 Get started today with a [free Azure account](https://azure.com/free/open-source).
 
