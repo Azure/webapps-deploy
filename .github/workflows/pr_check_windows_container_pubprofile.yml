@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - dev
       - releases/*
     paths-ignore:
       - '**.md'
@@ -12,8 +11,6 @@ on:
     branches:
       - master
       - 'releases/*'
-      - users/balaga-gayatri/prchecksrepo
-      
       
 env:
   AZURE_WEBAPP_NAME: windowscontainerwebapp  # set this to your application's name
@@ -91,5 +88,3 @@ jobs:
         app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         images: ${{ env.CONTAINER_REGISTRY }}/containerwebapp/canaryreplica:latest
-    
-   
