@@ -15,7 +15,7 @@ export async function main() {
   let isDeploymentSuccess: boolean = true;  
 
   try {
-    //test
+    //testing for automatic workflows
     // Set user agent variable
     let usrAgentRepo = crypto.createHash('sha256').update(`${process.env.GITHUB_REPOSITORY}`).digest('hex');
     let actionName = 'DeployWebAppToAzure';
