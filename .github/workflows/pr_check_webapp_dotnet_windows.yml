@@ -63,16 +63,15 @@ jobs:
       run: msbuild .\dotnetsample\SampleWebApplication.sln
     
     - uses: actions/checkout@v2
-#       if: steps.job-type.outputs.type == 'cron'
       name: Checkout from PR branch
       with: 
         repository: Azure/webapps-deploy
         path: 'webapps-deploy'
 
-    - name: Building latest changes
+    - name: Installing dependencies and building latest changes
       run: |
         cd webapps-deploy
-        npm install --prod
+        npm install
         npm run build
     
     - name: Azure authentication
