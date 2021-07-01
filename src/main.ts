@@ -15,13 +15,14 @@ export async function main() {
   let isDeploymentSuccess: boolean = true;  
 
   try {
+    //test
     // Set user agent variable
     let usrAgentRepo = crypto.createHash('sha256').update(`${process.env.GITHUB_REPOSITORY}`).digest('hex');
     let actionName = 'DeployWebAppToAzure';
     let userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
     core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
 
-    // Initialize action inputs
+    // Initialize action inputs 
     let endpoint: IAuthorizer = !!core.getInput('publish-profile') ? null : await AuthorizerFactory.getAuthorizer();
     ActionParameters.getActionParams(endpoint);
     let type: DEPLOYMENT_PROVIDER_TYPES = null;
