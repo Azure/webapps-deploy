@@ -29,7 +29,6 @@ env:
 
 jobs:
   run-integration-test:
-    #if: contains(github.event.pull_request.labels.*.name, 'safe to run test')
     environment: automation test
     name: Validate PR
     strategy:
@@ -43,7 +42,6 @@ jobs:
     - uses: actions/checkout@master
       with:
         repository: Azure-Samples/dotnet-sample
-  #         token: ${{ secrets.GITSSHKEY }}
         ref: master
         path: 'dotnetsample'
 
@@ -63,14 +61,6 @@ jobs:
     
     - name: Run MSBuild
       run: msbuild .\dotnetsample\SampleWebApplication.sln
-
-#     - uses: actions/checkout@v2
-#       if: steps.job-type.outputs.type == 'pr'
-#       name: Checkout from PR branch
-#       with: 
-#         repository: Azure/webapps-deploy
-#         ref: ${{ github.event.client_payload.frombranch }}
-#         path: 'webapps-deploy'
     
     - uses: actions/checkout@v2
 #       if: steps.job-type.outputs.type == 'cron'
@@ -83,6 +73,7 @@ jobs:
       run: |
         cd webapps-deploy
         npm install --prod
+        npm run build
     
     - name: Azure authentication
       uses: azure/login@v1
