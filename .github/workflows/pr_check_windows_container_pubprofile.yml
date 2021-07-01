@@ -1,4 +1,4 @@
-name: pr_check_webapp_dotnet_windows
+name: pr_check_windows_container_publishprofile
 
 on:
   push:
