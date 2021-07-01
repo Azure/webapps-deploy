@@ -8,7 +8,7 @@ on:
       - releases/*
     paths-ignore:
       - '**.md'
-  pull_request:
+  pull_request_target:
     # types: [labeled, opened]
     branches:
       - master
