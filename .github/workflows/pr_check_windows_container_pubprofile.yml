@@ -33,10 +33,10 @@ jobs:
         ref: main
         path: 'python_container_App'
       
-    - name: Azure authentication
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_WEBAPP_SPN }}
+#     - name: Azure authentication
+#       uses: azure/login@v1
+#       with:
+#         creds: ${{ secrets.AZURE_WEBAPP_SPN }}
       
     - uses: azure/docker-login@v1
       with:
