@@ -32,7 +32,7 @@ export async function main() {
     else {
       type = DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE;
     }
-
+    ///test
     // Validate action inputs
     let validator = await ValidatorFactory.getValidator(type);
     await validator.validate();
