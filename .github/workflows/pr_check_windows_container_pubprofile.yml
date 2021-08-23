@@ -75,7 +75,8 @@ jobs:
       with: 
         repository: Azure/webapps-deploy
         path: 'webapps-deploy'
-
+        ref: ${{ github.event.pull_request.head.ref }}
+        
     - name: Installing dependencies and building latest changes in action
       run: |
         cd webapps-deploy
