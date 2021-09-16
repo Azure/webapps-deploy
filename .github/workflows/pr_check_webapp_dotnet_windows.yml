@@ -61,7 +61,7 @@ jobs:
     - uses: actions/checkout@v2
       name: Checkout from PR branch
       with: 
-        repository: Azure/webapps-deploy
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
         path: 'webapps-deploy'
         ref: ${{ github.event.pull_request.head.ref }}
 
