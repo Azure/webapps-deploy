@@ -4,7 +4,7 @@ With the Azure App Service Actions for GitHub, you can automate your workflow to
 
 Get started today with a [free Azure account](https://azure.com/free/open-source).
 
-This repository contains GitHub Action for Azure WebApp to deploy to an Azure WebApp (Windows or Linux). The action supports deploying *\*.jar*, *\*.war*, and \**.zip* files, or a folder.
+This repository contains GitHub Action for Azure WebApp to deploy to an Azure WebApp (Windows or Linux). The action supports deploying a folder, *\*.jar*, *\*.war*, and \**.zip* files (except msBuild generated packages).
 
 You can also use this GitHub Action to deploy your customized image into an Azure WebApps container.
 
