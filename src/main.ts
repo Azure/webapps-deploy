@@ -11,10 +11,10 @@ import { ValidatorFactory } from './ActionInputValidator/ValidatorFactory';
 
 var prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
 
-async function main() {
+export async function main() {
   let isDeploymentSuccess: boolean = true;  
 
-  try {      
+  try {
     // Set user agent variable
     let usrAgentRepo = crypto.createHash('sha256').update(`${process.env.GITHUB_REPOSITORY}`).digest('hex');
     let actionName = 'DeployWebAppToAzure';

@@ -47,7 +47,7 @@ export class ValidatorFactory {
             }
         }
         else {
-            throw new Error("Valid credentails are not available. Add Azure Login action before this action or provide publish-profile input.");
+            throw new Error("Valid credentials are not available. Add Azure Login action before this action or provide publish-profile input.");
         }
     }
 
@@ -65,4 +65,8 @@ export class ValidatorFactory {
         const appOS: string = await publishProfile.getAppOS();
         actionParams.isLinux = appOS.includes(RuntimeConstants.Unix) || appOS.includes(RuntimeConstants.Unix.toLowerCase());
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> develop
