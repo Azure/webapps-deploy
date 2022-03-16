@@ -14,10 +14,11 @@ on:
 #   AZURE_WEBAPP_PUBLISH_PROFILE
 #
 # 2. Change these variables for your configuration:
+
 env:
   AZURE_WEBAPP_NAME: azurewebapp-3    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: '6.0.x'           # set this to the dot net version to use
+  DOTNET_VERSION: '6.0.x'             # set this to the dot net version to use
 
 jobs:
   build-and-deploy:
