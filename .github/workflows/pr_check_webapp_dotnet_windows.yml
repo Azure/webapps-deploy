@@ -1,0 +1,84 @@
+name: pr_check_webapp_dotnet_windows
+
+on:
+  push:
+    branches:
+      - master
+      - releases/*
+    paths-ignore:
+      - '**.md'
+  pull_request_target:
+    branches:
+      - master
+      - 'releases/*'
+
+# CONFIGURATION
+# For help, go to https://github.com/Azure/Actions
+#
+# 1. Set up the following secrets in your repository:
+#   AZURE_WEBAPP_PUBLISH_PROFILE
+#
+# 2. Change these variables for your configuration:
+env:
+  AZURE_WEBAPP_NAME: dotnetwebappdeploy    # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
+  NUGET_VERSION: '5.3.1'                # set this to the node version to use
+
+jobs:
+  run-integration-test:
+    environment: automation test
+    name: Validate PR
+    strategy:
+      matrix:
+        os: [windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - uses: actions/checkout@master
+      with:
+        repository: Azure-Samples/dotnet-sample
+        ref: master
+        path: 'dotnetsample'
+
+    - name: Install Nuget
+      uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: ${{ env.NUGET_VERSION}}
+    - name: NuGet to restore dependencies as well as project-specific tools that are specified in the project file
+      run: |
+          pwd
+          cd dotnetsample
+          nuget restore
+      
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+    
+    - name: Run MSBuild
+      run: msbuild .\dotnetsample\SampleWebApplication.sln
+    
+    - uses: actions/checkout@v2
+      name: Checkout from PR branch
+      with: 
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        path: 'webapps-deploy'
+        ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Installing dependencies and building latest changes
+      run: |
+        cd webapps-deploy
+        npm install
+        npm run build
+    
+    - name: Azure authentication
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_WEBAPP_SPN }}
+  
+    - name: 'Deploy to Azure WebApp'
+      uses: ./webapps-deploy/
+      with: 
+        app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
+        #publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }} # Define secret variable in repository settings as per action documentation
+        package: 'D:\a\webapps-deploy\webapps-deploy\dotnetsample\SampleWebApplication\'

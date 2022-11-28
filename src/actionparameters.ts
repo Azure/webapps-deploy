@@ -43,7 +43,11 @@ export class ActionParameters {
         this._images = core.getInput('images');
         this._multiContainerConfigFile = core.getInput('configuration-file');
         this._startupCommand = core.getInput('startup-command');
+<<<<<<< HEAD
         this._commitMessage = github.context.eventName === 'push'? github.context.payload.head_commit.message: "";
+=======
+        this._commitMessage = github.context.eventName === 'push'? github.context.payload.head_commit.message.split(/\r?\n/)[0] : "";
+>>>>>>> origin/master
         this._endpoint = endpoint;    
     }
 
