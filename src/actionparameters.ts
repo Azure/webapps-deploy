@@ -51,7 +51,6 @@ export class ActionParameters {
         if (!this.actionparams) {
             this.actionparams = new ActionParameters(!!endpoint ? endpoint : null);
         }
-
         return this.actionparams;
     }
     public get appName() {
