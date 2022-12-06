@@ -235,21 +235,23 @@ function isDataView(value) {
 }
 exports.isDataView = isDataView;
 
+// Store a copy of SharedArrayBuffer in case it's deleted elsewhere
+var SharedArrayBufferCopy = typeof SharedArrayBuffer !== 'undefined' ? SharedArrayBuffer : undefined;
 function isSharedArrayBufferToString(value) {
   return ObjectToString(value) === '[object SharedArrayBuffer]';
 }
-isSharedArrayBufferToString.working = (
-  typeof SharedArrayBuffer !== 'undefined' &&
-  isSharedArrayBufferToString(new SharedArrayBuffer())
-);
 function isSharedArrayBuffer(value) {
-  if (typeof SharedArrayBuffer === 'undefined') {
+  if (typeof SharedArrayBufferCopy === 'undefined') {
     return false;
+  }
+
+  if (typeof isSharedArrayBufferToString.working === 'undefined') {
+    isSharedArrayBufferToString.working = isSharedArrayBufferToString(new SharedArrayBufferCopy());
   }
 
   return isSharedArrayBufferToString.working
     ? isSharedArrayBufferToString(value)
-    : value instanceof SharedArrayBuffer;
+    : value instanceof SharedArrayBufferCopy;
 }
 exports.isSharedArrayBuffer = isSharedArrayBuffer;
 

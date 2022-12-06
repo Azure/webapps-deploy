@@ -43,15 +43,17 @@ export class ActionParameters {
         this._images = core.getInput('images');
         this._multiContainerConfigFile = core.getInput('configuration-file');
         this._startupCommand = core.getInput('startup-command');
-        this._commitMessage = github.context.eventName === 'push'? github.context.payload.head_commit.message: "";
-        this._endpoint = endpoint;    
+        /**
+         * Trimming the commit message because it is used as a param in uri of deployment api. And sometimes, it exceeds the max length of http URI.
+         */
+        this._commitMessage = github.context.eventName === 'push' ? github.context.payload.head_commit.message.slice(0, 7000) : "";
+        this._endpoint = endpoint;
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
         if (!this.actionparams) {
             this.actionparams = new ActionParameters(!!endpoint ? endpoint : null);
         }
-        
         return this.actionparams;
     }
     public get appName() {
