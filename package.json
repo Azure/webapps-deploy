@@ -2,7 +2,7 @@
   "name": "webapps-deploy",
   "version": "2.0.0",
   "description": "Deploy web apps and containerized web apps to Azure",
-  "main": "lib/main.js",
+  "main": "main.js",
   "scripts": {
     "build": "tsc",
     "test": "jest"
