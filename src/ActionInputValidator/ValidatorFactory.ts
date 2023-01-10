@@ -52,7 +52,7 @@ export class ValidatorFactory {
     }
 
     private static async getResourceDetails(params: ActionParameters) {
-        let appDetails = await AzureResourceFilterUtility.getAppDetails(params.endpoint, params.appName);
+        let appDetails = await AzureResourceFilterUtility.getAppDetails(params.endpoint, params.appName, params.resourceGroupName);
         params.resourceGroupName = appDetails["resourceGroupName"];
         params.realKind = appDetails["kind"];
         params.kind = appKindMap.get(params.realKind);
