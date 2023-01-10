@@ -34,7 +34,7 @@
     "@actions/core": "^1.10.0",
     "@actions/github": "^4.0.0",
     "actions-secret-parser": "^1.0.4",
-    "azure-actions-appservice-rest": "^1.3.5",
+    "azure-actions-appservice-rest": "^1.3.6",
     "azure-actions-utility": "^1.0.3",
     "azure-actions-webclient": "^1.1.0"
   }
