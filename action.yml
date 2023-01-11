@@ -25,6 +25,10 @@ inputs:
   startup-command:
     description: 'Enter the start up command. For ex. dotnet run or dotnet run'
     required: false
+  resource-group-name:
+    description: 'Enter the resource group name of the web app'
+    required: false
+    
 outputs:
   webapp-url:
     description: 'URL to work with your webapp'
