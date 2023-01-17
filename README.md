@@ -26,7 +26,7 @@ NOTE: you must have write permissions to the repository in question. If you're u
  **Note: As of October 2020, Linux web apps will need the app setting `WEBSITE_WEBDEPLOY_USE_SCM` set to `true` before downloading the publish profile from the portal. This requirement will be removed in the future.**
 
     The action does not support multi-container scenario with publish profile.
-* Enable [Run from Package](https://docs.microsoft.com/en-us/azure/app-service/deploy-run-package#enable-running-from-package), otherwise remote build will take time and the deployment  will take longer. 
+* Enable [Run from Package](https://docs.microsoft.com/en-us/azure/app-service/deploy-run-package#enable-running-from-package), otherwise remote build will take time and the deployment will take longer. 
 
 * To build app code in a specific language based environment, use setup actions:
   * [Setup DotNet](https://github.com/actions/setup-dotnet) Sets up a dotnet environment by optionally downloading and caching a version of dotnet by SDK version and adding to PATH.
