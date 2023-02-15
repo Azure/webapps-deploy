@@ -48,7 +48,7 @@ export class ActionParameters {
         /**
          * Trimming the commit message because it is used as a param in uri of deployment api. And sometimes, it exceeds the max length of http URI.
          */
-        this._commitMessage = github.context.eventName === 'push' ? github.context.payload.head_commit.message.slice(0, 7000) : "";
+        this._commitMessage = github.context.eventName === 'push' ? github.context.payload.head_commit.message.slice(0, 2000) : "";
         this._endpoint = endpoint;
     }
 
