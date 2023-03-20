@@ -13,8 +13,8 @@ on:
       - 'releases/*'
       
 env:
-  AZURE_WEBAPP_NAME: wincontainerswebapp  # set this to your application's name
-  CONTAINER_REGISTRY: webdeployprtestscontainerregistry.azurecr.io  # set secret with Container Registry URL, example : xyz.azurecr.io 
+  AZURE_WEBAPP_NAME: $${{secrets.PR_AZURE_WEBAPP_NAME}}  # set this to your application's name
+  CONTAINER_REGISTRY: ${{secrets.PR_CONTAINER_REGISTRY}}  # set secret with Container Registry URL, example : xyz.azurecr.io 
   
 jobs:
   build-and-deploy:
