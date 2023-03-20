@@ -14,7 +14,7 @@ on:
       
 env:
   AZURE_WEBAPP_NAME: wincontainerswebapp  # set this to your application's name
-  CONTAINER_REGISTRY: webdeploytestscontainerregistry.azurecr.io  # set secret with Container Registry URL, example : xyz.azurecr.io 
+  CONTAINER_REGISTRY: webdeployprtestscontainerregistry.azurecr.io  # set secret with Container Registry URL, example : xyz.azurecr.io 
   
 jobs:
   build-and-deploy:
@@ -37,7 +37,7 @@ jobs:
       
     - uses: azure/docker-login@v1
       with:
-        login-server: webdeploytestscontainerregistry.azurecr.io
+        login-server: ${{ env.CONTAINER_REGISTRY }}
         username: ${{ secrets.WEBDEPLOY_TEST_ACR_USERNAME }}
         password: ${{ secrets.WEBDEPLOY_TEST_ACR_PASSWORD }}
     
