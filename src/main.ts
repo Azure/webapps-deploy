@@ -46,9 +46,10 @@ export async function main() {
     await deploymentProvider.DeployWebAppStep();
   }
   catch(error) {
+
     isDeploymentSuccess = false;
     core.setFailed("Deployment Failed with Error: " + error);
-    core.info("Deployment Failed - " + error);
+    core.info("Deployment Failed with error status- " + error.status);
   }
   finally {
       if(deploymentProvider != null) {
