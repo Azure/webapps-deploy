@@ -48,7 +48,7 @@ export async function main() {
   catch(error) {
 
     isDeploymentSuccess = false;
-    core.setFailed("Deployment Failed with Error: " + error);
+    core.setFailed("Deployment Failed with Error: " + error.response);
     core.info("Deployment Failed with error status- " + error.message);
   }
   finally {
