@@ -48,8 +48,8 @@ export async function main() {
   catch(error) {
 
     isDeploymentSuccess = false;
-    core.info("Deployment Failed with Error: " + error.response);
-    core.info("Deployment Failed with error status- " + error.message);
+    core.info("Deployment Failed with Error statusCode: " + error.statusCode);
+
   }
   finally {
       if(deploymentProvider != null) {
