@@ -47,8 +47,13 @@ export async function main() {
   }
   catch(error) {
     isDeploymentSuccess = false;
-    core.setFailed("Deployment Failed with Error: " + error);
-    core.info("Printing error status code = " + error.statusCode);
+
+    if (error.statusCode == 403) {
+      core.setFailed("The deployment to your web app failed with HTTP status code 403. \
+      Your web app may have networking features enabled which are blocking access (such as Private Endpoints).")
+    } else {
+      core.setFailed("Deployment Failed, " + error);
+    }
   }
   finally {
       if(deploymentProvider != null) {
