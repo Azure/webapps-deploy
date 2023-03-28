@@ -12,7 +12,7 @@ import { ValidatorFactory } from './ActionInputValidator/ValidatorFactory';
 var prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
 
 export async function main() {
-  let isDeploymentSuccess: boolean = true;  
+  let isDeploymentSuccess: boolean = true;
 
   try {
     // Set user agent variable
@@ -36,9 +36,9 @@ export async function main() {
     // Validate action inputs
     let validator = await ValidatorFactory.getValidator(type);
     await validator.validate();
-    
+
     var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
-    
+
     core.debug("Predeployment Step Started");
     await deploymentProvider.PreDeploymentStep();
 
@@ -48,15 +48,16 @@ export async function main() {
   catch(error) {
     isDeploymentSuccess = false;
     core.setFailed("Deployment Failed with Error: " + error);
+    core.info("Printing error status code = " + error.statusCode);
   }
   finally {
       if(deploymentProvider != null) {
           await deploymentProvider.UpdateDeploymentStatus(isDeploymentSuccess);
       }
-      
+
       // Reset AZURE_HTTP_USER_AGENT
       core.exportVariable('AZURE_HTTP_USER_AGENT', prefix);
-      
+
       core.debug(isDeploymentSuccess ? "Deployment Succeeded" : "Deployment failed");
   }
 }
