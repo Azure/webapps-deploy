@@ -1,6 +1,5 @@
 import * as core from '@actions/core';
 import * as crypto from "crypto";
-
 import { ActionParameters, WebAppKind, appKindMap } from "./actionparameters";
 
 import { AuthorizerFactory } from "azure-actions-webclient/AuthorizerFactory";
