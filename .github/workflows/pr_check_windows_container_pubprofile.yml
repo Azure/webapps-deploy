@@ -29,7 +29,11 @@ jobs:
         repository: GH-ACE/python_container_App
         ref: main
         path: 'python_container_App'
-      
+  
+    - name: 'Logout from Azure Container Registry'
+      run: |
+          docker logout env.CONTAINER_REGISTRY  
+  
     - uses: azure/docker-login@v1
       with:
         login-server: ${{ env.CONTAINER_REGISTRY }}
