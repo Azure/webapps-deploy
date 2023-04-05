@@ -33,7 +33,7 @@ jobs:
   
     - uses: docker/login-action@v2
       with:
-        login-server: ${{ env.CONTAINER_REGISTRY }}
+        registry: ${{ env.CONTAINER_REGISTRY }}
         username: ${{ secrets.WEBDEPLOY_TEST_ACR_USERNAME }}
         password: ${{ secrets.WEBDEPLOY_TEST_ACR_PASSWORD }}
     
