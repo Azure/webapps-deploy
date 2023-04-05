@@ -30,11 +30,6 @@ jobs:
         ref: main
         path: 'python_container_App'
 
-    - name: Azure authentication
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_WEBAPP_SPN }}
-
     - name: Logout from Azure Container Registry
       run: |
         docker logout env.CONTAINER_REGISTRY
@@ -51,6 +46,11 @@ jobs:
         docker pull mcr.microsoft.com/azure-app-service/windows/canary:5.0-nanoserver
         docker tag mcr.microsoft.com/azure-app-service/windows/canary:5.0-nanoserver ${{ env.CONTAINER_REGISTRY }}/containerwebapp/canaryreplica:latest
         docker push ${{ env.CONTAINER_REGISTRY }}/containerwebapp/canaryreplica:latest
+
+    - name: Azure authentication
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_WEBAPP_SPN }}
 
     - name: Set Web App ACR authentication
       uses: Azure/appservice-settings@v1
