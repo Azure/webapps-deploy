@@ -30,6 +30,7 @@ jobs:
         ref: main
         path: 'python_container_App'
   
+  
     - name: 'Logout from Azure Container Registry'
       run: |
           docker logout env.CONTAINER_REGISTRY  
