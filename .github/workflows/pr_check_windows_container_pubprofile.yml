@@ -30,6 +30,12 @@ jobs:
         ref: main
         path: 'python_container_App'
 
+    - name: Acquire lock for ACR
+        uses: actions/lock@v2
+        id: acr-lock
+        with:
+          lock-key: acr-lock-key
+
     - name: Logout from Azure Container Registry
       run: |
         docker logout env.CONTAINER_REGISTRY
@@ -40,12 +46,19 @@ jobs:
         username: ${{ secrets.WEBDEPLOY_TEST_ACR_USERNAME }}
         password: ${{ secrets.WEBDEPLOY_TEST_ACR_PASSWORD }}
 
+    - uses: Pull and tag an image and push it to ACR
     - run: |
         pwd
         cd python_container_App
         docker pull mcr.microsoft.com/azure-app-service/windows/canary:5.0-nanoserver
         docker tag mcr.microsoft.com/azure-app-service/windows/canary:5.0-nanoserver ${{ env.CONTAINER_REGISTRY }}/containerwebapp/canaryreplica:latest
         docker push ${{ env.CONTAINER_REGISTRY }}/containerwebapp/canaryreplica:latest
+
+    - name: Release lock for ACR
+      uses: actions/lock@v2
+      with:
+        lock-key: acr-lock-key
+        release: true
 
     - name: Azure authentication
       uses: azure/login@v1
