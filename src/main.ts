@@ -12,7 +12,7 @@ import { ValidatorFactory } from './ActionInputValidator/ValidatorFactory';
 var prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
 
 export async function main() {
-  let isDeploymentSuccess: boolean = true;  
+  let isDeploymentSuccess: boolean = true;
 
   try {
     // Set user agent variable
@@ -36,9 +36,9 @@ export async function main() {
     // Validate action inputs
     let validator = await ValidatorFactory.getValidator(type);
     await validator.validate();
-    
+
     var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
-    
+
     core.debug("Predeployment Step Started");
     await deploymentProvider.PreDeploymentStep();
 
@@ -47,16 +47,23 @@ export async function main() {
   }
   catch(error) {
     isDeploymentSuccess = false;
-    core.setFailed("Deployment Failed with Error: " + error);
+
+    if (error.statusCode == 403) {
+      core.setFailed("The deployment to your web app failed with HTTP status code 403. \
+      Your web app may have networking features enabled which are blocking access (such as Private Endpoints).\
+      For more information, please follow https://aka.ms/forbidden-deployment-error");
+    } else {
+      core.setFailed("Deployment Failed, " + error);
+    }
   }
   finally {
       if(deploymentProvider != null) {
           await deploymentProvider.UpdateDeploymentStatus(isDeploymentSuccess);
       }
-      
+
       // Reset AZURE_HTTP_USER_AGENT
       core.exportVariable('AZURE_HTTP_USER_AGENT', prefix);
-      
+
       core.debug(isDeploymentSuccess ? "Deployment Succeeded" : "Deployment failed");
   }
 }
