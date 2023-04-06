@@ -35,23 +35,23 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_WEBAPP_SPN }}
 
-    - uses: azure/docker-login@v1
+    - name: Logout from Azure Container Registry
+      run: |
+        docker logout env.CONTAINER_REGISTRY
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
       with:
         login-server: ${{ env.CONTAINER_REGISTRY }}
         username: ${{ secrets.WEBDEPLOY_TEST_ACR_USERNAME }}
         password: ${{ secrets.WEBDEPLOY_TEST_ACR_PASSWORD }}
 
-    - run: |
+    - name: Pull and tag an image and push it to ACR
+      run: |
         pwd
         cd python_container_App
         docker pull mcr.microsoft.com/azure-app-service/windows/canary:5.0-nanoserver
         docker tag mcr.microsoft.com/azure-app-service/windows/canary:5.0-nanoserver ${{ env.CONTAINER_REGISTRY }}/containerwebapp/canaryreplica:latest
         docker push ${{ env.CONTAINER_REGISTRY }}/containerwebapp/canaryreplica:latest
-
-    - name: Logout from Azure Container Registry
-      run: |
-        docker logout env.CONTAINER_REGISTRY
-
     - name: Set Web App ACR authentication
       uses: Azure/appservice-settings@v1
       with:
@@ -74,8 +74,8 @@ jobs:
                   "slotSetting": false
               }
           ]
-    - uses: actions/checkout@v2
-      name: Checkout from PR branch
+    - name: Checkout from PR branch
+      uses: actions/checkout@v2
       with:
         repository: ${{ github.event.pull_request.head.repo.full_name }}
         path: 'webapps-deploy'
@@ -86,7 +86,6 @@ jobs:
         cd webapps-deploy
         npm install
         npm run build
-
     - name: 'Deploy to Azure WebApp'
       uses: ./webapps-deploy/
       with:
