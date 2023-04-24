@@ -1,7 +1,7 @@
 {
   "name": "util",
   "description": "Node.js's util module for all engines",
-  "version": "0.12.4",
+  "version": "0.12.5",
   "author": {
     "name": "Joyent",
     "url": "http://www.joyent.com"
@@ -14,7 +14,6 @@
     "is-arguments": "^1.0.4",
     "is-generator-function": "^1.0.7",
     "is-typed-array": "^1.1.3",
-    "safe-buffer": "^5.1.2",
     "which-typed-array": "^1.1.2"
   },
   "devDependencies": {
@@ -24,6 +23,7 @@
     "object.assign": "~4.1.0",
     "object.entries": "^1.1.0",
     "run-series": "~1.1.4",
+    "safe-buffer": "^5.1.2",
     "tape": "~4.9.0"
   },
   "files": [
