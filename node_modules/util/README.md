@@ -6,7 +6,7 @@ This implements the Node.js [`util`][util] module for environments that do not h
 
 ## Install
 
-You usually do not have to install `util` yourself. If your code runs in Node.js, `util` is built in. If your code runs in the browser, bundlers like [browserify](https://github.com/browserify/browserify) or [webpack](https://github.com/webpack/webpack) also include the `util` module.
+You usually do not have to install `util` yourself. If your code runs in Node.js, `util` is built in. If your code runs in the browser, bundlers like [browserify](https://github.com/browserify/browserify) or [webpack](https://github.com/webpack/webpack) (up to version 4 -- [see this documentation](https://webpack.js.org/configuration/resolve/#resolvefallback) for how to include polyfills like `util` in webpack 5+) also include the `util` module.
 
 But if none of those apply, with npm do:
 
