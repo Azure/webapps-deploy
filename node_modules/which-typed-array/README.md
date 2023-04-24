@@ -1,12 +1,13 @@
-# which-typed-array <sup>[![Version Badge][2]][1]</sup>
+# which-typed-array <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
 
-[![Build Status][3]][4]
-[![dependency status][5]][6]
-[![dev dependency status][7]][8]
+[![github actions][actions-image]][actions-url]
+[![coverage][codecov-image]][codecov-url]
+[![dependency status][deps-svg]][deps-url]
+[![dev dependency status][dev-deps-svg]][dev-deps-url]
 [![License][license-image]][license-url]
 [![Downloads][downloads-image]][downloads-url]
 
-[![npm badge][11]][1]
+[![npm badge][npm-badge-png]][package-url]
 
 Which kind of Typed Array is this JavaScript value? Works cross-realm, without `instanceof`, and despite Symbol.toStringTag.
 
@@ -52,16 +53,18 @@ assert.equal('BigUint64Array', whichTypedArray(new BigUint64Array()));
 ## Tests
 Simply clone the repo, `npm install`, and run `npm test`
 
-[1]: https://npmjs.org/package/which-typed-array
-[2]: http://versionbadg.es/inspect-js/which-typed-array.svg
-[3]: https://travis-ci.org/inspect-js/which-typed-array.svg
-[4]: https://travis-ci.org/inspect-js/which-typed-array
-[5]: https://david-dm.org/inspect-js/which-typed-array.svg
-[6]: https://david-dm.org/inspect-js/which-typed-array
-[7]: https://david-dm.org/inspect-js/which-typed-array/dev-status.svg
-[8]: https://david-dm.org/inspect-js/which-typed-array#info=devDependencies
-[11]: https://nodei.co/npm/which-typed-array.png?downloads=true&stars=true
-[license-image]: http://img.shields.io/npm/l/which-typed-array.svg
+[package-url]: https://npmjs.org/package/which-typed-array
+[npm-version-svg]: https://versionbadg.es/inspect-js/which-typed-array.svg
+[deps-svg]: https://david-dm.org/inspect-js/which-typed-array.svg
+[deps-url]: https://david-dm.org/inspect-js/which-typed-array
+[dev-deps-svg]: https://david-dm.org/inspect-js/which-typed-array/dev-status.svg
+[dev-deps-url]: https://david-dm.org/inspect-js/which-typed-array#info=devDependencies
+[npm-badge-png]: https://nodei.co/npm/which-typed-array.png?downloads=true&stars=true
+[license-image]: https://img.shields.io/npm/l/which-typed-array.svg
 [license-url]: LICENSE
-[downloads-image]: http://img.shields.io/npm/dm/which-typed-array.svg
-[downloads-url]: http://npm-stat.com/charts.html?package=which-typed-array
+[downloads-image]: https://img.shields.io/npm/dm/which-typed-array.svg
+[downloads-url]: https://npm-stat.com/charts.html?package=which-typed-array
+[codecov-image]: https://codecov.io/gh/inspect-js/which-typed-array/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/inspect-js/which-typed-array/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/inspect-js/which-typed-array
+[actions-url]: https://github.com/inspect-js/which-typed-array/actions

@@ -5,7 +5,7 @@
 var test = require('tape');
 var isGeneratorFunction = require('../index');
 var generatorFuncs = require('make-generator-function')();
-var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
+var hasToStringTag = require('has-tostringtag/shams')();
 
 var forEach = function (arr, func) {
 	var i;
