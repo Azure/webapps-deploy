@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.10](https://github.com/inspect-js/is-generator-function/compare/v1.0.9...v1.0.10) - 2021-08-05
+
+### Commits
+
+- [Dev Deps] update `eslint`, `auto-changelog`, `core-js`, `tape` [`63cd935`](https://github.com/inspect-js/is-generator-function/commit/63cd9353eead5ad5eb8cf581fc4129841641bb43)
+- [Fix] use `has-tostringtag` to behave correctly in the presence of symbol shams [`8c3fe76`](https://github.com/inspect-js/is-generator-function/commit/8c3fe76b546fbc5085381df65800e4fc67e25ede)
+- [Dev Deps] unpin `core-js` v3 [`ebf2885`](https://github.com/inspect-js/is-generator-function/commit/ebf2885bc202b59f37e074f28951639873c6f38e)
+
 ## [v1.0.9](https://github.com/inspect-js/is-generator-function/compare/v1.0.8...v1.0.9) - 2021-05-05
 
 ### Fixed

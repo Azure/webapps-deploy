@@ -1,6 +1,6 @@
 {
 	"name": "available-typed-arrays",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Returns an array of Typed Array names that are available in the current environment",
 	"main": "index.js",
 	"type": "commonjs",
@@ -60,16 +60,16 @@
 		"node": ">= 0.4"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^17.6.0",
+		"@ljharb/eslint-config": "^18.0.0",
 		"array.prototype.every": "^1.1.2",
 		"aud": "^1.1.5",
 		"auto-changelog": "^2.3.0",
-		"eslint": "^7.27.0",
+		"eslint": "^7.32.0",
 		"evalmd": "^0.0.19",
 		"isarray": "^2.0.5",
 		"nyc": "^10.3.2",
 		"safe-publish-latest": "^1.1.4",
-		"tape": "^5.2.2"
+		"tape": "^5.3.1"
 	},
 	"auto-changelog": {
 		"output": "CHANGELOG.md",
