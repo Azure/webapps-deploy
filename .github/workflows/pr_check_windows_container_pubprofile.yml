@@ -38,6 +38,10 @@ jobs:
     - name: Logout from Azure Container Registry
       run: |
         docker logout env.CONTAINER_REGISTRY
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
     - name: Login to Azure Container Registry
       uses: azure/docker-login@v1
       with:
