@@ -50,6 +50,7 @@ export class ActionParameters {
          */
         this._commitMessage = github.context.eventName === 'push' ? github.context.payload.head_commit.message.slice(0, 1000) : "";
         this._endpoint = endpoint;
+        console.log("multiContainerConfigFile: " + this._multiContainerConfigFile);
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
