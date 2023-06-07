@@ -73,7 +73,6 @@ export function validateContainerInputs() {
     let actionParams: ActionParameters = ActionParameters.getActionParams();
 
     actionParams.isMultiContainer = false;
-    console.log('Action params: ' + JSON.stringify(actionParams));
 
     if(!!actionParams.multiContainerConfigFile && exist(actionParams.multiContainerConfigFile)){
         let stats: fs.Stats = fs.statSync(actionParams.multiContainerConfigFile);
