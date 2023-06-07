@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 
-import { Package, exist } from "azure-actions-utility/packageUtility";
+import { Package } from "azure-actions-utility/packageUtility";
 import { PublishProfile, ScmCredentials } from "../Utilities/PublishProfile";
 import RuntimeConstants from '../RuntimeConstants';
 import { ActionParameters } from "../actionparameters";
@@ -74,7 +74,7 @@ export function validateContainerInputs() {
 
     actionParams.isMultiContainer = false;
 
-    if(!!actionParams.multiContainerConfigFile && exist(actionParams.multiContainerConfigFile)){
+    if(!!actionParams.multiContainerConfigFile){
         let stats: fs.Stats = fs.statSync(actionParams.multiContainerConfigFile);
         if(!stats.isFile()) {
             throw new Error("Docker-compose file path is incorrect.");
