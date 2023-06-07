@@ -74,7 +74,7 @@ export function validateContainerInputs() {
 
     actionParams.isMultiContainer = false;
 
-    if(!!actionParams.multiContainerConfigFile && exist(actionParams.multiContainerConfigFile)){
+    if(!!actionParams.multiContainerConfigFile){
         let stats: fs.Stats = fs.statSync(actionParams.multiContainerConfigFile);
         if(!stats.isFile()) {
             throw new Error("Docker-compose file path is incorrect.");
