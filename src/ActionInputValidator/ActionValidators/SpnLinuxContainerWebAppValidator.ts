@@ -10,8 +10,6 @@ export class SpnLinuxContainerWebAppValidator implements IValidator {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
 
         packageNotAllowed(actionParams.packageInput);
-        console.log('Action params: ' + JSON.stringify(actionParams));
-        console.log('Action params multiContainerConfigFile: ' + actionParams.multiContainerConfigFile);
 
         validateContainerInputs();
     }
