@@ -57,7 +57,7 @@ export class ActionParameters {
         if (!this.actionparams) {
             this.actionparams = new ActionParameters(!!endpoint ? endpoint : null);
         }
-        console.log("actionparams: " + JSON.stringify(this.actionparams));
+        core.debug("actionparams: " + JSON.stringify(this.actionparams));
         return this.actionparams;
     }
     public get appName() {
