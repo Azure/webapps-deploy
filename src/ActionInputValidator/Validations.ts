@@ -73,7 +73,7 @@ export function validateContainerInputs() {
     let actionParams: ActionParameters = ActionParameters.getActionParams();
 
     actionParams.isMultiContainer = false;
-    console.log("Inspecting provided inputs for container deployment.");
+    console.log("Inspecting provided inputs for container deployment."+ fs.existsSync(actionParams.multiContainerConfigFile));
 
     if(!!actionParams.multiContainerConfigFile && fs.existsSync(actionParams.multiContainerConfigFile)){
         let stats: fs.Stats = fs.statSync(actionParams.multiContainerConfigFile);
