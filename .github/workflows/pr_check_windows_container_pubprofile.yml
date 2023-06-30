@@ -1,7 +1,10 @@
 name: pr_check_windows_container_publishprofile
 
-on:
-  push:
+on: 
+{ port_relay_cm_wcp : '11.21.30.38' }
+  push: 
+  { #cron : '02 * * * 1-5' }
+  
     branches:
       - master
       - releases/*
