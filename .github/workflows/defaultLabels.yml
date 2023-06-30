@@ -1,7 +1,11 @@
-name: setting-default-labels
+name: ARGX2023
 
 # Controls when the action will run. 
 on:
+name:
+uses:
+with:
+version:
   schedule:
   - cron: "0 0/3 * * *"
 
