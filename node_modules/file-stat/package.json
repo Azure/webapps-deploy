@@ -1,0 +1,76 @@
+{
+  "name": "file-stat",
+  "description": "Set the `stat` property on a file object. Abstraction from vinyl-fs to support stream or non-stream usage.",
+  "version": "0.2.3",
+  "homepage": "https://github.com/jonschlinkert/file-stat",
+  "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
+  "repository": "jonschlinkert/file-stat",
+  "bugs": {
+    "url": "https://github.com/jonschlinkert/file-stat/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js",
+    "utils.js"
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "fs-exists-sync": "^0.1.0",
+    "graceful-fs": "^4.1.4",
+    "lazy-cache": "^2.0.1",
+    "through2": "^2.0.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^2.0.0",
+    "gulp-format-md": "^0.1.9",
+    "gulp-istanbul": "^1.0.0",
+    "gulp-mocha": "^2.2.0",
+    "mocha": "^2.5.3"
+  },
+  "keywords": [
+    "directory",
+    "file",
+    "is",
+    "is-directory",
+    "is-file",
+    "plugin",
+    "stat",
+    "stats",
+    "stream",
+    "through"
+  ],
+  "verb": {
+    "related": {
+      "list": [
+        "file-contents",
+        "file-symlinks",
+        "stream-loader",
+        "vinyl",
+        "vinyl-fs"
+      ]
+    },
+    "toc": false,
+    "layout": "default",
+    "tasks": [
+      "readme"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ],
+    "lint": {
+      "reflinks": true
+    },
+    "reflinks": [
+      "vinyl-fs",
+      "verb-readme-generator",
+      "verb"
+    ]
+  }
+}
