@@ -1,5 +1,4 @@
 name: pr_check_webapp_dotnet_windows
-
 on:
   push:
     branches:
