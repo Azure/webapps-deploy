@@ -10,6 +10,7 @@ import { addAnnotation } from 'azure-actions-appservice-rest/Utilities/Annotatio
 export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
     public async DeployWebAppStep() {
+        var deploymentType;
         let appPackage: Package = this.actionParams.package;
         let webPackage = appPackage.getPath();
 
@@ -20,36 +21,41 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
         switch(packageType){
             case PackageType.war:
-                core.debug("Initiated deployment via kudu service for webapp war package : "+ webPackage);    
-                var warName = utility.getFileNameFromPath(webPackage, ".war");
-                this.deploymentID = await this.kuduServiceUtility.deployUsingWarDeploy(webPackage, 
-                    { slotName: this.actionParams.slotName , commitMessage: this.actionParams.commitMessage }, warName);
+                core.debug("Initiated deployment via kudu service for webapp war package : "+ webPackage);
+                deploymentType = "war";
                 break;
 
             case PackageType.jar:
                 core.debug("Initiated deployment via kudu service for webapp jar package : "+ webPackage);
-                let folderPath = await utility.generateTemporaryFolderForDeployment(false, webPackage, PackageType.jar);
-                let output = await utility.archiveFolderForDeployment(false, folderPath);
-                webPackage = output.webDeployPkg;
-                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName , commitMessage:this.actionParams.commitMessage });
+                deploymentType = "jar";
                 break;
 
             case PackageType.folder:
                 let tempPackagePath = utility.generateTemporaryFolderOrZipPath(`${process.env.RUNNER_TEMP}`, false);
                 webPackage = await zipUtility.archiveFolder(webPackage, "", tempPackagePath) as string;
                 core.debug("Compressed folder into zip " +  webPackage);
-                core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage); 
-                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName, commitMessage: this.actionParams.commitMessage });
+                core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage);
+                deploymentType = "zip";
                 break;
                 
             case PackageType.zip:
-                core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage); 
-                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName , commitMessage: this.actionParams.commitMessage});
+                core.debug("Initiated deployment via kudu service for webapp zip package : "+ webPackage);
+                deploymentType = "zip";
                 break;
 
             default:
-                throw new Error('Invalid App Service package or folder path provided: ' + webPackage);
+                if (!this.actionParams.type) {
+                    throw new Error('Invalid App Service package or folder path provided: ' + webPackage);
+                }
+                break;
         }
+
+        if (!this.actionParams.type){
+            this.actionParams.type = deploymentType;
+        }
+
+        this.deploymentID = await this.kuduServiceUtility.deployUsingOneDeploy(webPackage, { slotName: this.actionParams.slotName, commitMessage:this.actionParams.commitMessage }, 
+            this.actionParams.targetPath, this.actionParams.type, this.actionParams.clean, this.actionParams.restart);
 
         // updating startup command
         if(!!this.actionParams.startupCommand) {
