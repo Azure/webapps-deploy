@@ -42,7 +42,6 @@ export class ActionParameters {
     private _clean: string;
     private _restart: string;
 
-
     private constructor(endpoint: IAuthorizer) {
         this._publishProfileContent = core.getInput('publish-profile');
         this._appName = core.getInput('app-name');
@@ -156,8 +155,7 @@ export class ActionParameters {
         return this._multiContainerConfigFile;
     }
 
-    public get type()
-    {
+    public get type() {
         return this._type;
     }
 
@@ -165,15 +163,15 @@ export class ActionParameters {
         this._type = type;
     }
 
-    public get targetPath(){
+    public get targetPath() {
         return this._targetPath;
     }
 
-    public get clean(){
+    public get clean() {
         return this._clean;
     }
 
-    public get restart(){
+    public get restart() {
         return this._restart;
     }
 }
