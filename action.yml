@@ -28,6 +28,18 @@ inputs:
   resource-group-name:
     description: 'Enter the resource group name of the web app'
     required: false
+  type:
+    description: 'Enter deployment type (JAR, WAR, EAR, ZIP, Static)'
+    required: false
+  target-path:
+    description: "Target path in the web app. For ex. '/home/site/wwwroot'"
+    required: false
+  clean:
+    description: 'Delete existing files target directory before deploying'
+    required: false
+  restart:
+    description: 'Restart the app service after deployment'
+    required: false
     
 outputs:
   webapp-url:
