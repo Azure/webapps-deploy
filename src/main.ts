@@ -18,6 +18,7 @@ var updateMessage =
 
 export async function main() {
   let isDeploymentSuccess: boolean = true;
+  core.info(updateMessage);
 
   try {
     // Set user agent variable
@@ -43,7 +44,6 @@ export async function main() {
     await validator.validate();
 
     var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
-    core.info(updateMessage);
     core.debug("Predeployment Step Started");
     await deploymentProvider.PreDeploymentStep();
 
