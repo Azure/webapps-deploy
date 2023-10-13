@@ -10,6 +10,11 @@ import { IAuthorizer } from 'azure-actions-webclient/Authorizer/IAuthorizer';
 import { ValidatorFactory } from './ActionInputValidator/ValidatorFactory';
 
 var prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
+var updateMessage = 
+"|------------------------------------------------------------|\n" +
+"|  Update available webapps-deploy@v2 --> webapps-deploy@v3  |\n" +
+"| To update, change the version in your workflow file to @v3 |\n" + 
+"|------------------------------------------------------------|\n";
 
 export async function main() {
   let isDeploymentSuccess: boolean = true;
@@ -38,7 +43,7 @@ export async function main() {
     await validator.validate();
 
     var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
-
+    core.info(updateMessage);
     core.debug("Predeployment Step Started");
     await deploymentProvider.PreDeploymentStep();
 
