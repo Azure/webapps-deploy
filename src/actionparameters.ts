@@ -35,6 +35,7 @@ export class ActionParameters {
     private _isMultiContainer: boolean;
     private _isLinux: boolean;
     private _commitMessage: string;
+    private _trackStatus: string;
 
     // Used only for OneDeploy
     private _type: string;
@@ -51,6 +52,7 @@ export class ActionParameters {
         this._multiContainerConfigFile = core.getInput('configuration-file');
         this._startupCommand = core.getInput('startup-command');
         this._resourceGroupName = core.getInput('resource-group-name');
+        this._trackStatus = core.getInput('track-status');
         /**
          * Trimming the commit message because it is used as a param in uri of deployment api. And sometimes, it exceeds the max length of http URI.
          */
@@ -173,5 +175,13 @@ export class ActionParameters {
 
     public get restart() {
         return this._restart;
+    }
+    
+    public get trackStatus() {
+        return this._trackStatus;
+    }
+
+    public set trackStatus(trackStatus: string) {
+        this._trackStatus = trackStatus;
     }
 }

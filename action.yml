@@ -40,7 +40,10 @@ inputs:
   restart:
     description: 'Restart the app service after deployment'
     required: false
-    
+  track-status:
+    description: 'Track deployment status in the job logs'
+    required: false
+
 outputs:
   webapp-url:
     description: 'URL to work with your webapp'

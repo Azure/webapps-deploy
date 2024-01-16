@@ -55,8 +55,8 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
             }
         }
 
-        this.deploymentID = await this.kuduServiceUtility.deployUsingOneDeploy(webPackage, { slotName: this.actionParams.slotName, commitMessage:this.actionParams.commitMessage }, 
-            this.actionParams.targetPath, this.actionParams.type, this.actionParams.clean, this.actionParams.restart);
+        this.deploymentID = await this.kuduServiceUtility.deployUsingOneDeploy(webPackage, { slotName: this.actionParams.slotName, commitMessage: this.actionParams.commitMessage },
+            this.actionParams.targetPath, this.actionParams.type, this.actionParams.clean, this.actionParams.restart, this.actionParams.trackStatus, this.appService);
 
         // updating startup command
         if(!!this.actionParams.startupCommand) {
