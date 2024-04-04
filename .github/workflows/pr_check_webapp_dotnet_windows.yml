@@ -68,7 +68,7 @@ jobs:
     - name: Installing dependencies and building latest changes
       run: |
         cd webapps-deploy
-        rm node_modules -r -fo
+        rmdir node_modules /s /q
         rm package-lock.json -r -fo
         npm cache clean --force
         npm install
