@@ -69,7 +69,7 @@ jobs:
       run: |
         cd webapps-deploy
         npm install
-        node --v
+        node --version 
         npm run build
     
     - name: Azure authentication
