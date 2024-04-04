@@ -23,8 +23,8 @@
   },
   "homepage": "https://github.com/Azure/webapps-deploy#readme",
   "devDependencies": {
-    "@types/jest": "^25.1.4",
-    "@types/node": "^13.1.7",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.2",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
