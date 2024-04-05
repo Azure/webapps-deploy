@@ -7,7 +7,7 @@ on:
       - releases/*
     paths-ignore:
       - '**.md'
-  pull_request_target:
+  pull_request:
     branches:
       - master
       - 'releases/*'
@@ -84,8 +84,12 @@ jobs:
     - name: Installing dependencies and building latest changes in action
       run: |
         cd webapps-deploy
-        npm install
-        npm run build
+        if (-NOT(TEST-PATH node_modules))
+        {
+          npm install
+          npm run build
+        }
+
     - name: 'Deploy to Azure WebApp'
       uses: ./webapps-deploy/
       with:
