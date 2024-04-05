@@ -68,12 +68,11 @@ jobs:
     - name: Installing dependencies and building latest changes
       run: |
         cd webapps-deploy
-        rmdir node_modules /s /q
-        rm package-lock.json -r -fo
-        npm cache clean --force
-        npm install
-        node --version 
-        npm run build
+        if (-NOT(TEST-PATH node_modules))
+        {
+          npm install
+          npm run build
+        }
     
     - name: Azure authentication
       uses: azure/login@v1
