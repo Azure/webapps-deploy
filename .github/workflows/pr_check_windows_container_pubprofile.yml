@@ -31,7 +31,7 @@ jobs:
         path: 'python_container_App'
 
     - name: Azure authentication
-      uses: azure/login@v1
+      uses: azure/login@v2
       with:
         creds: ${{ secrets.AZURE_WEBAPP_SPN }}
 
@@ -40,7 +40,7 @@ jobs:
         docker logout env.CONTAINER_REGISTRY
 
     - name: Login to Azure Container Registry
-      uses: azure/docker-login@v1
+      uses: azure/docker-login@v2
       with:
         login-server: ${{ env.CONTAINER_REGISTRY }}
         username: ${{ secrets.WEBDEPLOY_TEST_ACR_USERNAME }}
@@ -78,7 +78,7 @@ jobs:
           ]
 
     - name: Checkout from PR branch
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         repository: ${{ github.event.pull_request.head.repo.full_name }}
         path: 'webapps-deploy'
