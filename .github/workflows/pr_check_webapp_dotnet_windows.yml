@@ -34,7 +34,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     
     - uses: actions/checkout@master
       with:
@@ -58,7 +58,7 @@ jobs:
     - name: Run MSBuild
       run: msbuild .\dotnetsample\SampleWebApplication.sln
     
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       name: Checkout from PR branch
       with: 
         repository: ${{ github.event.pull_request.head.repo.full_name }}
@@ -75,7 +75,7 @@ jobs:
         }
     
     - name: Azure authentication
-      uses: azure/login@v1
+      uses: azure/login@v2
       with:
         creds: ${{ secrets.AZURE_WEBAPP_SPN }}
   

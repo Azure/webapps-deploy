@@ -2,10 +2,10 @@
   "name": "webapps-deploy",
   "version": "3.0.0",
   "description": "Deploy web apps and containerized web apps to Azure",
-  "main": "lib/main.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "jest",
-    "build": "npx ncc build src/main.ts -o lib --source-map --license licenses.txt"
+    "build": "npx ncc build src/main.ts -o lib"
   },
   "repository": {
     "type": "git",
