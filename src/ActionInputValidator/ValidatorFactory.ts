@@ -1,6 +1,6 @@
 import { ActionParameters, WebAppKind, appKindMap } from "../actionparameters";
 
-import { AzureResourceFilterUtility } from "azure-actions-appservice-rest/Utilities/AzureResourceFilterUtility";
+import { AzureAppService } from 'azure-actions-appservice-rest/Arm/azure-app-service';
 import { DEPLOYMENT_PROVIDER_TYPES } from "../DeploymentProvider/Providers/BaseWebAppDeploymentProvider";
 import { IValidator } from "./ActionValidators/IValidator";
 import { PublishProfileWebAppValidator } from "./ActionValidators/PublishProfileWebAppValidator";
@@ -52,9 +52,9 @@ export class ValidatorFactory {
     }
 
     private static async getResourceDetails(params: ActionParameters) {
-        let appDetails = await AzureResourceFilterUtility.getAppDetails(params.endpoint, params.appName, params.resourceGroupName);
-        params.resourceGroupName = appDetails["resourceGroupName"];
-        params.realKind = appDetails["kind"];
+        let appService = new AzureAppService(params.endpoint, params.resourceGroupName, params.appName, params.slotName);
+        let appConfigurationDetails = appService.get();
+        params.realKind = appConfigurationDetails["kind"];
         params.kind = appKindMap.get(params.realKind);
         //app kind linux and kubeapp is supported only on linux environment currently
         params.isLinux = params.realKind.indexOf("linux") > -1 || params.realKind.indexOf("kubeapp") > -1;
