@@ -17,7 +17,7 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
     protected appServiceUtility: AzureAppServiceUtility;
     protected kuduServiceUtility: KuduServiceUtility;
     protected activeDeploymentID;
-    protected authType: DEPLOYMENT_PROVIDER_TYPES;    
+    protected authType: DEPLOYMENT_PROVIDER_TYPES;
     protected applicationURL: string;
     protected deploymentID: string;
 
@@ -34,7 +34,7 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
             case DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE:
                 await this.initializeForPublishProfile();
                 break;
-            default: 
+            default:
                 throw new Error("Invalid deployment provider type");
         }
     }
@@ -45,24 +45,24 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
         if(!!this.appService) {
             await addAnnotation(this.actionParams.endpoint, this.appService, isDeploymentSuccess);
         }
-        
+
         this.activeDeploymentID = await this.kuduServiceUtility.updateDeploymentStatus(isDeploymentSuccess, null, {'type': 'Deployment', slotName: this.actionParams.slotName});
         core.debug('Active DeploymentId :'+ this.activeDeploymentID);
 
         if(!!isDeploymentSuccess && !!this.deploymentID && !!this.activeDeploymentID) {
             await this.kuduServiceUtility.postZipDeployOperation(this.deploymentID, this.activeDeploymentID);
         }
-        
+
         console.log('App Service Application URL: ' + this.applicationURL);
         core.setOutput('webapp-url', this.applicationURL);
 
-        core.setOutput('webapp-deployment-id', this.deploymentId);
+        core.setOutput('webapp-deployment-id', this.deploymentID);
     }
 
-    private async initializeForSPN() {        
+    private async initializeForSPN() {
         this.appService = new AzureAppService(this.actionParams.endpoint, this.actionParams.resourceGroupName, this.actionParams.appName, this.actionParams.slotName);
         this.appServiceUtility = new AzureAppServiceUtility(this.appService);
-        
+
         this.kuduService = await this.appServiceUtility.getKuduService();
         this.kuduServiceUtility = new KuduServiceUtility(this.kuduService);
 
@@ -71,10 +71,10 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
 
     private async initializeForPublishProfile() {
         const publishProfile: PublishProfile = PublishProfile.getPublishProfile(this.actionParams.publishProfileContent);
-        
+
         this.kuduService = publishProfile.kuduService;
         this.kuduServiceUtility = new KuduServiceUtility(this.kuduService);
-        
+
         this.applicationURL = publishProfile.appUrl;
     }
 }
