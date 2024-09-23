@@ -80,8 +80,10 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         if(!!this.appService) {
             await addAnnotation(this.actionParams.endpoint, this.appService, isDeploymentSuccess);
         }
+
+        core.setOutput('webapp-deployment-id', this.deploymentID);
         
         console.log('App Service Application URL: ' + this.applicationURL);
-        core.setOutput('webapp-url', this.applicationURL);
+        core.setOutput('webapp-url', this.deploymentID);
     }
 }
