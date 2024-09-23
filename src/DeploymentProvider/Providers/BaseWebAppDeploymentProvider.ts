@@ -55,6 +55,8 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
         
         console.log('App Service Application URL: ' + this.applicationURL);
         core.setOutput('webapp-url', this.applicationURL);
+
+        core.setOutput('webapp-deployment-id', this.deploymentId);
     }
 
     private async initializeForSPN() {        
