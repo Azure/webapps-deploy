@@ -24,20 +24,18 @@ jobs:
         echo "The placeholder has been replaced with the current UTC time: $current_utc_time"
 
     - name: Set up .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.x'
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.x'
 
     - name: Build with dotnet
-      run: dotnet build --configuration Release
+      run: dotnet build --configuration Release dotnetapp/DOTNET_8_APP.csproj
 
     - name: dotnet publish
-      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      run: dotnet publish dotnetapp/DOTNET_8_APP.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
       with:
         name: .net-app
         path: ${{env.DOTNET_ROOT}}/myapp
-
-

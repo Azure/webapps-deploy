@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace DOTNET_8_APP.Controllers
 {
@@ -18,7 +18,7 @@ namespace DOTNET_8_APP.Controllers
         public string Hello()
         {
             Console.WriteLine("Hello endpoint called!");
-            return "Hello Hii from .NET 8 App";
+            return "Hello from .NET 8 App";
         }
 
         [HttpGet]
