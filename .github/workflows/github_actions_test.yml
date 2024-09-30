@@ -1,0 +1,43 @@
+name: github_actions_test
+
+on:
+  push:
+    branches:
+      - master
+  schedule: 
+    - cron: '0 */4 * * *'  # This will run the workflow every 4 hours
+
+jobs:
+  modify-sample-app and build:
+    runs-on: ubuntu-latest
+  
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Modify the sample app
+      run: |
+        cp -r ./tests/dotnetsampleapp dotnetapp
+        current_utc_time=$(date -u +"%Y-%m-%d %H:%M:%S %Z")
+        sed -i "s/<<<net-place-holder>>>/$current_utc_time/g" dotnetapp/Controllers/HelloController.cs
+
+        echo "The placeholder has been replaced with the current UTC time: $current_utc_time"
+
+    - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+
+    - name: dotnet publish
+      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+        name: .net-app
+        path: ${{env.DOTNET_ROOT}}/myapp
+
+
