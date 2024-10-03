@@ -32,4 +32,4 @@ jobs:
           stale-pr-label: 'idle'
           days-before-stale: 14
           days-before-close: -1
-          operations-per-run: 100 
+          operations-per-run: 100
