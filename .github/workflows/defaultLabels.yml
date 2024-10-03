@@ -4,7 +4,11 @@
 name: Build and deploy ASP.Net Core app to Azure Web App - dotnetapp-githubactions-test
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - user/vchintalapat/github-actions-test
+  schedule: 
+    - cron: '0 */3 * * *'  # This will run the workflow every 4 hours
 
 jobs:
   build:
