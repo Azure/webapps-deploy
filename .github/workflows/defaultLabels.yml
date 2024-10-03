@@ -1,73 +1,35 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
+name: setting-default-labels
 
-name: Build and deploy ASP.Net Core app to Azure Web App - dotnetapp-githubactions-test
-
+# Controls when the action will run. 
 on:
-  push:
-    branches:
-      - user/vchintalapat/github-actions-test
-  schedule: 
-    - cron: '0 */3 * * *'  # This will run the workflow every 4 hours
+  schedule:
+  - cron: "0 0/3 * * *"
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Modify the sample app
-        run: |
-          cp -r ./__tests__/dotnetsampleapp dotnetapp
-          current_utc_time=$(date -u +"%Y-%m-%d %H:%M:%S %Z")
-          sed -i "s/<<<net-place-holder>>>/$current_utc_time/g" dotnetapp/Controllers/HelloController.cs
-
-          echo "The placeholder has been replaced with current UTC time: $current_utc_time"
-
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v4
+      - uses: actions/stale@v3
+        name: Setting issue as idle
         with:
-          dotnet-version: '8.x'
-
-      - name: Build with dotnet
-        run: dotnet build --configuration Release dotnetapp/DOTNET_8_APP.csproj
-
-      - name: dotnet publish
-        run: dotnet publish dotnetapp/DOTNET_8_APP.csproj -c Release -o myapp
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-issue-message: 'This issue is idle because it has been open for 14 days with no activity.'
+          stale-issue-label: 'idle'
+          days-before-stale: 14
+          days-before-close: -1
+          operations-per-run: 100
+          exempt-issue-labels: 'backlog'
+          
+      - uses: actions/stale@v3
+        name: Setting PR as idle
         with:
-          name: .net-app
-          path: myapp
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: .net-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
-
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'lwasv2-euap-dotnet-githubactionstest'
-          slot-name: 'Production'
-          package: .
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-pr-message: 'This PR is idle because it has been open for 14 days with no activity.'
+          stale-pr-label: 'idle'
+          days-before-stale: 14
+          days-before-close: -1
+          operations-per-run: 100
