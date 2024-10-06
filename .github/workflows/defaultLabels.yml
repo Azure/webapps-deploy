@@ -6,7 +6,7 @@ name: Build and deploy to Azure App Services
 on:
   push:
     branches:
-      - updated_contents
+      - user/vchintalapat/github-actions-test
   schedule: 
     - cron: "0 0/3 * * *"
 
