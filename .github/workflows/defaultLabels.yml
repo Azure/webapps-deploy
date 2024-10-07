@@ -106,6 +106,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'lwasv2-euap-node-18-githubactions'
+          app-name: 'lwasv2-euap-node-githubactions'
           slot-name: 'Production'
           package: nodeapp
