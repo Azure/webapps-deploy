@@ -1,0 +1,111 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy to Azure App Services
+
+on:
+  push:
+    branches:
+      - master
+  schedule: 
+    - cron: "0 0/3 * * *"
+
+jobs:
+  build-and-deploy-dotnet-app:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Modify the sample app
+        run: |
+          cp -r ./__tests__/dotnetsampleapp dotnetapp
+          current_utc_time=$(date -u +"%Y-%m-%d %H:%M:%S %Z")
+          sed -i "s/<<<net-place-holder>>>/$current_utc_time/g" dotnetapp/Controllers/HelloController.cs
+
+          echo "The placeholder has been replaced with current UTC time: $current_utc_time"
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Build with dotnet
+        run: dotnet build --configuration Release dotnetapp/DOTNET_8_APP.csproj
+
+      - name: dotnet publish
+        run: dotnet publish dotnetapp/DOTNET_8_APP.csproj -c Release -o myapp
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: myapp
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_DOTNETAPP1 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'lwasv2-euap-dotnet-githubactionstest'
+          slot-name: 'Production'
+          package: myapp
+
+  build-and-deploy-node-app:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: modify Node.js App
+        run: |
+          cp -r ./__tests__/nodesampleapp nodeapp
+          current_utc_time=$(date -u +"%Y-%m-%d %H:%M:%S %Z")
+          sed -i "s/<<<node-place-holder>>>/$current_utc_time/g" nodeapp/server.js
+
+          echo "The placeholder has been replaced with current UTC time: $current_utc_time"
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      - name: npm install, build, and test
+        run: |
+          cd nodeapp
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-app
+          path: nodeapp
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_NODEAPP1 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
+      
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'lwasv2-euap-node-githubactions'
+          slot-name: 'Production'
+          package: nodeapp
