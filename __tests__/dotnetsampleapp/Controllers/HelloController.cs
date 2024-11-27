@@ -25,7 +25,7 @@ namespace DOTNET_8_APP.Controllers
         [Route("/dummy")]
         public string DummyAppsetting()
         {
-            Console.WriteLine("Dummy endpoint called!");
+            Console.WriteLine("Dummy endpoint called!!");
             var dummyAppSettingValue = Environment.GetEnvironmentVariable(dummyAppSetting);
             if (dummyAppSettingValue != null) { return dummyAppSettingValue; }
             return "Appsetting not found!";
@@ -35,7 +35,7 @@ namespace DOTNET_8_APP.Controllers
         [Route("/placeholder")]
         public string PlaceHolder()
         {
-            Console.WriteLine("Placeholder endpoint called!");
+            Console.WriteLine("Placeholder endpoint called!!");
             return "<<<net-place-holder>>>";
         }
     }
