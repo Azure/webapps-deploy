@@ -35,6 +35,7 @@ export class ActionParameters {
     private _isMultiContainer: boolean;
     private _isLinux: boolean;
     private _commitMessage: string;
+    private _deploymentMethod: string;
 
     // Used only for OneDeploy
     private _type: string;
@@ -51,6 +52,7 @@ export class ActionParameters {
         this._multiContainerConfigFile = core.getInput('configuration-file');
         this._startupCommand = core.getInput('startup-command');
         this._resourceGroupName = core.getInput('resource-group-name');
+        this._deploymentMethod = core.getInput('deployment-method');
         /**
          * Trimming the commit message because it is used as a param in uri of deployment api. And sometimes, it exceeds the max length of http URI.
          */
@@ -101,6 +103,14 @@ export class ActionParameters {
 
     public set resourceGroupName(rg: string) {
         this._resourceGroupName = rg;
+    }
+
+    public get deploymentMethod() {
+        return this._deploymentMethod;
+    }
+
+    public set deploymentMethod(deploymentMethod: string) {
+        this._deploymentMethod = deploymentMethod;
     }
 
     public get kind() {
@@ -174,4 +184,5 @@ export class ActionParameters {
     public get restart() {
         return this._restart;
     }
+
 }
