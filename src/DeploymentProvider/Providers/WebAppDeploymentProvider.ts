@@ -6,12 +6,18 @@ import { Package, PackageType } from "azure-actions-utility/packageUtility";
 
 import { BaseWebAppDeploymentProvider } from './BaseWebAppDeploymentProvider';
 import { addAnnotation } from 'azure-actions-appservice-rest/Utilities/AnnotationUtility';
+import { DeploymentMethod } from '../../DeploymentMethod';
 
 export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
     public async DeployWebAppStep() {
         let appPackage: Package = this.actionParams.package;
         let webPackage = appPackage.getPath();
+        let packageType = appPackage.getPackageType();
+
+        if (this.actionParams.deploymentMethod === DeploymentMethod.ZipDeploy && packageType !== PackageType.zip) {
+            core.error("ZipDeploy method can only be used with zip packages. Use OneDeploy deployment method for other package types.");
+        }
 
         const validTypes = ["war", "jar", "ear", "zip", "static"];
 
@@ -21,11 +27,8 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         // If provided, type paramater takes precidence over file package type
         if (this.actionParams.type != null && validTypes.includes(this.actionParams.type.toLowerCase())) {
             core.debug("Initiated deployment via kudu service for webapp" + this.actionParams.type + "package : "+ webPackage);
-        }
-
-        else {
+        } else {
             // Retains the old behavior of determining the package type from the file extension if valid type is not defined
-            let packageType = appPackage.getPackageType();
             switch(packageType){
                 case PackageType.war:
                     core.debug("Initiated deployment via kudu service for webapp war package : "+ webPackage);
@@ -55,8 +58,16 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
             }
         }
 
-        this.deploymentID = await this.kuduServiceUtility.deployUsingOneDeploy(webPackage, { slotName: this.actionParams.slotName, commitMessage:this.actionParams.commitMessage }, 
-            this.actionParams.targetPath, this.actionParams.type, this.actionParams.clean, this.actionParams.restart);
+        switch (this.actionParams.deploymentMethod) {
+            case DeploymentMethod.ZipDeploy:
+                core.info('Deploying using ZipDeploy method.');
+                this.deploymentID = await this.kuduServiceUtility.deployUsingZipDeploy(webPackage, { slotName: this.actionParams.slotName, commitMessage: this.actionParams.commitMessage });
+                break;
+            default:
+                core.info('Deploying using OneDeploy method.');
+                this.deploymentID = await this.kuduServiceUtility.deployUsingOneDeploy(webPackage, { slotName: this.actionParams.slotName, commitMessage: this.actionParams.commitMessage }, 
+                    this.actionParams.targetPath, this.actionParams.type, this.actionParams.clean, this.actionParams.restart);
+        }
 
         // updating startup command
         if(!!this.actionParams.startupCommand) {

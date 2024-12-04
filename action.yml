@@ -40,6 +40,10 @@ inputs:
   restart:
     description: 'Restart the app service after deployment'
     required: false
+  deployment-method:
+    description: 'Deployment method (OneDeploy, ZipDeploy)'
+    default: 'OneDeploy'
+    required: false
     
 outputs:
   webapp-url:
