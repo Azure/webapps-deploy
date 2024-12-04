@@ -1,4 +1,4 @@
-export declare enum DeploymentMethod {
+export enum DeploymentMethod {
   OneDeploy = "OneDeploy",
   ZipDeploy = "ZipDeploy"
 }
