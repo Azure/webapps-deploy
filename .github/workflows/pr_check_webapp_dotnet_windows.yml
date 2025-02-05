@@ -12,6 +12,9 @@ on:
       - master
       - 'releases/*'
 
+permissions:
+  id-token: write
+
 # CONFIGURATION
 # For help, go to https://github.com/Azure/Actions
 #
@@ -77,7 +80,9 @@ jobs:
     - name: Azure authentication
       uses: azure/login@v2
       with:
-        creds: ${{ secrets.AZURE_WEBAPP_SPN }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   
     - name: 'Deploy to Azure WebApp'
       uses: ./webapps-deploy/
