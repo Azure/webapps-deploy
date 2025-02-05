@@ -37,7 +37,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     
     - uses: actions/checkout@master
       with:
@@ -61,7 +61,7 @@ jobs:
     - name: Run MSBuild
       run: msbuild .\dotnetsample\SampleWebApplication.sln
     
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       name: Checkout from PR branch
       with: 
         repository: ${{ github.event.pull_request.head.repo.full_name }}
