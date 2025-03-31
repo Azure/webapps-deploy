@@ -44,6 +44,8 @@ inputs:
 outputs:
   webapp-url:
     description: 'URL to work with your webapp'
+  webapp-deployment-id:
+    description: 'Deployment ID from your webapp publication'
 branding:
   icon: 'webapp.svg'
   color: 'blue'
