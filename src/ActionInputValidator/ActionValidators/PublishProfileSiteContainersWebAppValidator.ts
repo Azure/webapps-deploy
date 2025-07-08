@@ -1,18 +1,16 @@
-import { packageNotAllowed, multiContainerNotAllowed, startupCommandNotAllowed, validateSingleContainerInputs, validateAppDetails, sidecarConfigNotAllowed } from "../Validations";
+import { packageNotAllowed, multiContainerNotAllowed, startupCommandNotAllowed, validateSingleContainerInputs, validateAppDetails } from "../Validations";
 import { ActionParameters } from "../../actionparameters";
 import { IValidator } from "./IValidator";
 
-export class PublishProfileContainerWebAppValidator implements IValidator {
+export class PublishProfileSiteContainersWebAppValidator implements IValidator {
     async validate(): Promise<void> {
         const actionParams: ActionParameters = ActionParameters.getActionParams();
-        
+
         packageNotAllowed(actionParams.packageInput);
 
         multiContainerNotAllowed(actionParams.multiContainerConfigFile);
-        
-        startupCommandNotAllowed(actionParams.startupCommand);
 
-        sidecarConfigNotAllowed(actionParams.sidecarConfig);
+        startupCommandNotAllowed(actionParams.startupCommand);
 
         validateAppDetails();
 

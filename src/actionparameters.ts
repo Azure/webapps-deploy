@@ -7,7 +7,8 @@ export enum WebAppKind {
     Windows,
     Linux,
     WindowsContainer,
-    LinuxContainer
+    LinuxContainer,
+    SiteContainers
 };
 
 export const appKindMap = new Map([
@@ -15,8 +16,16 @@ export const appKindMap = new Map([
     [ 'app,linux', WebAppKind.Linux ],
     [ 'app,container,windows', WebAppKind.WindowsContainer ],
     [ 'app,linux,container', WebAppKind.LinuxContainer ],
+    [ 'app,linux', WebAppKind.SiteContainers ],
     [ 'api', WebAppKind.Windows ],
 ]);
+
+export interface SidecarContainer {
+    name: string;
+    image: string;
+    targetPort: number;
+    isMain: boolean;
+}
 
 export class ActionParameters {
     private static actionparams: ActionParameters;
@@ -35,6 +44,7 @@ export class ActionParameters {
     private _isMultiContainer: boolean;
     private _isLinux: boolean;
     private _commitMessage: string;
+    private _sidecarConfig: SidecarContainer[];
 
     // Used only for OneDeploy
     private _type: string;
@@ -62,6 +72,10 @@ export class ActionParameters {
         this._targetPath = core.getInput('target-path');
         this._clean = core.getInput('clean');
         this._restart = core.getInput('restart');
+
+        // Parse and validate sidecar configuration
+        const sidecarConfigInput = core.getInput('sidecar-config');
+        this._sidecarConfig = sidecarConfigInput ? this.parseSidecarConfig(sidecarConfigInput) : [];
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
@@ -70,6 +84,28 @@ export class ActionParameters {
         }
         return this.actionparams;
     }
+
+    public get sidecarConfig(): SidecarContainer[] {
+        return this._sidecarConfig;
+    }
+
+    private parseSidecarConfig(config: string): SidecarContainer[] {
+        try {
+            const parsedConfig = JSON.parse(config);
+            if (!Array.isArray(parsedConfig)) {
+                throw new Error("Sidecar configuration must be an array of containers.");
+            }
+            parsedConfig.forEach((container, index) => {
+                if (!container.name || !container.image || container.targetPort === undefined || container.isMain === undefined) {
+                    throw new Error(`Invalid sidecar container at index ${index}. Each container must have 'name', 'image', 'targetPort', and 'isMain' properties.`);
+                }
+            });
+            return parsedConfig;
+        } catch (error) {
+            throw new Error(`Failed to parse sidecar configuration: ${error.message}`);
+        }
+    }
+
     public get appName() {
         return this._appName;
     }

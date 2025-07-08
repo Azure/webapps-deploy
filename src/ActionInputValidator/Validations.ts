@@ -3,7 +3,7 @@ import * as core from '@actions/core';
 import { Package, exist } from "azure-actions-utility/packageUtility";
 import { PublishProfile, ScmCredentials } from "../Utilities/PublishProfile";
 import RuntimeConstants from '../RuntimeConstants';
-import { ActionParameters } from "../actionparameters";
+import { ActionParameters, SidecarContainer } from "../actionparameters";
 
 import fs = require('fs');
 
@@ -35,6 +35,14 @@ export function validateAppDetails() {
         if(!appNameMatch || !slotNameMatch) {
             throw new Error("Publish profile is invalid for app-name and slot-name provided. Provide correct publish profile credentials for app.");
         }
+    }
+}
+
+// Error if Sidecar configuration is provided
+
+export function sidecarConfigNotAllowed(sitecontainers: SidecarContainer[]) {
+    if(!!sitecontainers) {
+        throw new Error("Sitecontainer not valid input for this web app.");
     }
 }
 

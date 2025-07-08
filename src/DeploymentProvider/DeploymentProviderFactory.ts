@@ -9,7 +9,11 @@ import { PublishProfileWebAppContainerDeploymentProvider } from "./Providers/Pub
 export class DeploymentProviderFactory {
 
     public static getDeploymentProvider(type: DEPLOYMENT_PROVIDER_TYPES) : IWebAppDeploymentProvider {
-        if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
+        if (type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
+            if (!!ActionParameters.getActionParams().sidecarConfig) {
+                return new PublishProfileWebAppContainerDeploymentProvider(type);
+            }
+            else
             if (!!ActionParameters.getActionParams().images) {
                 return new PublishProfileWebAppContainerDeploymentProvider(type);
             }
