@@ -2,7 +2,9 @@ import * as core from '@actions/core';
 import { IAuthorizer } from "azure-actions-webclient/Authorizer/IAuthorizer";
 import { Package } from 'azure-actions-utility/packageUtility';
 import { SiteContainer } from 'azure-actions-appservice-rest/Arm/SiteContainer';
+import { isTypedArray } from 'util/types';
 const github = require('@actions/github');
+const fs = require('fs');
 
 export enum WebAppKind {
     Windows,
@@ -21,13 +23,6 @@ export const appKindMap = new Map([
     [ 'api', WebAppKind.Windows ],
 ]);
 
-// export interface SidecarContainer {
-//     name: string;
-//     image: string;
-//     targetPort: number;
-//     isMain: boolean;
-// }
-
 export class ActionParameters {
     private static actionparams: ActionParameters;
     private _appName: string;
@@ -45,7 +40,7 @@ export class ActionParameters {
     private _isMultiContainer: boolean;
     private _isLinux: boolean;
     private _commitMessage: string;
-    private _sidecarConfig: SiteContainer[];
+    private _siteContainers: SiteContainer[];
 
     // Used only for OneDeploy
     private _type: string;
@@ -73,10 +68,14 @@ export class ActionParameters {
         this._targetPath = core.getInput('target-path');
         this._clean = core.getInput('clean');
         this._restart = core.getInput('restart');
+        const siteContainersConfigInput = core.getInput('sitecontainers-config');
+        if (siteContainersConfigInput) {
+            const raw = JSON.parse(siteContainersConfigInput);
+            this._siteContainers = raw.map(SiteContainer.fromJson);
+        } else {
+            this._siteContainers = [];
+        }
 
-        // Parse and validate sidecar configuration
-        const sidecarConfigInput = core.getInput('sidecar-config');
-        this._sidecarConfig = sidecarConfigInput ? this.parseSidecarConfig(sidecarConfigInput) : [];
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
@@ -86,27 +85,14 @@ export class ActionParameters {
         return this.actionparams;
     }
 
-    public get sidecarConfig(): SiteContainer[] {
-        return this._sidecarConfig;
+    public get siteContainers(): SiteContainer[] {
+        return this._siteContainers;
     }
 
-    private parseSidecarConfig(config: string): SiteContainer[] {
-        try {
-            const parsedConfig = JSON.parse(config);
-            if (!Array.isArray(parsedConfig)) {
-                throw new Error("Sidecar configuration must be an array of containers.");
-            }
-            parsedConfig.forEach((container, index) => {
-                if (!container.name || !container.image || container.targetPort === undefined || container.isMain === undefined) {
-                    throw new Error(`Invalid sidecar container at index ${index}. Each container must have 'name', 'image', 'targetPort', and 'isMain' properties.`);
-                }
-            });
-            return parsedConfig;
-        } catch (error) {
-            throw new Error(`Failed to parse sidecar configuration: ${error.message}`);
-        }
+    public set siteContainers(siteContainers: SiteContainer[]) {
+        this._siteContainers = siteContainers;
     }
-
+    
     public get appName() {
         return this._appName;
     }

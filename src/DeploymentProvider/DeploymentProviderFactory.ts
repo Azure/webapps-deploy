@@ -11,7 +11,7 @@ export class DeploymentProviderFactory {
 
     public static getDeploymentProvider(type: DEPLOYMENT_PROVIDER_TYPES) : IWebAppDeploymentProvider {
         if (type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
-            if (!!ActionParameters.getActionParams().sidecarConfig) {
+            if (!!ActionParameters.getActionParams().siteContainers) {
                 return new PublishProfileSiteContainersWebAppDeploymentProvider(type);
             }
             else

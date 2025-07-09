@@ -41,9 +41,9 @@ export function validateAppDetails() {
 
 // Error if Sidecar configuration is provided
 
-export function sidecarConfigNotAllowed(sitecontainers: SiteContainer[]) {
-    if(!!sitecontainers) {
-        throw new Error("Sitecontainer not valid input for this web app.");
+export function siteContainersConfigNotAllowed(siteContainers: SiteContainer[]) {
+    if(!!siteContainers) {
+        throw new Error("SiteContainers not valid input for this web app.");
     }
 }
 
