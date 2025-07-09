@@ -119,3 +119,11 @@ export async function validatePackageInput() {
         throw new Error(`Deployment of msBuild generated package is not supported. Please change package format.`);
     }
 }
+
+// validate site containers inputs
+export function validateSiteContainersInputs() {
+    const actionParams: ActionParameters = ActionParameters.getActionParams();
+    if (!actionParams.siteContainers || actionParams.siteContainers.length === 0) {
+        throw new Error("Site containers not provided.");
+    }
+}

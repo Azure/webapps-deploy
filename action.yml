@@ -22,7 +22,7 @@ inputs:
   configuration-file:
     description: 'Applies to Web App Containers only: Path of the Docker-Compose file. Should be a fully qualified path or relative to the default working directory. Required for multi-container scenario'
     required: false
-  sitecontainer-config:
+  sitecontainers-config:
     description: 'Applies to Sitecontainers'
     required: false
   startup-command:
