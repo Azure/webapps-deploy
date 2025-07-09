@@ -5,13 +5,14 @@ import { IWebAppDeploymentProvider } from "./Providers/IWebAppDeploymentProvider
 import { WebAppContainerDeploymentProvider } from "./Providers/WebAppContainerDeployment";
 import { WebAppDeploymentProvider } from "./Providers/WebAppDeploymentProvider";
 import { PublishProfileWebAppContainerDeploymentProvider } from "./Providers/PublishProfileWebAppContainerDeploymentProvider";
+import { PublishProfileSiteContainersWebAppDeploymentProvider } from "./Providers/PublishProfileSiteContainersWebAppDeploymentProvider";
 
 export class DeploymentProviderFactory {
 
     public static getDeploymentProvider(type: DEPLOYMENT_PROVIDER_TYPES) : IWebAppDeploymentProvider {
         if (type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
             if (!!ActionParameters.getActionParams().sidecarConfig) {
-                return new PublishProfileWebAppContainerDeploymentProvider(type);
+                return new PublishProfileSiteContainersWebAppDeploymentProvider(type);
             }
             else
             if (!!ActionParameters.getActionParams().images) {

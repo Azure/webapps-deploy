@@ -1,15 +1,10 @@
 import { BaseWebAppDeploymentProvider } from './BaseWebAppDeploymentProvider';
-import { ContainerDeploymentUtility } from 'azure-actions-appservice-rest/Utilities/ContainerDeploymentUtility';
+import { SiteContainerDeploymentUtility } from 'azure-actions-appservice-rest/Utilities/SiteContainerDeploymentUtility';
 
 export class PublishProfileSiteContainersWebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
     public async DeployWebAppStep() {
-        let containerDeploymentUtility: ContainerDeploymentUtility = new ContainerDeploymentUtility(this.appService);
-        
-        let images = this.actionParams.images;
-        let configFile = this.actionParams.multiContainerConfigFile;
-        let isLinux = this.actionParams.isLinux;
-        let isMultiContainer = this.actionParams.isMultiContainer;
-        let startupCommand = this.actionParams.startupCommand;
-        await containerDeploymentUtility.deployWebAppImage(images, configFile, isLinux, isMultiContainer, startupCommand);
+        let siteContainerDeploymentUtility = new SiteContainerDeploymentUtility(this.appService);
+        let sidecarContainers = this.actionParams.sidecarConfig;
+        await siteContainerDeploymentUtility.updateSiteContainers(sidecarContainers);
     }
 }

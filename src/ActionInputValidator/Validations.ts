@@ -3,9 +3,10 @@ import * as core from '@actions/core';
 import { Package, exist } from "azure-actions-utility/packageUtility";
 import { PublishProfile, ScmCredentials } from "../Utilities/PublishProfile";
 import RuntimeConstants from '../RuntimeConstants';
-import { ActionParameters, SidecarContainer } from "../actionparameters";
+import { ActionParameters } from "../actionparameters";
 
 import fs = require('fs');
+import { SiteContainer } from 'azure-actions-appservice-rest/Arm/SiteContainer';
 
 // Error is app-name is not provided
 export function appNameIsRequired(appname: string) {
@@ -40,7 +41,7 @@ export function validateAppDetails() {
 
 // Error if Sidecar configuration is provided
 
-export function sidecarConfigNotAllowed(sitecontainers: SidecarContainer[]) {
+export function sidecarConfigNotAllowed(sitecontainers: SiteContainer[]) {
     if(!!sitecontainers) {
         throw new Error("Sitecontainer not valid input for this web app.");
     }

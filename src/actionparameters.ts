@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import { IAuthorizer } from "azure-actions-webclient/Authorizer/IAuthorizer";
 import { Package } from 'azure-actions-utility/packageUtility';
+import { SiteContainer } from 'azure-actions-appservice-rest/Arm/SiteContainer';
 const github = require('@actions/github');
 
 export enum WebAppKind {
@@ -20,12 +21,12 @@ export const appKindMap = new Map([
     [ 'api', WebAppKind.Windows ],
 ]);
 
-export interface SidecarContainer {
-    name: string;
-    image: string;
-    targetPort: number;
-    isMain: boolean;
-}
+// export interface SidecarContainer {
+//     name: string;
+//     image: string;
+//     targetPort: number;
+//     isMain: boolean;
+// }
 
 export class ActionParameters {
     private static actionparams: ActionParameters;
@@ -44,7 +45,7 @@ export class ActionParameters {
     private _isMultiContainer: boolean;
     private _isLinux: boolean;
     private _commitMessage: string;
-    private _sidecarConfig: SidecarContainer[];
+    private _sidecarConfig: SiteContainer[];
 
     // Used only for OneDeploy
     private _type: string;
@@ -85,11 +86,11 @@ export class ActionParameters {
         return this.actionparams;
     }
 
-    public get sidecarConfig(): SidecarContainer[] {
+    public get sidecarConfig(): SiteContainer[] {
         return this._sidecarConfig;
     }
 
-    private parseSidecarConfig(config: string): SidecarContainer[] {
+    private parseSidecarConfig(config: string): SiteContainer[] {
         try {
             const parsedConfig = JSON.parse(config);
             if (!Array.isArray(parsedConfig)) {
