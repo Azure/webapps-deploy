@@ -5,7 +5,7 @@ export class PublishProfileSiteContainersWebAppDeploymentProvider extends BaseWe
     public async DeployWebAppStep() {
         //let siteContainerDeploymentUtility = new SiteContainerDeploymentUtility(this.appService);
         let siteContainers = this.actionParams.siteContainers;
-
+        console.log("value of appservice:", this.appService);
         console.log("siteContainerClient is", this.appServiceUtility);
 
         for (let i = 0; i < siteContainers.length; i++) {
