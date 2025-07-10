@@ -53,11 +53,10 @@ export async function main() {
 
     var deploymentProviders = DeploymentProviderFactory.getDeploymentProvider(type);
 
-    core.debug("Predeployment Step Started");
-    await deploymentProviders[0].PreDeploymentStep();
-
-      core.debug("Deployment Step Started");
       for (const provider of deploymentProviders) {
+          core.info("Predeployment Step Started");
+          await provider.PreDeploymentStep();
+          core.info("Deployment Step Started");
           await provider.DeployWebAppStep();
       }
   }
