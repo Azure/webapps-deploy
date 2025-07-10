@@ -73,7 +73,7 @@ export class ActionParameters {
             const raw = JSON.parse(siteContainersConfigInput);
             this._siteContainers = raw.map(SiteContainer.fromJson);
         } else {
-            this._siteContainers = [];
+            this._siteContainers = null;
         }
 
     }
