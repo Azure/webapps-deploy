@@ -30,6 +30,9 @@ export async function main() {
     // Initialize action inputs
     let endpoint: IAuthorizer = !!publishProfileContent ? null : await AuthorizerFactory.getAuthorizer();
     ActionParameters.getActionParams(endpoint);
+
+    console.log("endpoint:", endpoint);
+
     let type: DEPLOYMENT_PROVIDER_TYPES = null;
 
     if(!!endpoint) {
