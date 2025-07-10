@@ -3,12 +3,14 @@ import { SiteContainerDeploymentUtility } from 'azure-actions-appservice-rest/Ut
 
 export class PublishProfileSiteContainersWebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
     public async DeployWebAppStep() {
-        let siteContainerDeploymentUtility = new SiteContainerDeploymentUtility(this.appService);
+        //let siteContainerDeploymentUtility = new SiteContainerDeploymentUtility(this.appService);
         let siteContainers = this.actionParams.siteContainers;
+
+        console.log("siteContainerClient is", this.appServiceUtility);
 
         for (let i = 0; i < siteContainers.length; i++) {
             let siteContainer = siteContainers[i];
-            await siteContainerDeploymentUtility.updateSiteContainer(siteContainer);
+            await this.appServiceUtility.updateSiteContainer(siteContainer);
         }
     }
 }
