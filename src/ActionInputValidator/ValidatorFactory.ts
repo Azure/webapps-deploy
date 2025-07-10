@@ -16,16 +16,18 @@ import RuntimeConstants from "../RuntimeConstants";
 import { SpnWebAppSiteContainersValidator } from "./ActionValidators/SpnWebAppSiteContainersValidator";
 
 export class ValidatorFactory {
-    public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator> {
+    public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator[]> {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
+        let validators: IValidator[] = [];
         if (type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
             if (!!actionParams.images) {
                 await this.setResourceDetails(actionParams);
-                return new PublishProfileContainerWebAppValidator();
+                validators.push(new PublishProfileContainerWebAppValidator());
             }
             else {
-                return new PublishProfileWebAppValidator();
+                validators.push(new PublishProfileWebAppValidator());
             }
+            return validators;
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
             // app-name is required to get resource details
@@ -35,25 +37,31 @@ export class ValidatorFactory {
             core.info("validated app details");
             if (!!actionParams.isLinux) {
                 core.info("Validating Linux app details");
-                if (!!actionParams.siteContainers) {
-                    core.info("Validating site containers app details");
-                    return new SpnWebAppSiteContainersValidator();
+                if (!!actionParams.blessedAppSitecontainers) {
+                    validators.push(new SpnWebAppSiteContainersValidator());
+                    validators.push(new SpnLinuxWebAppValidator());
                 }
-                if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
-                    return new SpnLinuxContainerWebAppValidator();
+                else if (!!actionParams.siteContainers) {
+                    core.info("Validating site containers app details");
+                    validators.push(new SpnWebAppSiteContainersValidator());
+                }
+                else if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
+                    validators.push(new SpnLinuxContainerWebAppValidator());
                 }
                 else {
-                    return new SpnLinuxWebAppValidator();
+                    validators.push(new SpnLinuxWebAppValidator());
                 }
             }
             else {
                 if (!!actionParams.images) {
-                    return new SpnWindowsContainerWebAppValidator();
+                    validators.push(new SpnWindowsContainerWebAppValidator());
                 }
                 else {
-                    return new SpnWindowsWebAppValidator();
+                    validators.push(new SpnWindowsWebAppValidator());
                 }
             }
+
+            return validators;
         }
         else {
             throw new Error("Valid credentials are not available. Add Azure Login action before this action or provide publish-profile input.");

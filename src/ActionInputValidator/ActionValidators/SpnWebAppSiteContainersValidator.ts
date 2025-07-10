@@ -6,7 +6,7 @@ export class SpnWebAppSiteContainersValidator implements IValidator {
     async validate(): Promise<void> {
         const actionParams: ActionParameters = ActionParameters.getActionParams();
 
-        packageNotAllowed(actionParams.packageInput);
+        //packageNotAllowed(actionParams.packageInput);
 
         validateSiteContainersInputs();
     }

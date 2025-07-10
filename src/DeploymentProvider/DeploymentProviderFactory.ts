@@ -9,24 +9,27 @@ import { WebAppSiteContainersDeploymentProvider } from "./Providers/WebAppSiteCo
 
 export class DeploymentProviderFactory {
 
-    public static getDeploymentProvider(type: DEPLOYMENT_PROVIDER_TYPES) : IWebAppDeploymentProvider {
+    public static getDeploymentProvider(type: DEPLOYMENT_PROVIDER_TYPES) : IWebAppDeploymentProvider[] {
         if (type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
             if (!!ActionParameters.getActionParams().images) {
-                return new PublishProfileWebAppContainerDeploymentProvider(type);
+                return [new PublishProfileWebAppContainerDeploymentProvider(type)];
             }
             else {
-                return new WebAppDeploymentProvider(type);
+                return [new WebAppDeploymentProvider(type)];
             }
         }
         else if (type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
+            if (!!ActionParameters.getActionParams().blessedAppSitecontainers) {
+                return [new WebAppDeploymentProvider(type), new WebAppSiteContainersDeploymentProvider(type)];
+            }
             if (!!ActionParameters.getActionParams().siteContainers) {
-                return new WebAppSiteContainersDeploymentProvider(type);
+                return [new WebAppSiteContainersDeploymentProvider(type)];
             }
             else if (!!ActionParameters.getActionParams().images || (!!ActionParameters.getActionParams().isLinux && !!ActionParameters.getActionParams().multiContainerConfigFile)) {
-                return new WebAppContainerDeploymentProvider(type);
+                return [new WebAppContainerDeploymentProvider(type)];
             }
             else {
-                return new WebAppDeploymentProvider(type);
+                return [new WebAppDeploymentProvider(type)];
             }
         }
         else {

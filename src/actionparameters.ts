@@ -47,6 +47,7 @@ export class ActionParameters {
     private _targetPath: string;
     private _clean: string;
     private _restart: string;
+    private _blessedAppSitecontainers: boolean = false;
 
     private constructor(endpoint: IAuthorizer) {
         this._publishProfileContent = core.getInput('publish-profile');
@@ -75,6 +76,7 @@ export class ActionParameters {
         } else {
             this._siteContainers = null;
         }
+        this._blessedAppSitecontainers = core.getInput('blessed-app-sitecontainers') === 'true';
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
@@ -195,5 +197,9 @@ export class ActionParameters {
 
     public get restart() {
         return this._restart;
+    }
+
+    public get blessedAppSitecontainers() {
+        return this._blessedAppSitecontainers;
     }
 }
