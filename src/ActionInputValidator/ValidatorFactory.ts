@@ -18,7 +18,7 @@ export class ValidatorFactory {
     public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator> {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
         if (type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
-            if (!!actionParams.siteContainers) {
+            if (!!actionParams.siteContainers && actionParams.siteContainers.length > 0) {
                 await this.setResourceDetails(actionParams);
                 return new PublishProfileSiteContainersWebAppValidator();
             }
