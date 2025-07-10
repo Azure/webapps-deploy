@@ -5,11 +5,12 @@ import { IWebAppDeploymentProvider } from "./Providers/IWebAppDeploymentProvider
 import { WebAppContainerDeploymentProvider } from "./Providers/WebAppContainerDeployment";
 import { WebAppDeploymentProvider } from "./Providers/WebAppDeploymentProvider";
 import { PublishProfileWebAppContainerDeploymentProvider } from "./Providers/PublishProfileWebAppContainerDeploymentProvider";
+import { WebAppSiteContainersDeploymentProvider } from "./Providers/WebAppSiteContainersDeploymentProvider";
 
 export class DeploymentProviderFactory {
 
     public static getDeploymentProvider(type: DEPLOYMENT_PROVIDER_TYPES) : IWebAppDeploymentProvider {
-        if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
+        if (type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
             if (!!ActionParameters.getActionParams().images) {
                 return new PublishProfileWebAppContainerDeploymentProvider(type);
             }
@@ -17,8 +18,11 @@ export class DeploymentProviderFactory {
                 return new WebAppDeploymentProvider(type);
             }
         }
-        else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
-            if(!!ActionParameters.getActionParams().images || (!!ActionParameters.getActionParams().isLinux && !!ActionParameters.getActionParams().multiContainerConfigFile)) {
+        else if (type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
+            if (!!ActionParameters.getActionParams().siteContainers) {
+                return new WebAppSiteContainersDeploymentProvider(type);
+            }
+            else if (!!ActionParameters.getActionParams().images || (!!ActionParameters.getActionParams().isLinux && !!ActionParameters.getActionParams().multiContainerConfigFile)) {
                 return new WebAppContainerDeploymentProvider(type);
             }
             else {

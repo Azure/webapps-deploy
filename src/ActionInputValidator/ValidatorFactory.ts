@@ -12,11 +12,12 @@ import { SpnWindowsWebAppValidator } from "./ActionValidators/SpnWindowsWebAppVa
 import { appNameIsRequired } from "./Validations";
 import { PublishProfile } from "../Utilities/PublishProfile";
 import RuntimeConstants from "../RuntimeConstants";
+import { SpnWebAppSiteContainersValidator } from "./ActionValidators/SpnWebAppSiteContainersValidator";
 
 export class ValidatorFactory {
     public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator> {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
-        if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
+        if (type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
             if (!!actionParams.images) {
                 await this.setResourceDetails(actionParams);
                 return new PublishProfileContainerWebAppValidator();
@@ -30,6 +31,9 @@ export class ValidatorFactory {
             appNameIsRequired(actionParams.appName);
             await this.getResourceDetails(actionParams);
             if (!!actionParams.isLinux) {
+                if (!!actionParams.siteContainers) {
+                    return new SpnWebAppSiteContainersValidator();
+                }
                 if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
                     return new SpnLinuxContainerWebAppValidator();
                 }

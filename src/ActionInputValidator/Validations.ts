@@ -6,6 +6,7 @@ import RuntimeConstants from '../RuntimeConstants';
 import { ActionParameters } from "../actionparameters";
 
 import fs = require('fs');
+import { SiteContainer } from 'azure-actions-appservice-rest/Arm/SiteContainer';
 
 // Error is app-name is not provided
 export function appNameIsRequired(appname: string) {
@@ -35,6 +36,14 @@ export function validateAppDetails() {
         if(!appNameMatch || !slotNameMatch) {
             throw new Error("Publish profile is invalid for app-name and slot-name provided. Provide correct publish profile credentials for app.");
         }
+    }
+}
+
+// Error if Sidecar configuration is provided
+
+export function siteContainersConfigNotAllowed(siteContainers: SiteContainer[]) {
+    if(!!siteContainers) {
+        throw new Error("SiteContainers not valid input for this web app.");
     }
 }
 
@@ -108,5 +117,13 @@ export async function validatePackageInput() {
     let isMSBuildPackage = await actionParams.package.isMSBuildPackage();
     if(isMSBuildPackage) {
         throw new Error(`Deployment of msBuild generated package is not supported. Please change package format.`);
+    }
+}
+
+// validate site containers inputs
+export function validateSiteContainersInputs() {
+    const actionParams: ActionParameters = ActionParameters.getActionParams();
+    if (!actionParams.siteContainers || actionParams.siteContainers.length === 0) {
+        throw new Error("Site containers not provided.");
     }
 }
