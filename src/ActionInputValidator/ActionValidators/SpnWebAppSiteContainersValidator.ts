@@ -8,8 +8,6 @@ export class SpnWebAppSiteContainersValidator implements IValidator {
 
         packageNotAllowed(actionParams.packageInput);
 
-        validateAppDetails();
-
         validateSiteContainersInputs();
     }
 }
