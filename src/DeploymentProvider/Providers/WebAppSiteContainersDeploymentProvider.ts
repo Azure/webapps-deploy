@@ -7,6 +7,8 @@ export class WebAppSiteContainersDeploymentProvider extends BaseWebAppDeployment
         let siteContainerDeploymentUtility = new SiteContainerDeploymentUtility(this.appService);
         let siteContainers = this.actionParams.siteContainers;
 
+        core.info("app service details: " + this.appService);
+
         for (let i = 0; i < siteContainers.length; i++) {
             let siteContainer = siteContainers[i];
             core.info("updating site container: " + JSON.stringify(siteContainer));
