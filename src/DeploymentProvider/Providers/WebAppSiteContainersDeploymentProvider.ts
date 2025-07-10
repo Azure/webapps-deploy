@@ -6,6 +6,9 @@ export class WebAppSiteContainersDeploymentProvider extends BaseWebAppDeployment
         let siteContainerDeploymentUtility = new SiteContainerDeploymentUtility(this.appService);
         let siteContainers = this.actionParams.siteContainers;
 
+        console.log('AppService value: ' + this.appService);
+        console.log('sitecontainerUtility value: ' + siteContainerDeploymentUtility);
+
         for (let i = 0; i < siteContainers.length; i++) {
             let siteContainer = siteContainers[i];
             await siteContainerDeploymentUtility.updateSiteContainer(siteContainer);
