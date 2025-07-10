@@ -8,10 +8,6 @@ export class SpnWebAppSiteContainersValidator implements IValidator {
 
         packageNotAllowed(actionParams.packageInput);
 
-        multiContainerNotAllowed(actionParams.multiContainerConfigFile);
-
-        startupCommandNotAllowed(actionParams.startupCommand);
-
         validateAppDetails();
 
         validateSiteContainersInputs();

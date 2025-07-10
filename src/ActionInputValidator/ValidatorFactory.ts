@@ -1,5 +1,6 @@
 import { ActionParameters, WebAppKind, appKindMap } from "../actionparameters";
 
+import * as core from "@actions/core";
 import { AzureResourceFilterUtility } from "azure-actions-appservice-rest/Utilities/AzureResourceFilterUtility";
 import { DEPLOYMENT_PROVIDER_TYPES } from "../DeploymentProvider/Providers/BaseWebAppDeploymentProvider";
 import { IValidator } from "./ActionValidators/IValidator";
@@ -28,10 +29,14 @@ export class ValidatorFactory {
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
             // app-name is required to get resource details
+            core.info("Validating app name is required for SPN deployment");
             appNameIsRequired(actionParams.appName);
             await this.getResourceDetails(actionParams);
+            core.info("validated app details");
             if (!!actionParams.isLinux) {
+                core.info("Validating Linux app details");
                 if (!!actionParams.siteContainers) {
+                    core.info("Validating site containers app details");
                     return new SpnWebAppSiteContainersValidator();
                 }
                 if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
