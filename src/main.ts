@@ -21,8 +21,14 @@ export async function main() {
     let userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
     core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
 
+    let publishProfileContent = core.getInput('publish-profile');
+    if (!!publishProfileContent) {
+      core.debug("Using publish profile for deployment");
+    } else {
+      core.debug("Using service principal for deployment");
+    }
     // Initialize action inputs
-    let endpoint: IAuthorizer = !!core.getInput('publish-profile') ? null : await AuthorizerFactory.getAuthorizer();
+    let endpoint: IAuthorizer = !!publishProfileContent ? null : await AuthorizerFactory.getAuthorizer();
     ActionParameters.getActionParams(endpoint);
     let type: DEPLOYMENT_PROVIDER_TYPES = null;
 
