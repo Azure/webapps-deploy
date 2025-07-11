@@ -20,7 +20,9 @@ export class ValidatorFactory {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
         let validators: IValidator[] = [];
         if (type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
-            if (!!actionParams.images) {
+            if (!!actionParams.blessedAppSitecontainers || !!actionParams.siteContainers) {
+                throw new Error("publish-profile is not supported for Site Containers scenario");
+            } else if (!!actionParams.images) {
                 await this.setResourceDetails(actionParams);
                 validators.push(new PublishProfileContainerWebAppValidator());
             }
