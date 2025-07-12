@@ -1,5 +1,6 @@
 import { ActionParameters, WebAppKind, appKindMap } from "../actionparameters";
 
+import * as core from "@actions/core";
 import { AzureResourceFilterUtility } from "azure-actions-appservice-rest/Utilities/AzureResourceFilterUtility";
 import { DEPLOYMENT_PROVIDER_TYPES } from "../DeploymentProvider/Providers/BaseWebAppDeploymentProvider";
 import { IValidator } from "./ActionValidators/IValidator";
@@ -12,39 +13,57 @@ import { SpnWindowsWebAppValidator } from "./ActionValidators/SpnWindowsWebAppVa
 import { appNameIsRequired } from "./Validations";
 import { PublishProfile } from "../Utilities/PublishProfile";
 import RuntimeConstants from "../RuntimeConstants";
+import { SpnWebAppSiteContainersValidator } from "./ActionValidators/SpnWebAppSiteContainersValidator";
 
 export class ValidatorFactory {
-    public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator> {
+    public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator[]> {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
-        if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
-            if (!!actionParams.images) {
+        let validators: IValidator[] = [];
+        if (type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
+            if (!!actionParams.blessedAppSitecontainers || !!actionParams.siteContainers) {
+                throw new Error("publish-profile is not supported for Site Containers scenario");
+            } else if (!!actionParams.images) {
                 await this.setResourceDetails(actionParams);
-                return new PublishProfileContainerWebAppValidator();
+                validators.push(new PublishProfileContainerWebAppValidator());
             }
             else {
-                return new PublishProfileWebAppValidator();
+                validators.push(new PublishProfileWebAppValidator());
             }
+            return validators;
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
             // app-name is required to get resource details
+            core.info("Validating app name is required for SPN deployment");
             appNameIsRequired(actionParams.appName);
             await this.getResourceDetails(actionParams);
+            core.info("validated app details");
             if (!!actionParams.isLinux) {
-                if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
-                    return new SpnLinuxContainerWebAppValidator();
+                core.info("Validating Linux app details");
+                if (!!actionParams.blessedAppSitecontainers) {
+                    validators.push(new SpnWebAppSiteContainersValidator());
+                    validators.push(new SpnLinuxWebAppValidator());
+                }
+                else if (!!actionParams.siteContainers) {
+                    core.info("Validating site containers app details");
+                    validators.push(new SpnWebAppSiteContainersValidator());
+                }
+                else if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
+                    validators.push(new SpnLinuxContainerWebAppValidator());
                 }
                 else {
-                    return new SpnLinuxWebAppValidator();
+                    validators.push(new SpnLinuxWebAppValidator());
                 }
             }
             else {
                 if (!!actionParams.images) {
-                    return new SpnWindowsContainerWebAppValidator();
+                    validators.push(new SpnWindowsContainerWebAppValidator());
                 }
                 else {
-                    return new SpnWindowsWebAppValidator();
+                    validators.push(new SpnWindowsWebAppValidator());
                 }
             }
+
+            return validators;
         }
         else {
             throw new Error("Valid credentials are not available. Add Azure Login action before this action or provide publish-profile input.");

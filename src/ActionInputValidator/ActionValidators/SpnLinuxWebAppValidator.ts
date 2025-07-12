@@ -13,5 +13,4 @@ export class SpnLinuxWebAppValidator implements IValidator {
 
         await validatePackageInput();
     }
-    
 }

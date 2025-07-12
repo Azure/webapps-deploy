@@ -22,6 +22,9 @@ inputs:
   configuration-file:
     description: 'Applies to Web App Containers only: Path of the Docker-Compose file. Should be a fully qualified path or relative to the default working directory. Required for multi-container scenario'
     required: false
+  sitecontainers-config:
+    description: 'Applies to Sitecontainers'
+    required: false
   startup-command:
     description: 'Enter the start up command. For ex. dotnet run or dotnet run'
     required: false
@@ -40,6 +43,10 @@ inputs:
   restart:
     description: 'Restart the app service after deployment'
     required: false
+  blessed-app-sitecontainers:
+    description: 'Applies to apps with sidecars'
+    required: false
+    default: 'false'
     
 outputs:
   webapp-url:

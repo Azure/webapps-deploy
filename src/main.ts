@@ -21,9 +21,21 @@ export async function main() {
     let userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
     core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
 
+    let publisghProfileContent = core.getInput('publish-profile');
+
+    if (!!publisghProfileContent) {
+        core.info("Using publish profile for deployment");
+    } else {
+        core.info("Using Azure Login for deployment");
+    }
+
     // Initialize action inputs
-    let endpoint: IAuthorizer = !!core.getInput('publish-profile') ? null : await AuthorizerFactory.getAuthorizer();
+    let endpoint: IAuthorizer = !!publisghProfileContent ? null : await AuthorizerFactory.getAuthorizer();
+    
+    core.info("endpoint: " + JSON.stringify(endpoint));
+    
     ActionParameters.getActionParams(endpoint);
+    
     let type: DEPLOYMENT_PROVIDER_TYPES = null;
 
     if(!!endpoint) {
@@ -34,16 +46,19 @@ export async function main() {
     }
 
     // Validate action inputs
-    let validator = await ValidatorFactory.getValidator(type);
-    await validator.validate();
+    let validators = await ValidatorFactory.getValidator(type);
+    for (const validator of validators) {
+        await validator.validate();
+    }
 
-    var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
+    var deploymentProviders = DeploymentProviderFactory.getDeploymentProvider(type);
 
-    core.debug("Predeployment Step Started");
-    await deploymentProvider.PreDeploymentStep();
-
-    core.debug("Deployment Step Started");
-    await deploymentProvider.DeployWebAppStep();
+      for (const provider of deploymentProviders) {
+          core.info("Predeployment Step Started");
+          await provider.PreDeploymentStep();
+          core.info("Deployment Step Started");
+          await provider.DeployWebAppStep();
+      }
   }
   catch(error) {
     isDeploymentSuccess = false;
@@ -57,8 +72,8 @@ export async function main() {
     }
   }
   finally {
-      if(deploymentProvider != null) {
-          await deploymentProvider.UpdateDeploymentStatus(isDeploymentSuccess);
+      if(deploymentProviders != null) {
+          await deploymentProviders[0].UpdateDeploymentStatus(isDeploymentSuccess);
       }
 
       // Reset AZURE_HTTP_USER_AGENT

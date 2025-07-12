@@ -1,13 +1,17 @@
 import * as core from '@actions/core';
 import { IAuthorizer } from "azure-actions-webclient/Authorizer/IAuthorizer";
 import { Package } from 'azure-actions-utility/packageUtility';
+import { SiteContainer } from 'azure-actions-appservice-rest/Arm/SiteContainer';
+import { isTypedArray } from 'util/types';
 const github = require('@actions/github');
+const fs = require('fs');
 
 export enum WebAppKind {
     Windows,
     Linux,
     WindowsContainer,
-    LinuxContainer
+    LinuxContainer,
+    SiteContainers
 };
 
 export const appKindMap = new Map([
@@ -15,6 +19,7 @@ export const appKindMap = new Map([
     [ 'app,linux', WebAppKind.Linux ],
     [ 'app,container,windows', WebAppKind.WindowsContainer ],
     [ 'app,linux,container', WebAppKind.LinuxContainer ],
+    [ 'app,linux', WebAppKind.SiteContainers ],
     [ 'api', WebAppKind.Windows ],
 ]);
 
@@ -35,12 +40,14 @@ export class ActionParameters {
     private _isMultiContainer: boolean;
     private _isLinux: boolean;
     private _commitMessage: string;
+    private _siteContainers: SiteContainer[];
 
     // Used only for OneDeploy
     private _type: string;
     private _targetPath: string;
     private _clean: string;
     private _restart: string;
+    private _blessedAppSitecontainers: boolean = false;
 
     private constructor(endpoint: IAuthorizer) {
         this._publishProfileContent = core.getInput('publish-profile');
@@ -62,6 +69,14 @@ export class ActionParameters {
         this._targetPath = core.getInput('target-path');
         this._clean = core.getInput('clean');
         this._restart = core.getInput('restart');
+        const siteContainersConfigInput = core.getInput('sitecontainers-config');
+        if (siteContainersConfigInput) {
+            const raw = JSON.parse(siteContainersConfigInput);
+            this._siteContainers = raw.map(SiteContainer.fromJson);
+        } else {
+            this._siteContainers = null;
+        }
+        this._blessedAppSitecontainers = core.getInput('blessed-app-sitecontainers') === 'true';
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
@@ -70,6 +85,15 @@ export class ActionParameters {
         }
         return this.actionparams;
     }
+
+    public get siteContainers(): SiteContainer[] {
+        return this._siteContainers;
+    }
+
+    public set siteContainers(siteContainers: SiteContainer[]) {
+        this._siteContainers = siteContainers;
+    }
+    
     public get appName() {
         return this._appName;
     }
@@ -173,5 +197,9 @@ export class ActionParameters {
 
     public get restart() {
         return this._restart;
+    }
+
+    public get blessedAppSitecontainers() {
+        return this._blessedAppSitecontainers;
     }
 }
