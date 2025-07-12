@@ -1,0 +1,14 @@
+{
+  "name": "express-app",
+  "version": "1.0.0",
+  "description": "Sample Node app",
+  "main": "server.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "heapdump": "^0.3.15",
+    "microseconds": "^0.2.0",
+    "v8-profiler-node8": "^6.2.0"
+  }
+}
