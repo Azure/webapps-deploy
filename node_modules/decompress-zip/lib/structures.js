@@ -53,7 +53,7 @@ var parseExternalFileAttributes = function (externalAttributes, platform) {
     case 3: // Unix
         return {
             platform: 'Unix',
-            type: types[(externalAttributes >> 28) & 0x0F],
+            type: types[(externalAttributes >> 28) & 0x0F] || 'File',  // default to File
             mode: (externalAttributes >> 16) & 0xFFF
         };
 
