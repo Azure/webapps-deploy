@@ -12,12 +12,17 @@ import { SpnWindowsWebAppValidator } from "./ActionValidators/SpnWindowsWebAppVa
 import { appNameIsRequired } from "./Validations";
 import { PublishProfile } from "../Utilities/PublishProfile";
 import RuntimeConstants from "../RuntimeConstants";
+import { SpnWebAppSiteContainersValidator } from "./ActionValidators/SpnWebAppSiteContainersValidator";
+import { PublishProfileWebAppSiteContainersValidator } from "./ActionValidators/PublishProfileWebAppSiteContainersValidator"
 
 export class ValidatorFactory {
     public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator> {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
         if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
-            if (!!actionParams.images) {
+            if (!!actionParams.blessedAppSitecontainers || !!actionParams.siteContainers) {
+                return [new PublishProfileWebAppSiteContainersValidator()];
+            } 
+            else if (!!actionParams.images) {
                 await this.setResourceDetails(actionParams);
                 return new PublishProfileContainerWebAppValidator();
             }
