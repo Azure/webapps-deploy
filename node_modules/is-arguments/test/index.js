@@ -1,7 +1,8 @@
 'use strict';
 
 var test = require('tape');
-var isArguments = require('../');
+// eslint-disable-next-line no-extra-parens
+var isArguments = /** @type {import('..') & { isLegacyArguments: import('..') }} */ (require('../'));
 var hasToStringTag = require('has-tostringtag/shams')();
 
 test('primitives', function (t) {
@@ -30,10 +31,12 @@ test('old-style arguments object', function (t) {
 });
 
 test('Symbol.toStringTag', { skip: !hasToStringTag }, function (t) {
+	/** @type {{ [Symbol.toStringTag]?: string }} */
 	var obj = {};
 	obj[Symbol.toStringTag] = 'Arguments';
 	t.notOk(isArguments(obj), 'object with faked toStringTag is not arguments');
 
+	/** @type {IArguments & { [Symbol.toStringTag]?: string }} */
 	var args = (function () {
 		return arguments;
 	}());
