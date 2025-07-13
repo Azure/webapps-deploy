@@ -14,21 +14,14 @@ import { appNameIsRequired } from "./Validations";
 import { PublishProfile } from "../Utilities/PublishProfile";
 import RuntimeConstants from "../RuntimeConstants";
 import { SpnWebAppSiteContainersValidator } from "./ActionValidators/SpnWebAppSiteContainersValidator";
-<<<<<<< HEAD
-import { PublishProfileWebAppSiteContainersValidator } from "./ActionValidators/PublishProfileWebAppSiteContainersValidator"
-=======
->>>>>>> 1808f5bf (Add changes for Sitecontainers deployment)
+import { PublishProfileWebAppSiteContainersValidator } from "./ActionValidators/PublishProfileWebAppSiteContainersValidator";
 
 export class ValidatorFactory {
     public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator[]> {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
         if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
             if (!!actionParams.blessedAppSitecontainers || !!actionParams.siteContainers) {
-<<<<<<< HEAD
                 return [new PublishProfileWebAppSiteContainersValidator()];
-=======
-                throw new Error("publish-profile is not supported for Site Containers scenario");
->>>>>>> 1808f5bf (Add changes for Sitecontainers deployment)
             } 
             else if (!!actionParams.images) {
                 await this.setResourceDetails(actionParams);
