@@ -1,7 +1,7 @@
 # Lazy Streams
 
 > *Create streams lazily when they are read from or written to.*  
-> `lazystream: 1.0.0` [![Build Status](https://travis-ci.org/jpommerening/node-lazystream.png?branch=master)](https://travis-ci.org/jpommerening/node-lazystream)  
+> `lazystream: 1.0.1`  
 
 ## Why?
 
@@ -57,15 +57,19 @@ new lazystream.Writable(function () {
 
 ```console
 $ npm install lazystream --save
-lazystream@1.0.0 node_modules/lazystream
+lazystream@1.0.1 node_modules/lazystream
 └── readable-stream@2.0.5
 ```
 
 ## Changelog
 
+### v1.0.1
+
+- [#3](https://github.com/jpommerening/node-lazystream/issues/3): (finally) fixed a long-standing publishing error
+
 ### v1.0.0
 
-- [#2](https://github.com/jpommerening/node-lazystream/pull/2): [unconditionally](https://r.va.gg/2014/06/why-i-dont-use-nodes-core-stream-module.html) use `readable-stream` _2.x_.
+- [#2](https://github.com/jpommerening/node-lazystream/issues/2): [unconditionally](https://r.va.gg/2014/06/why-i-dont-use-nodes-core-stream-module.html) use `readable-stream` _2.x_.
 
 ### v0.2.0
 
@@ -83,7 +87,7 @@ Fork it, branch it, send me a pull request. We'll work out the rest together.
 
 [Chris Talkington](https://github.com/ctalkington) and his [node-archiver](https://github.com/ctalkington/node-archiver) for providing a use-case.
 
-## [License](LICENSE-MIT)
+## [License](LICENSE)
 
 Copyright (c) 2013 J. Pommerening, contributors.
 
