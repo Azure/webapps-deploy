@@ -1,4 +1,4 @@
-import { containerInputsNotAllowed, startupCommandNotAllowed, validateAppDetails, validatePackageInput } from "../Validations";
+import { containerInputsNotAllowed, siteContainersConfigNotAllowed, startupCommandNotAllowed, validateAppDetails, validatePackageInput } from "../Validations";
 
 import { ActionParameters } from "../../actionparameters";
 import { IValidator } from "./IValidator";
@@ -14,6 +14,8 @@ export class PublishProfileWebAppValidator implements IValidator {
         validateAppDetails();
 
         startupCommandNotAllowed(actionParams.startupCommand);
+
+        siteContainersConfigNotAllowed(actionParams.siteContainers);
 
         await validatePackageInput();
     }

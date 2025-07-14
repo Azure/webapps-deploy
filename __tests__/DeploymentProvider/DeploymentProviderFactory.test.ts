@@ -19,8 +19,8 @@ describe('Test Deployment Provider Factory', () => {
         it("Get Code Deployment Provider for Publish Profile auth flow", async() => {
             let type: DEPLOYMENT_PROVIDER_TYPES = DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE;
     
-            let provider = await DeploymentProviderFactory.getDeploymentProvider(type);
-            expect(provider).toBeInstanceOf(WebAppDeploymentProvider);
+            let providers = await DeploymentProviderFactory.getDeploymentProvider(type);
+            expect(providers[0]).toBeInstanceOf(WebAppDeploymentProvider);
         });
     
         it("Get Container Deployment Provider for Publish Profile auth flow", async() => {
@@ -32,8 +32,8 @@ describe('Test Deployment Provider Factory', () => {
 
             let type: DEPLOYMENT_PROVIDER_TYPES = DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE;
             
-            let provider = await DeploymentProviderFactory.getDeploymentProvider(type);
-            expect(provider).toBeInstanceOf(PublishProfileWebAppContainerDeploymentProvider);
+            let providers = await DeploymentProviderFactory.getDeploymentProvider(type);
+            expect(providers[0]).toBeInstanceOf(PublishProfileWebAppContainerDeploymentProvider);
         });
         
     });
@@ -48,8 +48,8 @@ describe('Test Deployment Provider Factory', () => {
 
             let type: DEPLOYMENT_PROVIDER_TYPES = DEPLOYMENT_PROVIDER_TYPES.SPN;
     
-            let provider = await DeploymentProviderFactory.getDeploymentProvider(type);
-            expect(provider).toBeInstanceOf(WebAppDeploymentProvider);
+            let providers = await DeploymentProviderFactory.getDeploymentProvider(type);
+            expect(providers[0]).toBeInstanceOf(WebAppDeploymentProvider);
         });
 
         it("Get Container Deployment Provider for SPN auth flow", async() => {
@@ -61,8 +61,8 @@ describe('Test Deployment Provider Factory', () => {
 
             let type: DEPLOYMENT_PROVIDER_TYPES = DEPLOYMENT_PROVIDER_TYPES.SPN;
     
-            let provider = await DeploymentProviderFactory.getDeploymentProvider(type);
-            expect(provider).toBeInstanceOf(WebAppContainerDeploymentProvider);
+            let providers = await DeploymentProviderFactory.getDeploymentProvider(type);
+            expect(providers[0]).toBeInstanceOf(WebAppContainerDeploymentProvider);
         });
 
     });

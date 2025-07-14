@@ -4,6 +4,7 @@ import { Package, exist } from "azure-actions-utility/packageUtility";
 import { PublishProfile, ScmCredentials } from "../Utilities/PublishProfile";
 import RuntimeConstants from '../RuntimeConstants';
 import { ActionParameters } from "../actionparameters";
+import { SiteContainer } from 'azure-actions-appservice-rest/Arm/SiteContainer';
 
 import fs = require('fs');
 
@@ -108,5 +109,20 @@ export async function validatePackageInput() {
     let isMSBuildPackage = await actionParams.package.isMSBuildPackage();
     if(isMSBuildPackage) {
         throw new Error(`Deployment of msBuild generated package is not supported. Please change package format.`);
+    }
+}
+
+// Error if Sitecontainers configuration is provided
+export function siteContainersConfigNotAllowed(siteContainers: SiteContainer[]) {
+    if(!!siteContainers) {
+        throw new Error("SiteContainers not valid input for this web app.");
+    }
+}
+
+// validate Sitecontainers inputs
+export function validateSiteContainersInputs() {
+    const actionParams: ActionParameters = ActionParameters.getActionParams();
+    if (!actionParams.siteContainers || actionParams.siteContainers.length === 0) {
+        throw new Error("Site containers not provided.");
     }
 }

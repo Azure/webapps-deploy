@@ -1,5 +1,6 @@
 import { ActionParameters, WebAppKind, appKindMap } from "../actionparameters";
 
+import * as core from "@actions/core";
 import { AzureResourceFilterUtility } from "azure-actions-appservice-rest/Utilities/AzureResourceFilterUtility";
 import { DEPLOYMENT_PROVIDER_TYPES } from "../DeploymentProvider/Providers/BaseWebAppDeploymentProvider";
 import { IValidator } from "./ActionValidators/IValidator";
@@ -12,17 +13,22 @@ import { SpnWindowsWebAppValidator } from "./ActionValidators/SpnWindowsWebAppVa
 import { appNameIsRequired } from "./Validations";
 import { PublishProfile } from "../Utilities/PublishProfile";
 import RuntimeConstants from "../RuntimeConstants";
+import { SpnWebAppSiteContainersValidator } from "./ActionValidators/SpnWebAppSiteContainersValidator";
+import { PublishProfileWebAppSiteContainersValidator } from "./ActionValidators/PublishProfileWebAppSiteContainersValidator"
 
 export class ValidatorFactory {
-    public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator> {
+    public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator[]> {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
         if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
-            if (!!actionParams.images) {
+            if (!!actionParams.blessedAppSitecontainers || !!actionParams.siteContainers) {
+                return [new PublishProfileWebAppSiteContainersValidator()];
+            } 
+            else if (!!actionParams.images) {
                 await this.setResourceDetails(actionParams);
-                return new PublishProfileContainerWebAppValidator();
+                return [new PublishProfileContainerWebAppValidator()];
             }
             else {
-                return new PublishProfileWebAppValidator();
+                return [new PublishProfileWebAppValidator()];
             }
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
@@ -30,19 +36,27 @@ export class ValidatorFactory {
             appNameIsRequired(actionParams.appName);
             await this.getResourceDetails(actionParams);
             if (!!actionParams.isLinux) {
-                if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
-                    return new SpnLinuxContainerWebAppValidator();
+                if (!!actionParams.blessedAppSitecontainers) {
+                    core.info("Validating site containers app details");
+                    return [new SpnWebAppSiteContainersValidator(), new SpnLinuxWebAppValidator()];
+                }
+                else if (!!actionParams.siteContainers) {
+                    core.info("Validating site containers app details");
+                    return [new SpnWebAppSiteContainersValidator()];
+                }
+                else if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
+                    return [new SpnLinuxContainerWebAppValidator()];
                 }
                 else {
-                    return new SpnLinuxWebAppValidator();
+                    return [new SpnLinuxWebAppValidator()];
                 }
             }
             else {
                 if (!!actionParams.images) {
-                    return new SpnWindowsContainerWebAppValidator();
+                    return [new SpnWindowsContainerWebAppValidator()];
                 }
                 else {
-                    return new SpnWindowsWebAppValidator();
+                    return [new SpnWindowsWebAppValidator()];
                 }
             }
         }

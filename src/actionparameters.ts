@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import { IAuthorizer } from "azure-actions-webclient/Authorizer/IAuthorizer";
 import { Package } from 'azure-actions-utility/packageUtility';
+import { SiteContainer } from 'azure-actions-appservice-rest/Arm/SiteContainer';
 const github = require('@actions/github');
 
 export enum WebAppKind {
@@ -42,6 +43,10 @@ export class ActionParameters {
     private _clean: string;
     private _restart: string;
 
+    // Used for Sitecontainers app.
+    private _siteContainers: SiteContainer[];
+    private _blessedAppSitecontainers: boolean = false;
+
     private constructor(endpoint: IAuthorizer) {
         this._publishProfileContent = core.getInput('publish-profile');
         this._appName = core.getInput('app-name');
@@ -62,6 +67,17 @@ export class ActionParameters {
         this._targetPath = core.getInput('target-path');
         this._clean = core.getInput('clean');
         this._restart = core.getInput('restart');
+
+        // Used for Sitecontainers app.
+        const siteContainersConfigInput = core.getInput('sitecontainers-config');
+        if (siteContainersConfigInput) {
+            const raw = JSON.parse(siteContainersConfigInput);
+            this._siteContainers = raw.map(SiteContainer.fromJson);
+        } else {
+            this._siteContainers = null;
+        }
+
+        this._blessedAppSitecontainers = core.getInput('blessed-app-sitecontainers') === 'true';
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
@@ -173,5 +189,17 @@ export class ActionParameters {
 
     public get restart() {
         return this._restart;
+    }
+
+    public get siteContainers(): SiteContainer[] {
+        return this._siteContainers;
+    }
+
+    public set siteContainers(siteContainers: SiteContainer[]) {
+        this._siteContainers = siteContainers;
+    }
+
+    public get blessedAppSitecontainers() {
+        return this._blessedAppSitecontainers;
     }
 }
