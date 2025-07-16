@@ -1,6 +1,6 @@
 {
   "name": "azure-actions-utility",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "file and text transformation utilities ",
   "main": "index.js",
   "scripts": {
