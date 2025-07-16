@@ -1,4 +1,5 @@
 declare const names: [
+	'Float16Array',
 	'Float32Array',
 	'Float64Array',
 	'Int8Array',

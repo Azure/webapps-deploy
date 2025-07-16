@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.2.0](https://github.com/inspect-js/is-arguments/compare/v1.1.1...v1.2.0) - 2024-12-12
+
+### Commits
+
+- [actions] reuse common workflows [`ff7c948`](https://github.com/inspect-js/is-arguments/commit/ff7c94886dbfb6ea5d2175d5e49c1d0b4f4ac922)
+- [New] add types [`5fe6c6e`](https://github.com/inspect-js/is-arguments/commit/5fe6c6e0d0826d86f355c7e95adb4838dbe6df36)
+- [meta] use `npmignore` to autogenerate an npmignore file [`9a9b0cf`](https://github.com/inspect-js/is-arguments/commit/9a9b0cf7dcf00a8dad6dd38f983f7611b33a5c9d)
+- [actions] split out node 10-20, and 20+ [`74c5c49`](https://github.com/inspect-js/is-arguments/commit/74c5c490763649e03d54f97f8367918ee710d6a5)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `safe-publish-latest`, `tape` [`d9a932d`](https://github.com/inspect-js/is-arguments/commit/d9a932db8a0ad7f95ebd3ccd5322a5d5ea3d422f)
+- [readme] update URLs [`0f726b6`](https://github.com/inspect-js/is-arguments/commit/0f726b696ff562d5beecdd5a407579c9d18ec226)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `tape` [`ea21450`](https://github.com/inspect-js/is-arguments/commit/ea21450ecbfff962f273b1e741af2bf20241563d)
+- [actions] update rebase action to use reusable workflow [`eaad2ab`](https://github.com/inspect-js/is-arguments/commit/eaad2ab2e25018037a3bcd149d65206bf723cb88)
+- [actions] cleanup [`2be15d3`](https://github.com/inspect-js/is-arguments/commit/2be15d3ee78dd214d5b961d8c890aae94f0faa58)
+- [actions] update codecov uploader [`29b929c`](https://github.com/inspect-js/is-arguments/commit/29b929cf44fa1014f431d89c44518c34bbcd774b)
+- [Dev Deps] update `@ljharb/eslint-config`, `auto-changelog`, `npmignore`, `tape` [`8a38bf5`](https://github.com/inspect-js/is-arguments/commit/8a38bf572c59fdfdf6db9167185f78c59410048b)
+- [Dev Deps] update `@ljharb/eslint-config`, `safe-publish-latest`, `tape` [`841627d`](https://github.com/inspect-js/is-arguments/commit/841627ddcc32f578b62b659dede177697737d027)
+- [Refactor] use `call-bound` directly [`e429257`](https://github.com/inspect-js/is-arguments/commit/e429257b9e3d28b60cbc86c6f1c877e23af28429)
+- [Deps] update `call-bind`, `has-tostringtag` [`c0db6a8`](https://github.com/inspect-js/is-arguments/commit/c0db6a800366e9744c375560813cbd70bf8e0d2d)
+- [Tests] replace `aud` with `npm audit` [`f589983`](https://github.com/inspect-js/is-arguments/commit/f589983d330f205f89af679af6d4b806a3cbceb5)
+- [meta] add `sideEffects` flag [`2e15793`](https://github.com/inspect-js/is-arguments/commit/2e15793dfd3ef97b0e4a311be056bdfbaa9f5beb)
+- [Dev Deps] add missing peer dep [`0ffe01b`](https://github.com/inspect-js/is-arguments/commit/0ffe01b8ecce5a30b93bf6078e62a3c6268254b8)
+
 ## [v1.1.1](https://github.com/inspect-js/is-arguments/compare/v1.1.0...v1.1.1) - 2021-08-05
 
 ### Commits
