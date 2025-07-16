@@ -40,7 +40,7 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 case PackageType.folder:
                     let tempPackagePath = utility.generateTemporaryFolderOrZipPath(`${process.env.RUNNER_TEMP}`, false);
                     // exluding release.zip while creating zip for deployment.
-                    webPackage = await zipUtility.archiveFolderWithExcludePatterns(webPackage, "", tempPackagePath, ['release.zip', 'abc.war']) as string;
+                    webPackage = await zipUtility.archiveFolderWithExcludePatterns(webPackage, "", tempPackagePath, ['release.zip']) as string;
                     core.debug("Compressed folder into zip " +  webPackage);
                     core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage);
                     this.actionParams.type = "zip";
