@@ -3,6 +3,7 @@ import * as utility from 'azure-actions-utility/utility.js';
 import * as zipUtility from 'azure-actions-utility/ziputility.js';
 import { unlink } from 'fs/promises';
 import path from 'path';
+import * as fs from 'fs';
 
 import { Package, PackageType } from "azure-actions-utility/packageUtility";
 
@@ -42,6 +43,8 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 case PackageType.folder:
                     let tempPackagePath = utility.generateTemporaryFolderOrZipPath(`${process.env.RUNNER_TEMP}`, false);
                     // exluding release.zip while creating zip for deployment.
+                    
+                    await this.printFilesInDirectory(webPackage);
 
                     const releaseZipPath =  path.join(webPackage, 'releases.zip');
                     try {
@@ -79,6 +82,30 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
             await this.updateStartupCommand();
         }
     }
+
+    private async printFilesInDirectory(directoryPath: string) {
+        core.info("release files under a folder");
+        fs.readdir(directoryPath, (err, files) => {
+            if (err) {
+            core.info(`Error reading directory: ${err.message}`);
+            return;
+            }
+
+            files.forEach(file => {
+            const filePath = path.join(directoryPath, file);
+            fs.stat(filePath, (err, stats) => {
+                if (err) {
+                core.info(`Error reading file info: ${err.message}`);
+                return;
+                }
+
+                
+                core.info(filePath);
+                
+            });
+            });
+        });
+}
 
     private async updateStartupCommand() {
         let currentConfig = await this.appService.getConfiguration();
