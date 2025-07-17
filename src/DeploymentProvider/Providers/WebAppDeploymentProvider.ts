@@ -1,6 +1,9 @@
 import * as core from '@actions/core';
 import * as utility from 'azure-actions-utility/utility.js';
 import * as zipUtility from 'azure-actions-utility/ziputility.js';
+import { unlink } from 'fs/promises';
+import path from 'path';
+import * as fs from 'fs';
 
 import { Package, PackageType } from "azure-actions-utility/packageUtility";
 
@@ -40,7 +43,10 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 case PackageType.folder:
                     let tempPackagePath = utility.generateTemporaryFolderOrZipPath(`${process.env.RUNNER_TEMP}`, false);
                     // exluding release.zip while creating zip for deployment.
-                    webPackage = await zipUtility.archiveFolderWithExcludePatterns(webPackage, "", tempPackagePath, ['release.zip']) as string;
+                    
+                    await this.deleteReleaseZip(webPackage);
+
+                    webPackage = await zipUtility.archiveFolder(webPackage, "", tempPackagePath) as string;
                     core.debug("Compressed folder into zip " +  webPackage);
                     core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage);
                     this.actionParams.type = "zip";
@@ -84,5 +90,48 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         
         console.log('App Service Application URL: ' + this.applicationURL);
         core.setOutput('webapp-url', this.applicationURL);
+    }
+
+    private async deleteReleaseZip(folderPath: string) {
+
+        let isPhpApp = await this.containsPhpFiles(folderPath);
+
+        if(!isPhpApp) {
+            core.info("No PHP files found in the folder, skipping release.zip deletion.");
+            return;
+        }
+
+        let releaseZipPath = path.join(folderPath, 'release.zip');
+
+        try {
+            await unlink(releaseZipPath);
+            core.info(`Deleted: ${releaseZipPath}`);
+        } catch (err: any) {
+            if (err.code === 'ENOENT') {
+                core.error(`File does not exist: ${releaseZipPath}`);
+            } else {
+                core.error(`Error while deleting file ${releaseZipPath}, Error: ${err}`);
+            }
+        }
+    }
+
+    private async containsPhpFiles(directoryPath: string): Promise<boolean> {
+        try {
+            const files = fs.readdirSync(directoryPath);
+
+            for (const file of files) {
+                const fullPath = path.join(directoryPath, file);
+                const stat = fs.statSync(fullPath);
+
+                if (stat.isFile() && path.extname(file).toLowerCase() === '.php') {
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (error: any) {
+            console.error(`Error checking directory: ${error.message}`);
+            return false;
+        }
     }
 }
