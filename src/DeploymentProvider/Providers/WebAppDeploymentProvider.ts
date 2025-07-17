@@ -50,9 +50,9 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                         core.info(`Deleted: ${releaseZipPath}`);
                     } catch (err: any) {
                         if (err.code === 'ENOENT') {
-                            core.info(`File does not exist: ${releaseZipPath}`);
+                            core.error(`File does not exist: ${releaseZipPath}`);
                         } else {
-                            core.info(`Error while deleting file ${releaseZipPath}, Error: ${err}`);
+                            core.error(`Error while deleting file ${releaseZipPath}, Error: ${err}`);
                         }
                     }
 
