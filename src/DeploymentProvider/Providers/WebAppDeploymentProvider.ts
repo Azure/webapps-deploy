@@ -46,6 +46,9 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                     
                     await this.printFilesInDirectory(webPackage);
 
+                    core.info("Print webPackage " + webPackage);
+                    core.info("Print tempPackagePath" + tempPackagePath)
+
                     const releaseZipPath =  path.join(webPackage, 'releases.zip');
                     try {
                         await unlink(releaseZipPath);
