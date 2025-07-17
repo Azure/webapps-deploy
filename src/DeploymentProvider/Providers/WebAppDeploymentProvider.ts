@@ -49,7 +49,7 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                     core.info("Print webPackage " + webPackage);
                     core.info("Print tempPackagePath" + tempPackagePath)
 
-                    const releaseZipPath =  path.join(webPackage, 'releases.zip');
+                    const releaseZipPath =  path.join(webPackage, 'release.zip');
                     try {
                         await unlink(releaseZipPath);
                         core.info(`Deleted: ${releaseZipPath}`);
