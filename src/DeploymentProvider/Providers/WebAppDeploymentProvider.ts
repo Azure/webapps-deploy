@@ -7,6 +7,9 @@ import { Package, PackageType } from "azure-actions-utility/packageUtility";
 import { BaseWebAppDeploymentProvider } from './BaseWebAppDeploymentProvider';
 import { addAnnotation } from 'azure-actions-appservice-rest/Utilities/AnnotationUtility';
 
+import { unlink } from 'fs/promises';
+import path from 'path';
+
 export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
     public async DeployWebAppStep() {
@@ -39,8 +42,21 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
     
                 case PackageType.folder:
                     let tempPackagePath = utility.generateTemporaryFolderOrZipPath(`${process.env.RUNNER_TEMP}`, false);
-                    // exluding release.zip while creating zip for deployment.
-                    webPackage = await zipUtility.archiveFolderWithExcludePatterns(webPackage, "", tempPackagePath, ['release.zip']) as string; 
+                    
+                    const releaseZipPath =  path.join(webPackage, 'release.zip');
+
+                    try {
+                        await unlink(releaseZipPath);
+                        core.info(`Deleted: ${releaseZipPath}`);
+                    } catch (err: any) {
+                        if (err.code === 'ENOENT') {
+                            core.info(`File does not exist: ${releaseZipPath}`);
+                        } else {
+                            core.info(`Error while deleting file ${releaseZipPath}, Error: ${err}`);
+                        }
+                    }
+
+                    webPackage = await zipUtility.archiveFolder(webPackage, "", tempPackagePath) as string; 
                     core.debug("Compressed folder into zip " +  webPackage);
                     core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage);
                     this.actionParams.type = "zip";
