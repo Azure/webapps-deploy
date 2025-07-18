@@ -43,7 +43,7 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 case PackageType.folder:
                     let tempPackagePath = utility.generateTemporaryFolderOrZipPath(`${process.env.RUNNER_TEMP}`, false);
                     
-                    // excluding release.zip while creating zip for deployment.
+                    // excluding release.zip while creating zip for deployment if it's a Linux PHP app
                     await this.deleteReleaseZipForLinuxPhpApps(webPackage);
 
                     webPackage = await zipUtility.archiveFolder(webPackage, "", tempPackagePath) as string;
@@ -94,8 +94,10 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
     private async deleteReleaseZipForLinuxPhpApps(webPackage: string): Promise<void> {
         
-        // No need to delete release.zip for non-linux apps
-        if (!this.actionParams.isLinux) {
+        const releaseZipPath = path.join(webPackage, 'release.zip');
+
+        // Ignore if the app is not a Linux app or if release.zip does not exist
+        if (!this.actionParams.isLinux || !fs.existsSync(releaseZipPath)) {
             return;
         }
 
@@ -109,9 +111,8 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         // Delete release.zip if it exists
 
         try {
-            const releaseZipPath = path.join(webPackage, 'release.zip');
             await fs.promises.unlink(releaseZipPath);
-            core.debug(`Deleted release.zip for Linux PHP app: ${webPackage}`);
+            core.debug(`Deleted release.zip`);
         } catch (error) {
             core.debug(`Error while deleting release.zip for Linux PHP app: ${error}`);
         }
@@ -126,9 +127,9 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 return true;
             }
 
-            // Check if the web package contains a .php file
-            const phpFiles = fs.readdirSync(webPackage).filter(file => file.endsWith('.php'));
-            if (phpFiles.length > 0) {
+            // Check if the webPackage folder contains a .php file
+            const hasPhpFiles = fs.readdirSync(webPackage).some(file => file.endsWith('.php'));
+            if (hasPhpFiles) {
                 return true;
             }
         } catch (error) {
