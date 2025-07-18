@@ -7,6 +7,9 @@ import { Package, PackageType } from "azure-actions-utility/packageUtility";
 import { BaseWebAppDeploymentProvider } from './BaseWebAppDeploymentProvider';
 import { addAnnotation } from 'azure-actions-appservice-rest/Utilities/AnnotationUtility';
 
+import fs from 'fs';
+import path from 'path';
+
 export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
     public async DeployWebAppStep() {
@@ -39,6 +42,10 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
     
                 case PackageType.folder:
                     let tempPackagePath = utility.generateTemporaryFolderOrZipPath(`${process.env.RUNNER_TEMP}`, false);
+                    
+                    // excluding release.zip while creating zip for deployment if it's a Linux PHP app
+                    await this.deleteReleaseZipForLinuxPhpApps(webPackage);
+
                     webPackage = await zipUtility.archiveFolder(webPackage, "", tempPackagePath) as string;
                     core.debug("Compressed folder into zip " +  webPackage);
                     core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage);
@@ -83,5 +90,52 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         
         console.log('App Service Application URL: ' + this.applicationURL);
         core.setOutput('webapp-url', this.applicationURL);
+    }
+
+    private async deleteReleaseZipForLinuxPhpApps(webPackage: string): Promise<void> {
+        
+        const releaseZipPath = path.join(webPackage, 'release.zip');
+
+        // Ignore if the app is not a Linux app or if release.zip does not exist
+        if (!this.actionParams.isLinux || !fs.existsSync(releaseZipPath)) {
+            return;
+        }
+
+        let isPhpApp = await this.checkIfTheAppIsPhpApp(webPackage);
+
+        // No need to delete release.zip for non-PHP apps
+        if (!isPhpApp) {
+            return;
+        }
+
+        // Delete release.zip if it exists
+
+        try {
+            await fs.promises.unlink(releaseZipPath);
+            core.debug(`Deleted release.zip`);
+        } catch (error) {
+            core.debug(`Error while deleting release.zip for Linux PHP app: ${error}`);
+        }
+    }
+
+    private async checkIfTheAppIsPhpApp(webPackage: string): Promise<boolean> {
+
+        try {
+            // Check if the webPackage folder contains a composer.json file
+            const composerFile = 'composer.json'; 
+            if (fs.existsSync(path.join(webPackage, composerFile))) {
+                return true;
+            }
+
+            // Check if the webPackage folder contains a .php file
+            const hasPhpFiles = fs.readdirSync(webPackage).some(file => file.endsWith('.php'));
+            if (hasPhpFiles) {
+                return true;
+            }
+        } catch (error) {
+            core.debug(`Error while checking if the app is PHP: ${error}`);
+        }
+
+       return false;
     }
 }
