@@ -129,9 +129,8 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
             // Check if the webPackage folder contains a .php file
             const hasPhpFiles = fs.readdirSync(webPackage).some(file => file.endsWith('.php'));
-            if (hasPhpFiles) {
-                return true;
-            }
+            
+            return hasPhpFiles;
         } catch (error) {
             core.debug(`Error while checking if the app is PHP: ${error}`);
         }
