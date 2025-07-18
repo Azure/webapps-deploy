@@ -22,22 +22,18 @@
  * IN THE SOFTWARE.
  */
 
-// NOTE: These definitions support Node.js and TypeScript 5.7+.
+// NOTE: These definitions support NodeJS and TypeScript 4.9+.
 
-// Reference required TypeScript libs:
+// Reference required types from the default lib:
 /// <reference lib="es2020" />
+/// <reference lib="esnext.asynciterable" />
+/// <reference lib="esnext.intl" />
+/// <reference lib="esnext.bigint" />
 
-// TypeScript backwards-compatibility definitions:
-/// <reference path="compatibility/index.d.ts" />
-
-// Definitions specific to TypeScript 5.7+:
-/// <reference path="globals.typedarray.d.ts" />
-/// <reference path="buffer.buffer.d.ts" />
-
-// Definitions for Node.js modules that are not specific to any version of TypeScript:
-/// <reference path="globals.d.ts" />
+// Base definitions for all NodeJS modules that are not specific to any version of TypeScript:
 /// <reference path="assert.d.ts" />
 /// <reference path="assert/strict.d.ts" />
+/// <reference path="globals.d.ts" />
 /// <reference path="async_hooks.d.ts" />
 /// <reference path="buffer.d.ts" />
 /// <reference path="child_process.d.ts" />
@@ -70,7 +66,6 @@
 /// <reference path="readline.d.ts" />
 /// <reference path="readline/promises.d.ts" />
 /// <reference path="repl.d.ts" />
-/// <reference path="sea.d.ts" />
 /// <reference path="stream.d.ts" />
 /// <reference path="stream/promises.d.ts" />
 /// <reference path="stream/consumers.d.ts" />
@@ -89,3 +84,5 @@
 /// <reference path="wasi.d.ts" />
 /// <reference path="worker_threads.d.ts" />
 /// <reference path="zlib.d.ts" />
+
+/// <reference path="globals.global.d.ts" />
