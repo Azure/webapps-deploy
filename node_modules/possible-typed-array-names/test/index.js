@@ -6,10 +6,13 @@ var names = require('../');
 
 test('typed array names', function (t) {
 	for (var i = 0; i < names.length; i++) {
-		t.equal(typeof names[i], 'string', 'is string');
-		t.equal(names.indexOf(names[i]), i, 'is unique');
+		var name = names[i];
 
-		t.match(typeof global[names[i]], /^(?:function|undefined)$/, 'is a global function, or `undefined`');
+		t.equal(typeof name, 'string', 'is string');
+		t.equal(names.indexOf(name), i, 'is unique (from start)');
+		t.equal(names.lastIndexOf(name), i, 'is unique (from end)');
+
+		t.match(typeof global[name], /^(?:function|undefined)$/, 'is a global function, or `undefined`');
 	}
 
 	t.end();

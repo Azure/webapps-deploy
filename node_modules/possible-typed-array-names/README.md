@@ -19,8 +19,10 @@ const names = require('possible-typed-array-names');
 assert(Array.isArray(names));
 assert(names.every(name => (
     typeof name === 'string'
-    && typeof globalThis[name] === 'function'
-    && globalThis[name].name === name
+    && ((
+        typeof globalThis[name] === 'function'
+        && globalThis[name].name === name
+    ) || typeof globalThis[name] === 'undefined')
 )));
 ```
 
