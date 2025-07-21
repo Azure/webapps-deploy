@@ -9,6 +9,7 @@ import { addAnnotation } from 'azure-actions-appservice-rest/Utilities/Annotatio
 
 import fs from 'fs';
 import path from 'path';
+import { dir } from 'console';
 
 export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
@@ -86,10 +87,17 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
     }
 
     private async deleteReleaseZipForLinuxPhpApps(webPackage: string): Promise<void> {
-        const releaseZipPath = path.join(webPackage, 'release.zip');
 
         // Ignore if the app is not a Linux app or if release.zip does not exist
-        if (!this.actionParams.isLinux || !fs.existsSync(releaseZipPath)) {
+        if (!this.actionParams.isLinux) {
+            core.info(`It's not a Linux app, skipping deletion of release.zip`);
+            return;
+        }
+        
+        const releaseZipPath = path.join(webPackage, 'release.zip');
+        
+        if (!fs.existsSync(releaseZipPath)) {
+            core.info(`release.zip does not exist, skipping deletion: ${releaseZipPath}`);
             return;
         }
 
@@ -97,14 +105,14 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
         // No need to delete release.zip for non-PHP apps
         if (!isPhpApp) {
+            core.info(`Not a PHP app, skipping deletion of release.zip: ${releaseZipPath}`);
             return;
         }
 
         // Delete release.zip if it exists
-
         try {
             await fs.promises.unlink(releaseZipPath);
-            core.debug(`Deleted release.zip`);
+            core.info(`Deleted release.zip`);
         } catch (error) {
             core.debug(`Error while deleting release.zip for Linux PHP app: ${error}`);
         }
@@ -116,17 +124,26 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
             // Check if the webPackage folder contains a composer.json file
             const composerFile = 'composer.json'; 
             if (fs.existsSync(path.join(webPackage, composerFile))) {
+                core.info(`Detected PHP app by presence of ${composerFile}`);
                 return true;
             }
 
             // Check if the webPackage folder contains a .php file
-            const hasPhpFiles = fs.readdirSync(webPackage).some(file => file.endsWith('.php'));
+            core.info(`Checking for .php files in the web package directory: ${webPackage}`);
+            const hasPhpFiles = fs.readdirSync(webPackage, {withFileTypes: true, recursive: true}).some(file => file.isFile() && file.name.endsWith('.php'));
+
+            if (hasPhpFiles) {
+                core.info(`Detected PHP app by presence of .php files`);
+            } else {
+                core.info(`No .php files found in the web package directory.`);
+            }
             
             return hasPhpFiles;
         } catch (error) {
-            core.debug(`Error while checking if the app is PHP: ${error}`);
+            core.info(`Error while checking if the app is PHP: ${error}`);
         }
 
        return false;
     }
+    
 }
