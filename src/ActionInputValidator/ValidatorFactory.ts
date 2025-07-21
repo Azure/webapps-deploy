@@ -26,7 +26,7 @@ export class ValidatorFactory {
                 try {
                     await this.setResourceDetails(actionParams);
                 } catch (error) {
-                    core.error(`Failed to set resource details: ${error.message}`);
+                    core.warning(`Failed to set resource details: ${error.message}`);
                 }
                 return new PublishProfileWebAppValidator();
             }
