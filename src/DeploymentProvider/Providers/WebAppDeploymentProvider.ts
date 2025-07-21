@@ -87,11 +87,17 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
     }
 
     private async deleteReleaseZipForLinuxPhpApps(webPackage: string): Promise<void> {
-        const releaseZipPath = path.join(webPackage, 'release.zip');
 
         // Ignore if the app is not a Linux app or if release.zip does not exist
-        if (!this.actionParams.isLinux || !fs.existsSync(releaseZipPath)) {
-            core.info(`release.zip does not exist or not a Linux app, skipping deletion: ${releaseZipPath}`);
+        if (!this.actionParams.isLinux) {
+            core.info(`It's not a Linux app, skipping deletion of release.zip`);
+            return;
+        }
+        
+        const releaseZipPath = path.join(webPackage, 'release.zip');
+        
+        if (!fs.existsSync(releaseZipPath)) {
+            core.info(`release.zip does not exist, skipping deletion: ${releaseZipPath}`);
             return;
         }
 
