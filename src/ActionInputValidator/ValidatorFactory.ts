@@ -1,3 +1,4 @@
+import * as core from "@actions/core";
 import { ActionParameters, WebAppKind, appKindMap } from "../actionparameters";
 
 import { AzureResourceFilterUtility } from "azure-actions-appservice-rest/Utilities/AzureResourceFilterUtility";
@@ -22,6 +23,11 @@ export class ValidatorFactory {
                 return new PublishProfileContainerWebAppValidator();
             }
             else {
+                try {
+                    await this.setResourceDetails(actionParams);
+                } catch (error) {
+                    core.warning(`Failed to set resource details: ${error.message}`);
+                }
                 return new PublishProfileWebAppValidator();
             }
         }
