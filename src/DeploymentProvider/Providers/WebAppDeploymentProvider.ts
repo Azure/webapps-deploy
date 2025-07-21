@@ -104,7 +104,6 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         }
 
         // Delete release.zip if it exists
-
         try {
             await fs.promises.unlink(releaseZipPath);
             core.info(`Deleted release.zip`);
