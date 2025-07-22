@@ -93,11 +93,17 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
     }
 
     private async deleteReleaseZipForLinuxPhpApps(webPackage: string): Promise<void> {
+
+        // If the app is not a Linux app, skip the deletion of release.zip
+        if (!this.actionParams.isLinux) {
+            core.debug(`It's not a Linux app, skipping deletion of release.zip`);
+            return;
+        }
         
         const releaseZipPath = path.join(webPackage, 'release.zip');
 
-        // Ignore if the app is not a Linux app or if release.zip does not exist
-        if (!this.actionParams.isLinux || !fs.existsSync(releaseZipPath)) {
+        if (!fs.existsSync(releaseZipPath)) {
+            core.debug(`release.zip does not exist, skipping deletion: ${releaseZipPath}`);
             return;
         }
 
@@ -105,6 +111,7 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
         // No need to delete release.zip for non-PHP apps
         if (!isPhpApp) {
+            core.debug(`Not a PHP app, skipping deletion of release.zip: ${releaseZipPath}`);
             return;
         }
 
@@ -124,11 +131,19 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
             // Check if the web package contains a composer.json file
             const composerFile = 'composer.json'; 
             if (fs.existsSync(path.join(webPackage, composerFile))) {
+                core.debug(`Detected PHP app by presence of ${composerFile}`);
                 return true;
             }
 
             // Check if the webPackage folder contains a .php file
-            const hasPhpFiles = fs.readdirSync(webPackage).some(file => file.endsWith('.php'));
+            core.debug(`Checking for .php files in the web package directory: ${webPackage}`);
+            const hasPhpFiles = fs.readdirSync(webPackage, {withFileTypes: true, recursive: true}).some(file => file.isFile() && file.name.endsWith('.php'));
+            
+            if (hasPhpFiles) {
+                core.debug(`Detected PHP app by presence of .php files`);
+            } else {
+                core.debug(`No .php files found in the web package directory`);
+            }
             
             return hasPhpFiles;
         } catch (error) {
