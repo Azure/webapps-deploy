@@ -43,8 +43,8 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
                 case PackageType.folder:
                     let tempPackagePath = utility.generateTemporaryFolderOrZipPath(`${process.env.RUNNER_TEMP}`, false);
                     
-                    // excluding release.zip while creating zip for deployment if it's a Linux PHP app
-                    await this.deleteReleaseZipForLinuxPhpApps(webPackage);
+                    // Excluding release.zip while creating zip for deployment if it's a Linux app
+                    await this.deleteReleaseZipForLinuxApps(webPackage);
 
                     webPackage = await zipUtility.archiveFolder(webPackage, "", tempPackagePath) as string;
                     core.debug("Compressed folder into zip " +  webPackage);
@@ -92,7 +92,7 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         core.setOutput('webapp-url', this.applicationURL);
     }
 
-    private async deleteReleaseZipForLinuxPhpApps(webPackage: string): Promise<void> {
+    private async deleteReleaseZipForLinuxApps(webPackage: string): Promise<void> {
 
         // If the app is not a Linux app, skip the deletion of release.zip
         if (!this.actionParams.isLinux) {
@@ -101,55 +101,19 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         }
         
         const releaseZipPath = path.join(webPackage, 'release.zip');
-
+        
+        // Check if release.zip exists
         if (!fs.existsSync(releaseZipPath)) {
             core.debug(`release.zip does not exist, skipping deletion: ${releaseZipPath}`);
             return;
         }
 
-        let isPhpApp = await this.checkIfTheAppIsPhpApp(webPackage);
-
-        // No need to delete release.zip for non-PHP apps
-        if (!isPhpApp) {
-            core.debug(`Not a PHP app, skipping deletion of release.zip: ${releaseZipPath}`);
-            return;
-        }
-
         // Delete release.zip if it exists
-
         try {
             await fs.promises.unlink(releaseZipPath);
             core.debug(`Deleted release.zip`);
         } catch (error) {
-            core.debug(`Error while deleting release.zip for Linux PHP app: ${error}`);
+            core.debug(`Error while deleting release.zip for Linux app: ${error}`);
         }
-    }
-
-    private async checkIfTheAppIsPhpApp(webPackage: string): Promise<boolean> {
-
-        try {
-            // Check if the web package contains a composer.json file
-            const composerFile = 'composer.json'; 
-            if (fs.existsSync(path.join(webPackage, composerFile))) {
-                core.debug(`Detected PHP app by presence of ${composerFile}`);
-                return true;
-            }
-
-            // Check if the webPackage folder contains a .php file
-            core.debug(`Checking for .php files in the web package directory: ${webPackage}`);
-            const hasPhpFiles = fs.readdirSync(webPackage, {withFileTypes: true, recursive: true}).some(file => file.isFile() && file.name.endsWith('.php'));
-            
-            if (hasPhpFiles) {
-                core.debug(`Detected PHP app by presence of .php files`);
-            } else {
-                core.debug(`No .php files found in the web package directory`);
-            }
-            
-            return hasPhpFiles;
-        } catch (error) {
-            core.debug(`Error while checking if the app is PHP: ${error}`);
-        }
-
-       return false;
     }
 }
