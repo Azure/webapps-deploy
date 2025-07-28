@@ -45,7 +45,7 @@ export class ActionParameters {
 
     // Used for Sitecontainers app.
     private _siteContainers: SiteContainer[];
-    private _blessedAppSitecontainers: boolean = false;
+    private _blessedAppSitecontainers: boolean;
 
     private constructor(endpoint: IAuthorizer) {
         this._publishProfileContent = core.getInput('publish-profile');
