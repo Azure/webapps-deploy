@@ -65,6 +65,8 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
         this.kuduServiceUtility = new KuduServiceUtility(this.kuduService);
 
         this.applicationURL = await this.appServiceUtility.getApplicationURL();
+
+        core.info(`Application config is: ${JSON.stringify(this.appService.getConfiguration())}`);
     }
 
     private async initializeForPublishProfile() {
