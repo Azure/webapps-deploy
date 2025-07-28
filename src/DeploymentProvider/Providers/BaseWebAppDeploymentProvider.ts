@@ -66,7 +66,8 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
 
         this.applicationURL = await this.appServiceUtility.getApplicationURL();
 
-        core.info(`Application config is: ${JSON.stringify(this.appService.getConfiguration())}`);
+        let config = await this.appService.getConfiguration();
+        core.info(`App Service Configuration: ${JSON.stringify(config)}`);
     }
 
     private async initializeForPublishProfile() {
