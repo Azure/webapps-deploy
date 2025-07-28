@@ -1,7 +1,6 @@
 import * as core from "@actions/core";
 import { ActionParameters, WebAppKind, appKindMap } from "../actionparameters";
 
-import * as core from "@actions/core";
 import { AzureResourceFilterUtility } from "azure-actions-appservice-rest/Utilities/AzureResourceFilterUtility";
 import { DEPLOYMENT_PROVIDER_TYPES } from "../DeploymentProvider/Providers/BaseWebAppDeploymentProvider";
 import { IValidator } from "./ActionValidators/IValidator";
