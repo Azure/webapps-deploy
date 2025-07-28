@@ -77,7 +77,7 @@ export class ActionParameters {
             this._siteContainers = null;
         }
 
-        this._blessedAppSitecontainers = core.getInput('blessed-app-sitecontainers') === 'true';
+        this._blessedAppSitecontainers = false;
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
@@ -201,5 +201,9 @@ export class ActionParameters {
 
     public get blessedAppSitecontainers() {
         return this._blessedAppSitecontainers;
+    }
+
+    public set blessedAppSitecontainers(blessedAppSitecontainers: boolean) {
+        this._blessedAppSitecontainers = blessedAppSitecontainers;
     }
 }

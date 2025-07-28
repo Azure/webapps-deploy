@@ -43,10 +43,6 @@ inputs:
   sitecontainers-config:
     description: 'Applies to Sitecontainers, containes a list of siteContainer specs'
     required: false
-  blessed-app-sitecontainers:
-    description: 'Applies to blessed apps with Sitecontainers'
-    required: false
-    default: 'false'
 
 outputs:
   webapp-url:
