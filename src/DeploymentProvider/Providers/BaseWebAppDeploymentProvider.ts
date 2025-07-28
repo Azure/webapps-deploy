@@ -67,6 +67,7 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
         this.applicationURL = await this.appServiceUtility.getApplicationURL();
 
         let config = await this.appService.getConfiguration();
+        core.info(`LinuxFxVersion of app is: ${config.properties.linuxFxVersion}`);
         core.info(`App Service Configuration: ${JSON.stringify(config)}`);
     }
 
