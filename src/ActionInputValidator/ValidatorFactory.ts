@@ -14,13 +14,14 @@ import { appNameIsRequired } from "./Validations";
 import { PublishProfile } from "../Utilities/PublishProfile";
 import RuntimeConstants from "../RuntimeConstants";
 import { SpnWebAppSiteContainersValidator } from "./ActionValidators/SpnWebAppSiteContainersValidator";
+import { AzureAppService } from "azure-actions-appservice-rest/Arm/azure-app-service";
 
 export class ValidatorFactory {
     public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator[]> {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
         let validators: IValidator[] = [];
         if (type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
-            if (!!actionParams.blessedAppSitecontainers || !!actionParams.siteContainers) {
+            if (!!actionParams.siteContainers) {
                 throw new Error("publish-profile is not supported for Site Containers scenario");
             } else if (!!actionParams.images) {
                 await this.setResourceDetails(actionParams);
@@ -39,13 +40,14 @@ export class ValidatorFactory {
             core.info("validated app details");
             if (!!actionParams.isLinux) {
                 core.info("Validating Linux app details");
-                if (!!actionParams.blessedAppSitecontainers) {
-                    validators.push(new SpnWebAppSiteContainersValidator());
-                    validators.push(new SpnLinuxWebAppValidator());
-                }
-                else if (!!actionParams.siteContainers) {
+                if (!!actionParams.siteContainers) {
                     core.info("Validating site containers app details");
                     validators.push(new SpnWebAppSiteContainersValidator());
+
+                    if (await this.isBlessedSitecontainerApp(actionParams)) {
+                        core.info("Validating blessed site containers app details");
+                        validators.push(new SpnLinuxWebAppValidator());
+                    }
                 }
                 else if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
                     validators.push(new SpnLinuxContainerWebAppValidator());
@@ -83,5 +85,17 @@ export class ValidatorFactory {
         const publishProfile: PublishProfile = PublishProfile.getPublishProfile(actionParams.publishProfileContent);
         const appOS: string = await publishProfile.getAppOS();
         actionParams.isLinux = appOS.includes(RuntimeConstants.Unix) || appOS.includes(RuntimeConstants.Unix.toLowerCase());
+    }
+
+    private static async isBlessedSitecontainerApp(actionParams: ActionParameters): Promise<boolean> {
+        const appService = new AzureAppService(actionParams.endpoint, actionParams.resourceGroupName, actionParams.appName, actionParams.slotName);
+
+        let config = await appService.getConfiguration();
+        
+        core.info(`LinuxFxVersion of app is: ${config.properties.linuxFxVersion}`);
+
+        actionParams.blessedAppSitecontainers = (config.properties.linuxFxVersion !== "DOCKER" && config.properties.containerImageName !== "SITECONTAINERS");
+
+        return actionParams.blessedAppSitecontainers;
     }
 }
