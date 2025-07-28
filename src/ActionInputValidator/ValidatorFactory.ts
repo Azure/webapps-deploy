@@ -64,6 +64,8 @@ export class ValidatorFactory {
         params.kind = appKindMap.get(params.realKind);
         //app kind linux and kubeapp is supported only on linux environment currently
         params.isLinux = params.realKind.indexOf("linux") > -1 || params.realKind.indexOf("kubeapp") > -1;
+
+        core.info(`LinuxFxVersion of app is: ${appDetails["linuxFxVersion"]}`);
     }
 
     private static async setResourceDetails(actionParams: ActionParameters) {
