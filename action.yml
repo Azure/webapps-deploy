@@ -40,7 +40,10 @@ inputs:
   restart:
     description: 'Restart the app service after deployment'
     required: false
-    
+  sitecontainers-config:
+    description: 'Applies to Sitecontainers, containes a list of siteContainer specs'
+    required: false
+
 outputs:
   webapp-url:
     description: 'URL to work with your webapp'
