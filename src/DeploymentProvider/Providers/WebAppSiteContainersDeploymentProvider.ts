@@ -11,7 +11,7 @@ export class WebAppSiteContainersDeploymentProvider extends BaseWebAppDeployment
 
         for (let i = 0; i < siteContainers.length; i++) {
             let siteContainer = siteContainers[i];
-            core.info("updating site container: " + siteContainer.getName);
+            core.info("updating site container: " + siteContainer.getName());
             await siteContainerDeploymentUtility.updateSiteContainer(siteContainer);
         }
     }
