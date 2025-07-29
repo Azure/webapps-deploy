@@ -1,3 +1,5 @@
+import * as core from '@actions/core';
+
 import { ActionParameters, WebAppKind } from "../actionparameters";
 
 import { DEPLOYMENT_PROVIDER_TYPES } from "./Providers/BaseWebAppDeploymentProvider";
@@ -20,15 +22,19 @@ export class DeploymentProviderFactory {
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
             if (!!ActionParameters.getActionParams().blessedAppSitecontainers) {
+                core.info("Using blessed app site containers deployment provider");
                 return [new WebAppDeploymentProvider(type), new WebAppSiteContainersDeploymentProvider(type)];
             }
             else if (!!ActionParameters.getActionParams().siteContainers) {
+                core.info("Using site containers deployment provider");
                 return [new WebAppSiteContainersDeploymentProvider(type)];
             }
             else if(!!ActionParameters.getActionParams().images || (!!ActionParameters.getActionParams().isLinux && !!ActionParameters.getActionParams().multiContainerConfigFile)) {
+                core.info("Using web app container deployment provider");
                 return [new WebAppContainerDeploymentProvider(type)];
             }
             else {
+                core.info("Using web app deployment provider");
                 return [new WebAppDeploymentProvider(type)];
             }
         }
