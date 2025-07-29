@@ -93,9 +93,10 @@ export class ValidatorFactory {
         
         core.debug(`LinuxFxVersion of app is: ${config.properties.linuxFxVersion}`);
 
-        actionParams.blessedAppSitecontainers = (config.properties.linuxFxVersion?.startsWith("DOCKER|") !== true
-                                                    && config.properties.linuxFxVersion?.startsWith("COMPOSE|") !== true
-                                                    && config.properties.linuxFxVersion !== "SITECONTAINERS");
+        const linuxFxVersion = config.properties.linuxFxVersion?.toUpperCase() || "";
+        actionParams.blessedAppSitecontainers = (!linuxFxVersion.startsWith("DOCKER|")
+                                && !linuxFxVersion.startsWith("COMPOSE|")
+                                && linuxFxVersion !== "SITECONTAINERS");
 
         return actionParams.blessedAppSitecontainers;
     }
