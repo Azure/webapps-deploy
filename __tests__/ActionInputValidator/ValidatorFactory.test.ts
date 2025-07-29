@@ -26,8 +26,8 @@ describe('Test Validator Factory', () => {
             jest.spyOn(PublishProfile, 'getPublishProfile').mockImplementation(() => PublishProfile.prototype);
             jest.spyOn(PublishProfile.prototype, 'getAppOS').mockImplementation(async() => 'unix');
     
-            let validator = await ValidatorFactory.getValidator(type);
-            expect(validator).toBeInstanceOf(PublishProfileWebAppValidator);
+            let validators = await ValidatorFactory.getValidator(type);
+            expect(validators[0]).toBeInstanceOf(PublishProfileWebAppValidator);
         });
     
         it("Get Container Validator for Publish Profile auth flow", async() => {
@@ -42,8 +42,8 @@ describe('Test Validator Factory', () => {
             jest.spyOn(PublishProfile, 'getPublishProfile').mockImplementation(() => PublishProfile.prototype);
             jest.spyOn(PublishProfile.prototype, 'getAppOS').mockImplementation(async() => 'unix');
     
-            let validator = await ValidatorFactory.getValidator(type);
-            expect(validator).toBeInstanceOf(PublishProfileContainerWebAppValidator);
+            let validators = await ValidatorFactory.getValidator(type);
+            expect(validators[0]).toBeInstanceOf(PublishProfileContainerWebAppValidator);
         });
         
     });
@@ -70,8 +70,8 @@ describe('Test Validator Factory', () => {
                 };
             });
     
-            let validator = await ValidatorFactory.getValidator(type);
-            expect(validator).toBeInstanceOf(SpnLinuxContainerWebAppValidator);
+            let validators = await ValidatorFactory.getValidator(type);
+            expect(validators[0]).toBeInstanceOf(SpnLinuxContainerWebAppValidator);
         });
 
         it("Get Linux/Kube Code Validator for SPN auth flow", async() => {
@@ -90,8 +90,8 @@ describe('Test Validator Factory', () => {
                 };
             });
     
-            let validator = await ValidatorFactory.getValidator(type);
-            expect(validator).toBeInstanceOf(SpnLinuxWebAppValidator);
+            let validators = await ValidatorFactory.getValidator(type);
+            expect(validators[0]).toBeInstanceOf(SpnLinuxWebAppValidator);
         });
 
         it("Get Windows Container Validator for SPN auth flow", async() => {
@@ -111,8 +111,8 @@ describe('Test Validator Factory', () => {
                 };
             });
     
-            let validator = await ValidatorFactory.getValidator(type);
-            expect(validator).toBeInstanceOf(SpnWindowsContainerWebAppValidator);
+            let validators = await ValidatorFactory.getValidator(type);
+            expect(validators[0]).toBeInstanceOf(SpnWindowsContainerWebAppValidator);
         });
 
         it("Get Windows Code Validator for SPN auth flow", async() => {
@@ -131,8 +131,8 @@ describe('Test Validator Factory', () => {
                 };
             });
     
-            let validator = await ValidatorFactory.getValidator(type);
-            expect(validator).toBeInstanceOf(SpnWindowsWebAppValidator);
+            let validators = await ValidatorFactory.getValidator(type);
+            expect(validators[0]).toBeInstanceOf(SpnWindowsWebAppValidator);
         });
 
     });
