@@ -18,15 +18,15 @@ import { PublishProfileWebAppSiteContainersValidator } from "./ActionValidators/
 import { AzureAppService } from "azure-actions-appservice-rest/Arm/azure-app-service";
 
 export class ValidatorFactory {
-    public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator[]> {
+    public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator> {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
         if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
             if (!!actionParams.blessedAppSitecontainers || !!actionParams.siteContainers) {
-                return [new PublishProfileWebAppSiteContainersValidator()];
+                return new PublishProfileWebAppSiteContainersValidator();
             } 
             else if (!!actionParams.images) {
                 await this.setResourceDetails(actionParams);
-                return [new PublishProfileContainerWebAppValidator()];
+                return new PublishProfileContainerWebAppValidator();
             }
             else {
                 try {
@@ -35,7 +35,7 @@ export class ValidatorFactory {
                 catch (error) {
                     core.warning(`Failed to set resource details: ${error.message}`);
                 }
-                return [new PublishProfileWebAppValidator()];
+                return new PublishProfileWebAppValidator();
             }
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
@@ -45,24 +45,22 @@ export class ValidatorFactory {
             if (!!actionParams.isLinux) {
                 if (!!actionParams.siteContainers) {
                     if (await this.isBlessedSitecontainerApp(actionParams)) {
-                        return [new SpnLinuxWebAppValidator(), new SpnWebAppSiteContainersValidator()];
+                        return new SpnWebAppSiteContainersValidator();
                     }
-
-                    return [new SpnWebAppSiteContainersValidator()];
                 }
                 else if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
-                    return [new SpnLinuxContainerWebAppValidator()];
+                    return new SpnLinuxContainerWebAppValidator();
                 }
                 else {
-                    return [new SpnLinuxWebAppValidator()];
+                    return new SpnLinuxWebAppValidator();
                 }
             }
             else {
                 if (!!actionParams.images) {
-                    return [new SpnWindowsContainerWebAppValidator()];
+                    return new SpnWindowsContainerWebAppValidator();
                 }
                 else {
-                    return [new SpnWindowsWebAppValidator()];
+                    return new SpnWindowsWebAppValidator();
                 }
             }
         }

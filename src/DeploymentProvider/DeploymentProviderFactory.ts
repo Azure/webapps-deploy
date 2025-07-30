@@ -11,31 +11,24 @@ import { WebAppSiteContainersDeploymentProvider } from "./Providers/WebAppSiteCo
 
 export class DeploymentProviderFactory {
 
-    public static getDeploymentProvider(type: DEPLOYMENT_PROVIDER_TYPES) : IWebAppDeploymentProvider[] {
+    public static getDeploymentProvider(type: DEPLOYMENT_PROVIDER_TYPES) : IWebAppDeploymentProvider {
         if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
             if (!!ActionParameters.getActionParams().images) {
-                return [new PublishProfileWebAppContainerDeploymentProvider(type)];
+                return new PublishProfileWebAppContainerDeploymentProvider(type);
             }
             else {
-                return [new WebAppDeploymentProvider(type)];
+                return new WebAppDeploymentProvider(type);
             }
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
-            if (!!ActionParameters.getActionParams().blessedAppSitecontainers) {
-                core.info("Using blessed app site containers deployment provider");
-                return [new WebAppDeploymentProvider(type), new WebAppSiteContainersDeploymentProvider(type)];
-            }
-            else if (!!ActionParameters.getActionParams().siteContainers) {
-                core.info("Using site containers deployment provider");
-                return [new WebAppSiteContainersDeploymentProvider(type)];
+            if (!!ActionParameters.getActionParams().blessedAppSitecontainers || !!ActionParameters.getActionParams().siteContainers) {
+                return new WebAppSiteContainersDeploymentProvider(type);
             }
             else if(!!ActionParameters.getActionParams().images || (!!ActionParameters.getActionParams().isLinux && !!ActionParameters.getActionParams().multiContainerConfigFile)) {
-                core.info("Using web app container deployment provider");
-                return [new WebAppContainerDeploymentProvider(type)];
+                return new WebAppContainerDeploymentProvider(type);
             }
             else {
-                core.info("Using web app deployment provider");
-                return [new WebAppDeploymentProvider(type)];
+                return new WebAppDeploymentProvider(type);
             }
         }
         else {
