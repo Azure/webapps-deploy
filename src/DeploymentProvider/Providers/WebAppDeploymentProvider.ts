@@ -13,6 +13,7 @@ import path from 'path';
 export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
     public async DeployWebAppStep() {
+        core.info("Starting deployment for web app...");
         let appPackage: Package = this.actionParams.package;
         let webPackage = appPackage.getPath();
 

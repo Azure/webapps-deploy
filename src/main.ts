@@ -39,10 +39,9 @@ export async function main() {
 
     var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
 
-    core.debug("Predeployment Step Started");
+    core.info("Predeployment Step Started");
     await deploymentProvider.PreDeploymentStep();
-
-    core.debug("Deployment Step Started");
+    core.info("Deployment Step Started");
     await deploymentProvider.DeployWebAppStep();
   }
   catch(error) {
