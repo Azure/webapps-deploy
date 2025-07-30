@@ -35,9 +35,9 @@ describe('Test azure-webapps-deploy', () => {
         }
             return '';
         });
-        let getValidatorFactorySpy = jest.spyOn(ValidatorFactory, 'getValidator').mockImplementation(async _type => [new PublishProfileWebAppValidator()]);
+        let getValidatorFactorySpy = jest.spyOn(ValidatorFactory, 'getValidator').mockImplementation(async _type => new PublishProfileWebAppValidator());
         let ValidatorFactoryValidateSpy = jest.spyOn(PublishProfileWebAppValidator.prototype, 'validate');
-        let getDeploymentProviderSpy = jest.spyOn(DeploymentProviderFactory, 'getDeploymentProvider').mockImplementation(type => [new WebAppDeploymentProvider(type)]);
+        let getDeploymentProviderSpy = jest.spyOn(DeploymentProviderFactory, 'getDeploymentProvider').mockImplementation(type => new WebAppDeploymentProvider(type));
         let deployWebAppStepSpy = jest.spyOn(WebAppDeploymentProvider.prototype, 'DeployWebAppStep');
         let updateDeploymentStatusSpy = jest.spyOn(WebAppDeploymentProvider.prototype, 'UpdateDeploymentStatus');
 
