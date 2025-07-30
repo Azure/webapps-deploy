@@ -44,9 +44,9 @@ export class ValidatorFactory {
             await this.getResourceDetails(actionParams);
             if (!!actionParams.isLinux) {
                 if (!!actionParams.siteContainers) {
-                    if (await this.isBlessedSitecontainerApp(actionParams)) {
-                        return new SpnWebAppSiteContainersValidator();
-                    }
+                    await this.setIfBlessedSitecontainerApp(actionParams);
+                    core.debug(`Blessed site containers: ${actionParams.blessedAppSitecontainers}`);
+                    return new SpnWebAppSiteContainersValidator();
                 }
                 else if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
                     return new SpnLinuxContainerWebAppValidator();
@@ -84,7 +84,7 @@ export class ValidatorFactory {
         actionParams.isLinux = appOS.includes(RuntimeConstants.Unix) || appOS.includes(RuntimeConstants.Unix.toLowerCase());
     }
 
-    private static async isBlessedSitecontainerApp(actionParams: ActionParameters): Promise<boolean> {
+    private static async setIfBlessedSitecontainerApp(actionParams: ActionParameters): Promise<boolean> {
         const appService = new AzureAppService(actionParams.endpoint, actionParams.resourceGroupName, actionParams.appName, actionParams.slotName);
 
         let config = await appService.getConfiguration();
