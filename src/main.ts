@@ -34,19 +34,15 @@ export async function main() {
     }
 
     // Validate action inputs
-    let validators = await ValidatorFactory.getValidator(type);
-    for (const validator of validators) {
-        await validator.validate();
-    }
+    let validator = await ValidatorFactory.getValidator(type);
+    await validator.validate();
 
-    var deploymentProviders = DeploymentProviderFactory.getDeploymentProvider(type);
+    var deploymentProvider = DeploymentProviderFactory.getDeploymentProvider(type);
 
-    for (const provider of deploymentProviders) {
-          core.info("Predeployment Step Started");
-          await provider.PreDeploymentStep();
-          core.info("Deployment Step Started");
-          await provider.DeployWebAppStep();
-      }
+    core.info("Predeployment Step Started");
+    await deploymentProvider.PreDeploymentStep();
+    core.info("Deployment Step Started");
+    await deploymentProvider.DeployWebAppStep();
   }
   catch(error) {
     isDeploymentSuccess = false;
@@ -60,8 +56,8 @@ export async function main() {
     }
   }
   finally {
-      if(deploymentProviders != null) {
-          await deploymentProviders[0].UpdateDeploymentStatus(isDeploymentSuccess);
+      if(deploymentProvider != null) {
+          await deploymentProvider.UpdateDeploymentStatus(isDeploymentSuccess);
       }
 
       // Reset AZURE_HTTP_USER_AGENT
