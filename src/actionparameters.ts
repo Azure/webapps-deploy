@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import { IAuthorizer } from "azure-actions-webclient/Authorizer/IAuthorizer";
 import { Package } from 'azure-actions-utility/packageUtility';
+import { SiteContainer } from 'azure-actions-appservice-rest/Arm/SiteContainer';
 const github = require('@actions/github');
 
 export enum WebAppKind {
@@ -36,6 +37,10 @@ export class ActionParameters {
     private _isLinux: boolean;
     private _commitMessage: string;
 
+    // Used for Sitecontainers app.
+    private _siteContainers: SiteContainer[];
+    private _blessedAppSitecontainers: boolean;
+
     private constructor(endpoint: IAuthorizer) {
         this._publishProfileContent = core.getInput('publish-profile');
         this._appName = core.getInput('app-name');
@@ -50,6 +55,17 @@ export class ActionParameters {
          */
         this._commitMessage = github.context.eventName === 'push' ? github.context.payload.head_commit.message.slice(0, 1000) : "";
         this._endpoint = endpoint;
+
+        // Used for Sitecontainers app.
+        const siteContainersConfigInput = core.getInput('sitecontainers-config');
+        if (siteContainersConfigInput) {
+            const raw = JSON.parse(siteContainersConfigInput);
+            this._siteContainers = raw.map(SiteContainer.fromJson);
+        } else {
+            this._siteContainers = null;
+        }
+
+        this._blessedAppSitecontainers = false;
     }
 
     public static getActionParams(endpoint?: IAuthorizer) {
@@ -143,4 +159,19 @@ export class ActionParameters {
         return this._multiContainerConfigFile;
     }
 
+    public get siteContainers(): SiteContainer[] {
+        return this._siteContainers;
+    }
+
+    public set siteContainers(siteContainers: SiteContainer[]) {
+        this._siteContainers = siteContainers;
+    }
+
+    public get blessedAppSitecontainers() {
+        return this._blessedAppSitecontainers;
+    }
+
+    public set blessedAppSitecontainers(blessedAppSitecontainers: boolean) {
+        this._blessedAppSitecontainers = blessedAppSitecontainers;
+    }
 }

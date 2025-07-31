@@ -13,12 +13,17 @@ import { SpnWindowsWebAppValidator } from "./ActionValidators/SpnWindowsWebAppVa
 import { appNameIsRequired } from "./Validations";
 import { PublishProfile } from "../Utilities/PublishProfile";
 import RuntimeConstants from "../RuntimeConstants";
+import { SpnWebAppSiteContainersValidator } from "./ActionValidators/SpnWebAppSiteContainersValidator";
+import { PublishProfileWebAppSiteContainersValidator } from "./ActionValidators/PublishProfileWebAppSiteContainersValidator"
+import { AzureAppService } from "azure-actions-appservice-rest/Arm/azure-app-service";
 
 export class ValidatorFactory {
     public static async getValidator(type: DEPLOYMENT_PROVIDER_TYPES) : Promise<IValidator> {
         let actionParams: ActionParameters = ActionParameters.getActionParams();
         if(type === DEPLOYMENT_PROVIDER_TYPES.PUBLISHPROFILE) {
-            if (!!actionParams.images) {
+            if (!!actionParams.blessedAppSitecontainers || !!actionParams.siteContainers) {
+                return new PublishProfileWebAppSiteContainersValidator();
+            } if (!!actionParams.images) {
                 await this.setResourceDetails(actionParams);
                 return new PublishProfileContainerWebAppValidator();
             }
@@ -36,18 +41,21 @@ export class ValidatorFactory {
             appNameIsRequired(actionParams.appName);
             await this.getResourceDetails(actionParams);
             if (!!actionParams.isLinux) {
-                if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
+                if (!!actionParams.siteContainers) {
+                    
+                    await this.setBlessedSitecontainerApp(actionParams);
+                    
+                    return new SpnWebAppSiteContainersValidator();
+                } else if (!!actionParams.images || !!actionParams.multiContainerConfigFile) {
                     return new SpnLinuxContainerWebAppValidator();
-                }
-                else {
+                } else {
                     return new SpnLinuxWebAppValidator();
                 }
             }
             else {
                 if (!!actionParams.images) {
                     return new SpnWindowsContainerWebAppValidator();
-                }
-                else {
+                } else {
                     return new SpnWindowsWebAppValidator();
                 }
             }
@@ -70,5 +78,19 @@ export class ValidatorFactory {
         const publishProfile: PublishProfile = PublishProfile.getPublishProfile(actionParams.publishProfileContent);
         const appOS: string = await publishProfile.getAppOS();
         actionParams.isLinux = appOS.includes(RuntimeConstants.Unix) || appOS.includes(RuntimeConstants.Unix.toLowerCase());
+    }
+
+    private static async setBlessedSitecontainerApp(actionParams: ActionParameters): Promise<void> {
+        const appService = new AzureAppService(actionParams.endpoint, actionParams.resourceGroupName, actionParams.appName, actionParams.slotName);
+
+        let config = await appService.getConfiguration();
+        
+        core.debug(`LinuxFxVersion of app is: ${config.properties.linuxFxVersion}`);
+
+        actionParams.blessedAppSitecontainers = (config.properties.linuxFxVersion?.startsWith("DOCKER|") !== true
+                                                    && config.properties.linuxFxVersion?.startsWith("COMPOSE|") !== true
+                                                    && config.properties.linuxFxVersion !== "SITECONTAINERS");
+
+        core.debug(`Is blessed app sitecontainers: ${actionParams.blessedAppSitecontainers}`);
     }
 }
