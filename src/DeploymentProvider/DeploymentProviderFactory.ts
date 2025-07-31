@@ -5,6 +5,7 @@ import { IWebAppDeploymentProvider } from "./Providers/IWebAppDeploymentProvider
 import { WebAppContainerDeploymentProvider } from "./Providers/WebAppContainerDeployment";
 import { WebAppDeploymentProvider } from "./Providers/WebAppDeploymentProvider";
 import { PublishProfileWebAppContainerDeploymentProvider } from "./Providers/PublishProfileWebAppContainerDeploymentProvider";
+import { WebAppSiteContainersDeploymentProvider } from "./Providers/WebAppSiteContainersDeploymentProvider";
 
 export class DeploymentProviderFactory {
 
@@ -18,6 +19,9 @@ export class DeploymentProviderFactory {
             }
         }
         else if(type == DEPLOYMENT_PROVIDER_TYPES.SPN) {
+            if (!!ActionParameters.getActionParams().blessedAppSitecontainers || !!ActionParameters.getActionParams().siteContainers) {
+                return new WebAppSiteContainersDeploymentProvider(type);
+            }
             if(!!ActionParameters.getActionParams().images || (!!ActionParameters.getActionParams().isLinux && !!ActionParameters.getActionParams().multiContainerConfigFile)) {
                 return new WebAppContainerDeploymentProvider(type);
             }
