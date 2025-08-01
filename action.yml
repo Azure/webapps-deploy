@@ -28,6 +28,9 @@ inputs:
   resource-group-name:
     description: 'Enter the resource group name of the web app'
     required: false
+  sitecontainers-config:
+    description: 'Applies to Sitecontainers, containes a list of siteContainer specs'
+    required: false
     
 outputs:
   webapp-url:
