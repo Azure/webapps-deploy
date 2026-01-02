@@ -21,7 +21,7 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         // kudu warm up
         await this.kuduServiceUtility.warmpUp(); 
 
-        // If provided, type paramater takes precidence over file package type
+        // If provided, type parameter takes precedence over file package type
         if (this.actionParams.type != null && validTypes.includes(this.actionParams.type.toLowerCase())) {
             core.debug("Initiated deployment via kudu service for webapp" + this.actionParams.type + "package : "+ webPackage);
         }

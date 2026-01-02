@@ -41,7 +41,7 @@ inputs:
     description: 'Restart the app service after deployment'
     required: false
   sitecontainers-config:
-    description: 'Applies to Sitecontainers, containes a list of siteContainer specs'
+    description: 'Applies to Sitecontainers, contains a list of siteContainer specs'
     required: false
 
 outputs:
