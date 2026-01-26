@@ -60,8 +60,10 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
     private async initializeForSPN() {        
         this.appService = new AzureAppService(this.actionParams.endpoint, this.actionParams.resourceGroupName, this.actionParams.appName, this.actionParams.slotName);
         this.appServiceUtility = new AzureAppServiceUtility(this.appService);
+
+        const warmupInstanceId = await this.appServiceUtility.getWarmupInstanceId();
         
-        this.kuduService = await this.appServiceUtility.getKuduService();
+        this.kuduService = await this.appServiceUtility.getKuduService(warmupInstanceId);
         this.kuduServiceUtility = new KuduServiceUtility(this.kuduService);
 
         this.applicationURL = await this.appServiceUtility.getApplicationURL();
