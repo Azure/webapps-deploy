@@ -62,6 +62,7 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
         this.appServiceUtility = new AzureAppServiceUtility(this.appService);
 
         const warmupInstanceId = await this.getWarmupInstanceId();
+        core.debug(`Warmup Instance Id: ${warmupInstanceId}`);
         
         this.kuduService = await this.appServiceUtility.getKuduService(warmupInstanceId);
         this.kuduServiceUtility = new KuduServiceUtility(this.kuduService);
