@@ -61,7 +61,7 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
         this.appService = new AzureAppService(this.actionParams.endpoint, this.actionParams.resourceGroupName, this.actionParams.appName, this.actionParams.slotName);
         this.appServiceUtility = new AzureAppServiceUtility(this.appService);
 
-        const warmupInstanceId = await this.appServiceUtility.getWarmupInstanceId();
+        const warmupInstanceId = await this.getWarmupInstanceId();
         
         this.kuduService = await this.appServiceUtility.getKuduService(warmupInstanceId);
         this.kuduServiceUtility = new KuduServiceUtility(this.kuduService);
@@ -76,6 +76,21 @@ export abstract class BaseWebAppDeploymentProvider implements IWebAppDeploymentP
         this.kuduServiceUtility = new KuduServiceUtility(this.kuduService);
         
         this.applicationURL = publishProfile.appUrl;
+    }
+
+    // Get the warmup instance id.
+    private async getWarmupInstanceId(): Promise<string | undefined> {
+        try {
+            const instances = await this.appServiceUtility.getAppserviceInstances();
+                if (instances?.value?.length > 0) {
+                // Sort by name and pick the first one.
+                const sortedInstances = instances.value.sort((a, b) => a.name.localeCompare(b.name));
+                return sortedInstances[0].name;
+            }
+        } catch (error) {
+            core.debug(`Failed to get app service instances - ${error}`);
+        }
+        return undefined;
     }
 }
 
