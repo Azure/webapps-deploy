@@ -13,13 +13,14 @@ import path from 'path';
 export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
 
     public async DeployWebAppStep() {
+        core.info("Starting deployment for web app...");
         let appPackage: Package = this.actionParams.package;
         let webPackage = appPackage.getPath();
 
         const validTypes = ["war", "jar", "ear", "zip", "static"];
 
         // kudu warm up
-        await this.kuduServiceUtility.warmpUp(); 
+        await this.kuduServiceUtility.warmUp();
 
         // If provided, type paramater takes precidence over file package type
         if (this.actionParams.type != null && validTypes.includes(this.actionParams.type.toLowerCase())) {

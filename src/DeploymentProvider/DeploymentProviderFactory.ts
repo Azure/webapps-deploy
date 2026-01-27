@@ -1,3 +1,5 @@
+import * as core from '@actions/core';
+
 import { ActionParameters, WebAppKind } from "../actionparameters";
 
 import { DEPLOYMENT_PROVIDER_TYPES } from "./Providers/BaseWebAppDeploymentProvider";
