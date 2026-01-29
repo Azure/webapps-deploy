@@ -20,7 +20,7 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         const validTypes = ["war", "jar", "ear", "zip", "static"];
 
         // kudu warm up
-        await this.kuduServiceUtility.warmpUp(); 
+        await this.kuduServiceUtility.warmUp();
 
         // If provided, type paramater takes precidence over file package type
         if (this.actionParams.type != null && validTypes.includes(this.actionParams.type.toLowerCase())) {
