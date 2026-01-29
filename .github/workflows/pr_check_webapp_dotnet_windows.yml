@@ -37,7 +37,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v6
     
     - uses: actions/checkout@master
       with:
@@ -46,7 +46,7 @@ jobs:
         path: 'dotnetsample'
 
     - name: Install Nuget
-      uses: nuget/setup-nuget@v1
+      uses: nuget/setup-nuget@v2
       with:
         nuget-version: ${{ env.NUGET_VERSION}}
     - name: NuGet to restore dependencies as well as project-specific tools that are specified in the project file
@@ -56,12 +56,12 @@ jobs:
           nuget restore
       
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v2.0.0
     
     - name: Run MSBuild
       run: msbuild .\dotnetsample\SampleWebApplication.sln
     
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
       name: Checkout from PR branch
       with: 
         repository: ${{ github.event.pull_request.head.repo.full_name }}
