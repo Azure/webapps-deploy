@@ -5,6 +5,8 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
+    "package": "ncc build lib/main.js -o dist --source-map --license licenses.txt",
+    "all": "npm run build && npm run package",
     "test": "jest"
   },
   "repository": {
