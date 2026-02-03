@@ -4,7 +4,7 @@ With the Azure App Service Actions for GitHub, you can automate your workflow to
 
 Get started today with a [free Azure account](https://azure.com/free/open-source).
 
-This repository contains GitHub Action for Azure WebApp to deploy to an Azure WebApp (Windows or Linux). The action supports deploying a folder, *\*.jar*, *\*.war*, and \**.zip* files (except msBuild generated packages).
+This repository contains GitHub Action for Azure WebApp to deploy to an Azure WebApp (Windows or Linux). The action supports deploying a folder, *\*.jar*, *\*.war*, *\*.ear*, and *\*.zip* files (except msBuild generated packages).
 
 You can also use this GitHub Action to deploy your customized image into an Azure WebApps container.
 
@@ -37,6 +37,20 @@ NOTE: you must have write permissions to the repository in question. If you're u
 * To build and deploy a containerized app, use [docker-login](https://github.com/Azure/docker-login) to log in to a private container registry such as [Azure Container registry](https://azure.microsoft.com/services/container-registry/).
 
 Once login is done, the next set of Actions in the workflow can perform tasks such as building, tagging and pushing containers.
+
+## Migrating from `webapps-deploy@v2` to `webapps-deploy@v3`
+
+#### **Note: Consumption based apps are not currently supported by `webapps-deploy@v3`. Please continue using `webapps-deploy@v2`.**
+
+The new `webapps-deploy@v3` action brings some new parameters that offer more control over your deployment. However, none of these new workflow parameters are required. To maintain the same `v2` behavior, no additional changes need to be made to your existing workflow. Simply bump from `uses: webapps-deploy@v2` to `uses: webapps-deploy@v3`
+
+### New Workflow Parameters
+| Name        | Description                                                                                                                                                                                     | Type   | Required | Allowed Values             |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|----------|----------------------------|
+| type        | The type of the artifact being deployed, this sets the default target path and informs the web app how the deployment should be handled.                                                        | string | No       | JAR, WAR, EAR, ZIP, Static, Folder |
+| target-path | The absolute path to deploy the artifact to (i.e /home/site/wwwroot/my-app)                                                                                                                     | string | No       | Valid absolute path        |
+| clean       | Specifies whether to clean (delete) the contents of the target directory before deploying the artifact                                                                                          | bool   | No       | true, false                |
+| restart     | By default, the API restarts the app following the deployment operation (restart=true). To deploy multiple artifacts, prevent restarts on all but the final deployment by setting restart=false | bool   | No       | true, false                |
   
 ## Create Azure Web App and deploy using GitHub Actions
 
@@ -89,7 +103,7 @@ jobs:
         npm run test --if-present
 
     - name: 'Run Azure webapp deploy action using publish profile credentials'
-      uses: azure/webapps-deploy@v2
+      uses: azure/webapps-deploy@v3
       with:
         app-name: node-rn
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
@@ -121,7 +135,7 @@ jobs:
         docker build . -t contoso.azurecr.io/nodejssampleapp:${{ github.sha }}
         docker push contoso.azurecr.io/nodejssampleapp:${{ github.sha }} 
 
-    - uses: azure/webapps-deploy@v2
+    - uses: azure/webapps-deploy@v3
       with:
         app-name: 'node-rnc'
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
@@ -176,7 +190,7 @@ jobs:
         docker build . -t contoso.azurecr.io/nodejssampleapp:${{ github.sha }}
         docker push contoso.azurecr.io/nodejssampleapp:${{ github.sha }} 
 
-    - uses: azure/webapps-deploy@v2
+    - uses: azure/webapps-deploy@v3
       with:
         app-name: 'node-rnc'
         images: 'contoso.azurecr.io/nodejssampleapp:${{ github.sha }}'
