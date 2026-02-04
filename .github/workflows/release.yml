@@ -1,0 +1,154 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  # Job 1: Build and create minor version tag (e.g., v3.2.1)
+  build-release:
+    runs-on: ubuntu-latest
+    environment: release-minor
+    permissions:
+      contents: write
+    outputs:
+      major: ${{ steps.source.outputs.major }}
+    
+    steps:
+      - name: Validate tag format
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Invalid tag format: $TAG"
+            echo "Tag must match pattern: v<major>.<minor>.<patch> (e.g., v3.2.1)"
+            exit 1
+          fi
+          echo "✅ Valid tag format: $TAG"
+
+      - name: Determine source branch
+        id: source
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          MAJOR=$(echo "$TAG" | sed 's/v//' | cut -d. -f1)
+          # Map major version to release branch (releases/v2, releases/v3, etc.)
+          echo "branch=releases/v${MAJOR}" >> $GITHUB_OUTPUT
+          echo "major=v${MAJOR}" >> $GITHUB_OUTPUT
+
+      - name: Checkout source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.source.outputs.branch }}
+          fetch-depth: 0
+
+      - name: Show changes being released
+        env:
+          MAJOR: ${{ steps.source.outputs.major }}
+          BRANCH: ${{ steps.source.outputs.branch }}
+        run: |
+          # Get previous tag for this major version
+          PREV_TAG=$(git tag --sort=-v:refname | grep -E "^${MAJOR}\.[0-9]+\.[0-9]+$" | head -1)
+          
+          echo "## 📋 Changes being released in ${{ github.event.release.tag_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Source branch:** \`${BRANCH}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -n "$PREV_TAG" ]; then
+            echo "### Commits since $PREV_TAG" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            git log --oneline ${PREV_TAG}..HEAD >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Files changed" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            git diff --stat ${PREV_TAG}..HEAD >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "🔗 [View full diff](https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${BRANCH})" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "First release for ${MAJOR} - no previous tag found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Update version file
+        env:
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          echo "// This file is auto-updated during release" > src/version.ts
+          echo "export const VERSION = '${TAG_NAME}';" >> src/version.ts
+          cat src/version.ts
+
+      - name: Build TypeScript
+        run: npm run build
+
+      - name: Bundle with ncc
+        run: |
+          npm install -g @vercel/ncc
+          ncc build lib/main.js -o dist
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit dist and create minor tag
+        env:
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          # Add dist folder (force add even if in .gitignore)
+          git add dist/ -f
+          git commit -m "Build dist for release ${TAG_NAME}"
+          
+          # Update the release tag to include dist
+          git tag -fa ${TAG_NAME} -m "Release ${TAG_NAME}"
+          
+          # Push minor version tag only
+          git push origin ${TAG_NAME} --force
+          
+          echo "## ✅ Minor tag ${TAG_NAME} created" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Users can now use: \`Azure/webapps-deploy@${TAG_NAME}\`" >> $GITHUB_STEP_SUMMARY
+
+  # Job 2: Update major version tag (e.g., v3 -> v3.2.1)
+  update-major-tag:
+    needs: build-release
+    runs-on: ubuntu-latest
+    environment: release-major
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update major tag to point to minor
+        env:
+          TAG_NAME: ${{ github.event.release.tag_name }}
+          MAJOR: ${{ needs.build-release.outputs.major }}
+        run: |
+          # Fetch the minor tag
+          git fetch origin tag ${TAG_NAME} --no-tags
+          
+          # Update major version tag to point to minor tag
+          git tag -fa ${MAJOR} ${TAG_NAME} -m "Point ${MAJOR} to ${TAG_NAME}"
+          
+          # Push major version tag
+          git push origin ${MAJOR} --force
+          
+          echo "## ✅ Major tag ${MAJOR} now points to ${TAG_NAME}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Users on \`Azure/webapps-deploy@${MAJOR}\` will now get ${TAG_NAME}" >> $GITHUB_STEP_SUMMARY
