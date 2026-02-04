@@ -13,11 +13,13 @@ jobs:
       contents: write
     outputs:
       major: ${{ steps.source.outputs.major }}
+    env:
+      TAG_NAME: ${{ github.event.release.tag_name }}
     
     steps:
       - name: Validate tag format
         run: |
-          TAG="${{ github.event.release.tag_name }}"
+          TAG="${{ env.TAG_NAME }}"
           if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "❌ Invalid tag format: $TAG"
             echo "Tag must match pattern: v<major>.<minor>.<patch> (e.g., v3.2.1)"
@@ -28,7 +30,7 @@ jobs:
       - name: Determine source branch
         id: source
         run: |
-          TAG="${{ github.event.release.tag_name }}"
+          TAG="${{ env.TAG_NAME }}"
           MAJOR=$(echo "$TAG" | sed 's/v//' | cut -d. -f1)
           # Map major version to release branch (releases/v2, releases/v3, etc.)
           echo "branch=releases/v${MAJOR}" >> $GITHUB_OUTPUT
@@ -48,7 +50,7 @@ jobs:
           # Get previous tag for this major version
           PREV_TAG=$(git tag --sort=-v:refname | grep -E "^${MAJOR}\.[0-9]+\.[0-9]+$" | head -1)
           
-          echo "## 📋 Changes being released in ${{ github.event.release.tag_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "## 📋 Changes being released in ${{ env.TAG_NAME }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Source branch:** \`${BRANCH}\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -78,11 +80,9 @@ jobs:
         run: npm ci
 
       - name: Update version file
-        env:
-          TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
           echo "// This file is auto-updated during release" > src/version.ts
-          echo "export const VERSION = '${TAG_NAME}';" >> src/version.ts
+          echo "export const VERSION = '${{ env.TAG_NAME }}';" >> src/version.ts
           cat src/version.ts
 
       - name: Build TypeScript
@@ -99,22 +99,20 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Commit dist and create minor tag
-        env:
-          TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
           # Add dist folder (force add even if in .gitignore)
           git add dist/ -f
-          git commit -m "Build dist for release ${TAG_NAME}"
+          git commit -m "Build dist for release ${{ env.TAG_NAME }}"
           
           # Update the release tag to include dist
-          git tag -fa ${TAG_NAME} -m "Release ${TAG_NAME}"
+          git tag -fa ${{ env.TAG_NAME }} -m "Release ${{ env.TAG_NAME }}"
           
-          # Push minor version tag only
-          git push origin ${TAG_NAME} --force
+          # Push minor version tag
+          git push origin ${{ env.TAG_NAME }} --force
           
-          echo "## ✅ Minor tag ${TAG_NAME} created" >> $GITHUB_STEP_SUMMARY
+          echo "## ✅ Minor tag ${{ env.TAG_NAME }} created" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Users can now use: \`Azure/webapps-deploy@${TAG_NAME}\`" >> $GITHUB_STEP_SUMMARY
+          echo "Users can now use: \`Azure/webapps-deploy@${{ env.TAG_NAME }}\`" >> $GITHUB_STEP_SUMMARY
 
   # Job 2: Update major version tag (e.g., v3 -> v3.2.1)
   update-major-tag:
@@ -123,6 +121,8 @@ jobs:
     environment: release-major
     permissions:
       contents: write
+    env:
+      TAG_NAME: ${{ github.event.release.tag_name }}
     
     steps:
       - name: Checkout
@@ -137,18 +137,17 @@ jobs:
 
       - name: Update major tag to point to minor
         env:
-          TAG_NAME: ${{ github.event.release.tag_name }}
           MAJOR: ${{ needs.build-release.outputs.major }}
         run: |
           # Fetch the minor tag
-          git fetch origin tag ${TAG_NAME} --no-tags
+          git fetch origin tag ${{ env.TAG_NAME }} --no-tags
           
           # Update major version tag to point to minor tag
-          git tag -fa ${MAJOR} ${TAG_NAME} -m "Point ${MAJOR} to ${TAG_NAME}"
+          git tag -fa ${MAJOR} ${{ env.TAG_NAME }} -m "Point ${MAJOR} to ${{ env.TAG_NAME }}"
           
           # Push major version tag
           git push origin ${MAJOR} --force
           
-          echo "## ✅ Major tag ${MAJOR} now points to ${TAG_NAME}" >> $GITHUB_STEP_SUMMARY
+          echo "## ✅ Major tag ${MAJOR} now points to ${{ env.TAG_NAME }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Users on \`Azure/webapps-deploy@${MAJOR}\` will now get ${TAG_NAME}" >> $GITHUB_STEP_SUMMARY
+          echo "Users on \`Azure/webapps-deploy@${MAJOR}\` will now get ${{ env.TAG_NAME }}" >> $GITHUB_STEP_SUMMARY
