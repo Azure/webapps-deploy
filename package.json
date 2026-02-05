@@ -2,9 +2,11 @@
   "name": "webapps-deploy",
   "version": "3.0.0",
   "description": "Deploy web apps and containerized web apps to Azure",
-  "main": "lib/main.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
+    "bundle": "ncc build lib/main.js -o dist",
+    "package": "npm run build && npm run bundle",
     "test": "jest"
   },
   "repository": {
@@ -25,6 +27,7 @@
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.2",
+    "@vercel/ncc": "^0.38.1",
     "jest": "29.7.0",
     "ts-jest": "29.1.2",
     "ts-node": "^10.9.1",
