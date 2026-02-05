@@ -262,6 +262,8 @@ FakesAssemblies/
 
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
+
+# Stop tracking of node_modules
 node_modules/
 
 # Visual Studio 6 build log
