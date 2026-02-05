@@ -3,6 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+
 # User-specific files
 *.suo
 *.user
@@ -261,7 +262,9 @@ FakesAssemblies/
 
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
-# node_modules/
+
+# Stop tracking of node_modules
+node_modules/
 
 # Visual Studio 6 build log
 *.plg

@@ -1,0 +1,10 @@
+name: "CodeQL config"
+
+# Exclude test sample applications and bundled output from analysis
+paths-ignore:
+  - 'dist/**'
+  - 'lib/**'
+
+# Only analyze JavaScript/TypeScript since this is a Node.js action
+languages:
+  - javascript-typescript
