@@ -8,6 +8,7 @@ import { DEPLOYMENT_PROVIDER_TYPES } from "./DeploymentProvider/Providers/BaseWe
 import { DeploymentProviderFactory } from './DeploymentProvider/DeploymentProviderFactory';
 import { IAuthorizer } from 'azure-actions-webclient/Authorizer/IAuthorizer';
 import { ValidatorFactory } from './ActionInputValidator/ValidatorFactory';
+import { VERSION } from './version';
 
 var prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
 
@@ -18,7 +19,7 @@ export async function main() {
     // Set user agent variable
     let usrAgentRepo = crypto.createHash('sha256').update(`${process.env.GITHUB_REPOSITORY}`).digest('hex');
     let actionName = 'DeployWebAppToAzure';
-    let userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
+    let userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${VERSION}_${usrAgentRepo}`;
     core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
 
     // Initialize action inputs

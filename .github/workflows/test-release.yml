@@ -1,0 +1,119 @@
+name: Test Release Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag to simulate (e.g., v3.2.1)'
+        required: true
+        type: string
+      test_branch_name:
+        description: 'Test branch name to push (e.g., test-release-v3)'
+        required: true
+        type: string
+        default: 'test-release'
+
+jobs:
+  build-and-push-test-branch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      branch: ${{ steps.source.outputs.branch }}
+    
+    steps:
+      - name: Validate tag format
+        run: |
+          TAG="${{ inputs.tag_name }}"
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Invalid tag format: $TAG"
+            echo "Tag must match pattern: v<major>.<minor>.<patch> (e.g., v3.2.1)"
+            exit 1
+          fi
+          echo "✅ Valid tag format: $TAG"
+
+      - name: Determine source branch
+        id: source
+        run: |
+          TAG="${{ inputs.tag_name }}"
+          MAJOR=$(echo "$TAG" | sed 's/v//' | cut -d. -f1)
+          # TODO: Change back to releases/v${MAJOR} after ncc changes are cherry-picked
+          echo "branch=master" >> $GITHUB_OUTPUT
+          echo "major=v${MAJOR}" >> $GITHUB_OUTPUT
+
+      - name: Checkout source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.source.outputs.branch }}
+          fetch-depth: 0
+
+      - name: Show what will be built
+        env:
+          MAJOR: ${{ steps.source.outputs.major }}
+          BRANCH: ${{ steps.source.outputs.branch }}
+        run: |
+          PREV_TAG=$(git tag --sort=-v:refname | grep -E "^${MAJOR}\.[0-9]+\.[0-9]+$" | head -1)
+          
+          echo "## 🧪 Test Build for ${{ inputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Source branch:** \`${BRANCH}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Test branch:** \`${{ inputs.test_branch_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -n "$PREV_TAG" ]; then
+            echo "### Changes since $PREV_TAG" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            git log --oneline ${PREV_TAG}..HEAD >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Update version file
+        run: |
+          echo "// This file is auto-updated during release" > src/version.ts
+          echo "export const VERSION = '${{ inputs.tag_name }}';" >> src/version.ts
+          cat src/version.ts
+
+      - name: Build and bundle
+        run: npm run package
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push test branch
+        env:
+          TEST_BRANCH: ${{ inputs.test_branch_name }}
+        run: |
+          # Add dist folder
+          git add dist/ -f
+          git commit -m "Test build for ${{ inputs.tag_name }}"
+          
+          # Create and push test branch
+          git checkout -b ${TEST_BRANCH}
+          git push origin ${TEST_BRANCH} --force
+          
+          echo "## ✅ Test branch pushed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "You can now test with:" >> $GITHUB_STEP_SUMMARY
+          echo '```yaml' >> $GITHUB_STEP_SUMMARY
+          echo "- uses: Azure/webapps-deploy@${TEST_BRANCH}" >> $GITHUB_STEP_SUMMARY
+          echo "  with:" >> $GITHUB_STEP_SUMMARY
+          echo "    app-name: your-app-name" >> $GITHUB_STEP_SUMMARY
+          echo "    package: ./your-package" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Cleanup" >> $GITHUB_STEP_SUMMARY
+          echo "After testing, delete the branch:" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "git push origin --delete ${TEST_BRANCH}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
