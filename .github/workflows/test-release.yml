@@ -37,7 +37,8 @@ jobs:
         run: |
           TAG="${{ inputs.tag_name }}"
           MAJOR=$(echo "$TAG" | sed 's/v//' | cut -d. -f1)
-          echo "branch=releases/v${MAJOR}" >> $GITHUB_OUTPUT
+          # TODO: Change back to releases/v${MAJOR} after ncc changes are cherry-picked
+          echo "branch=master" >> $GITHUB_OUTPUT
           echo "major=v${MAJOR}" >> $GITHUB_OUTPUT
 
       - name: Checkout source branch
