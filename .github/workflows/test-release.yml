@@ -12,15 +12,6 @@ on:
         required: true
         type: string
         default: 'test-release'
-      test_deploy:
-        description: 'Test deployment to an app after build'
-        required: false
-        type: boolean
-        default: false
-      test_app_name:
-        description: 'App name for test deployment (required if test_deploy is true)'
-        required: false
-        type: string
 
 jobs:
   build-and-push-test-branch:
@@ -82,7 +73,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Update version file
         run: |
@@ -90,13 +81,8 @@ jobs:
           echo "export const VERSION = '${{ inputs.tag_name }}';" >> src/version.ts
           cat src/version.ts
 
-      - name: Build TypeScript
-        run: npm run build
-
-      - name: Bundle with ncc
-        run: |
-          npm install -g @vercel/ncc
-          ncc build lib/main.js -o dist
+      - name: Build and bundle
+        run: npm run package
 
       - name: Configure Git
         run: |
@@ -130,43 +116,3 @@ jobs:
           echo '```bash' >> $GITHUB_STEP_SUMMARY
           echo "git push origin --delete ${TEST_BRANCH}" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-
-  # Optional: Test deployment using the pushed branch
-  test-deployment:
-    if: inputs.test_deploy == true && inputs.test_app_name != ''
-    needs: build-and-push-test-branch
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout test branch
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.test_branch_name }}
-          
-      - name: Create test package
-        run: |
-          mkdir -p test-app
-          cat > test-app/index.html << EOF
-          <html>
-          <body>
-            <h1>Test Deployment</h1>
-            <p>Version: ${{ inputs.tag_name }}</p>
-            <p>Branch: ${{ inputs.test_branch_name }}</p>
-            <p>Time: $(date)</p>
-          </body>
-          </html>
-          EOF
-          
-      - name: Test deploy to Azure Web App
-        uses: ./
-        with:
-          app-name: ${{ inputs.test_app_name }}
-          package: test-app
-          
-      - name: Test deployment result
-        run: |
-          echo "## 🚀 Test Deployment Successful" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Deployed to: **${{ inputs.test_app_name }}**" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "🔗 Verify at: https://${{ inputs.test_app_name }}.azurewebsites.net" >> $GITHUB_STEP_SUMMARY
