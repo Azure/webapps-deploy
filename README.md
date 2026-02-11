@@ -78,10 +78,10 @@ jobs:
     - name: 'Checkout Github Action' 
       uses: actions/checkout@master
 
-    - name: Setup Node 10.x
-      uses: actions/setup-node@v1
+    - name: Setup Node 24.x
+      uses: actions/setup-node@v6
       with:
-        node-version: '10.x'
+        node-version: '24.x'
     - name: 'npm install, build, and test'
       run: |
         npm install
@@ -89,7 +89,7 @@ jobs:
         npm run test --if-present
 
     - name: 'Run Azure webapp deploy action using publish profile credentials'
-      uses: azure/webapps-deploy@v2
+      uses: azure/webapps-deploy@v3
       with:
         app-name: node-rn
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
@@ -111,7 +111,7 @@ jobs:
     - name: 'Checkout Github Action'
       uses: actions/checkout@master
 
-    - uses: azure/docker-login@v1
+    - uses: azure/docker-login@v2
       with:
         login-server: contoso.azurecr.io
         username: ${{ secrets.REGISTRY_USERNAME }}
@@ -121,7 +121,7 @@ jobs:
         docker build . -t contoso.azurecr.io/nodejssampleapp:${{ github.sha }}
         docker push contoso.azurecr.io/nodejssampleapp:${{ github.sha }} 
 
-    - uses: azure/webapps-deploy@v2
+    - uses: azure/webapps-deploy@v3
       with:
         app-name: 'node-rnc'
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
@@ -166,7 +166,7 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - uses: azure/docker-login@v1
+    - uses: azure/docker-login@v2
       with:
         login-server: contoso.azurecr.io
         username: ${{ secrets.REGISTRY_USERNAME }}
@@ -176,7 +176,7 @@ jobs:
         docker build . -t contoso.azurecr.io/nodejssampleapp:${{ github.sha }}
         docker push contoso.azurecr.io/nodejssampleapp:${{ github.sha }} 
 
-    - uses: azure/webapps-deploy@v2
+    - uses: azure/webapps-deploy@v3
       with:
         app-name: 'node-rnc'
         images: 'contoso.azurecr.io/nodejssampleapp:${{ github.sha }}'
@@ -184,7 +184,7 @@ jobs:
 
 #### Configure deployment credentials:
 
-The previous sample workflow depends on user-level credentials stored as a [secret](https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets) named `AZURE_CREDENTIALS` in your repository. The value of this secret is expected to be a JSON object that represents a service principal (an identifer for an application or process) that authenticates the workflow with Azure.
+The previous sample workflow depends on user-level credentials stored as a [secret](https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets) named `AZURE_CREDENTIALS` in your repository. The value of this secret is expected to be a JSON object that represents a service principal (an identifier for an application or process) that authenticates the workflow with Azure.
 
 To function correctly, this service principal must be assigned the [Contributor]((https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor)) role for the web app or the resource group that contains the web app.
 
