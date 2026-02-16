@@ -71,8 +71,11 @@ jobs:
     - name: Installing dependencies and building latest changes
       run: |
         cd webapps-deploy
-        npm install
-        npm run package
+        if (-NOT(TEST-PATH node_modules))
+        {
+          npm install
+          npm run build
+        }
     
     - name: Azure authentication
       uses: azure/login@v2
