@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.20](https://github.com/inspect-js/which-typed-array/compare/v1.1.19...v1.1.20) - 2026-01-14
+
+### Commits
+
+- [types] add Float16Array to TypedArray [`b04301f`](https://github.com/inspect-js/which-typed-array/commit/b04301f737aaa500ac2ee9a0578d6e3a52a65b94)
+- [Dev Deps] update `@arethetypeswrong/cli`, `@ljharb/eslint-config`, `eslint`, `make-generator-function`, `npmignore` [`215b3a1`](https://github.com/inspect-js/which-typed-array/commit/215b3a1a39300a3a305d9f9b6885d00d44387ef6)
+- [readme] replace runkit CI badge with shields.io check-runs badge [`32def83`](https://github.com/inspect-js/which-typed-array/commit/32def83f46fdfe0d324ed32de2146554855ed140)
+
 ## [v1.1.19](https://github.com/inspect-js/which-typed-array/compare/v1.1.18...v1.1.19) - 2025-03-08
 
 ### Commits
