@@ -85,8 +85,13 @@ jobs:
           echo "export const VERSION = '${{ env.TAG_NAME }}';" >> src/version.ts
           cat src/version.ts
 
-      - name: Build and bundle
-        run: npm run package
+      - name: Build TypeScript
+        run: npm run build
+
+      - name: Bundle with ncc
+        run: |
+          npm install -g @vercel/ncc
+          ncc build lib/main.js -o dist
 
       - name: Configure Git
         run: |

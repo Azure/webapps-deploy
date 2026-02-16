@@ -71,7 +71,7 @@ jobs:
     - name: Installing dependencies and building latest changes
       run: |
         cd webapps-deploy
-        npm ci
+        npm install
         npm run package
     
     - name: Azure authentication
