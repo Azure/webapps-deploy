@@ -1,0 +1,6 @@
+name: "CodeQL config"
+
+paths-ignore:
+  - dist
+  - lib
+  - node_modules
