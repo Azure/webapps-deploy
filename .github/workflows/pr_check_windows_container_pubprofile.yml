@@ -92,7 +92,7 @@ jobs:
     - name: Installing dependencies and building latest changes in action
       run: |
         cd webapps-deploy
-        npm install
+        npm ci
         npm run package
 
     - name: 'Deploy to Azure WebApp'

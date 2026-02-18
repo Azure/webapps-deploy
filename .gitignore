@@ -5,6 +5,7 @@
 
 # Bundled output (built during release)
 dist/
+lib/
 
 # User-specific files
 *.suo

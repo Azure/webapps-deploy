@@ -82,9 +82,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '10.x'
-    - name: 'npm install, build, and test'
+    - name: 'npm ci, build, and test'
       run: |
-        npm install
+        npm ci
         npm run build --if-present
         npm run test --if-present
 
