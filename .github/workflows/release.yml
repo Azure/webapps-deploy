@@ -57,6 +57,7 @@ jobs:
           git push origin ${MAJOR} --force
 
 
+
           echo "## ✅ Release ${{ inputs.tag }}" >> $GITHUB_STEP_SUMMARY
           echo "- Tag: \`${{ inputs.tag }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- Branch: \`${{ steps.version.outputs.branch }}\`" >> $GITHUB_STEP_SUMMARY
