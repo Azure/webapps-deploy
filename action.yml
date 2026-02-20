@@ -40,4 +40,4 @@ branding:
   color: 'blue'
 runs:
   using: 'node20'
-  main: 'lib/main.js'
+  main: 'dist/index.js'

@@ -16,10 +16,10 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         let appPackage: Package = this.actionParams.package;
         let webPackage = appPackage.getPath();
 
-        // kudu warm up
-        await this.kuduServiceUtility.warmpUp(); 
-        
         let packageType = appPackage.getPackageType();
+
+        // kudu warm up
+        await this.kuduServiceUtility.warmUp();
 
         switch(packageType){
             case PackageType.war:
