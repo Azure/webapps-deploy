@@ -92,11 +92,8 @@ jobs:
     - name: Installing dependencies and building latest changes in action
       run: |
         cd webapps-deploy
-        if (-NOT(TEST-PATH node_modules))
-        {
-          npm install
-          npm run build
-        }
+        npm ci
+        npm run package
 
     - name: 'Deploy to Azure WebApp'
       uses: ./webapps-deploy/
