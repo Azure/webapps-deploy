@@ -18,7 +18,7 @@ jobs:
     - name: 'Validate build'
       run: |
         npm ci
-        npm run build
+        npm run package
 
     - name: 'Run L0 tests'
       run: |
