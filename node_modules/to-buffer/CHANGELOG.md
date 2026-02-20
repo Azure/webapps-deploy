@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.2.2](https://github.com/browserify/to-buffer/compare/v1.2.1...v1.2.2) - 2025-09-24
+
+### Commits
+
+- [Fix] handle SlowBuffers in node 0.10 [`ca20eaa`](https://github.com/browserify/to-buffer/commit/ca20eaad8c9cbd6e3e6e99880b2b1c95abe62566)
+- [Refactor] use `SafeBuffer.isBuffer` instead of `instanceof` [`81283c1`](https://github.com/browserify/to-buffer/commit/81283c14b585c0e921e04f327381e975cc8561bb)
+- [Dev Deps] update `@ljharb/eslint-config` [`c7bc986`](https://github.com/browserify/to-buffer/commit/c7bc986d378ce4bdf2dac75612b45b0f618f26d6)
+- [meta] since tests are npmignored, also npmignore test config files [`866639c`](https://github.com/browserify/to-buffer/commit/866639cf294799f8c0397153e5876ae1e6992a57)
+
 ## [v1.2.1](https://github.com/browserify/to-buffer/compare/v1.2.0...v1.2.1) - 2025-06-19
 
 ### Commits

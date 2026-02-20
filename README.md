@@ -60,6 +60,8 @@ For example, if You want to deploy a Java WAR based app, You can follow the link
 | PHP        | [php.yml](https://github.com/Azure/actions-workflow-samples/blob/master/AppService/php-webapp-on-azure.yml)
 | DOCKER     | [docker.yml](https://github.com/Azure/actions-workflow-samples/blob/master/AppService/docker-webapp-container-on-azure.yml) |
 | GO     | [go.yml](https://github.com/Azure/actions-workflow-samples/blob/master/AppService/go-webapp-on-azure.yml) |
+| SiteContainers     | [SiteContainers.yml](https://github.com/Azure/actions-workflow-samples/blob/master/AppService/sitecontainers-webapp-on-azure.yml) |
+| SiteContainers with Blessed App     | [SiteContainersWithBlessed.yml](https://github.com/Azure/actions-workflow-samples/blob/master/AppService/blessed-sitecontainers-webapp-on-azure.yml) |
 
 ### Sample workflow to build and deploy a Node.js Web app to Azure using publish profile
 
@@ -80,9 +82,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '10.x'
-    - name: 'npm install, build, and test'
+    - name: 'npm ci, build, and test'
       run: |
-        npm install
+        npm ci
         npm run build --if-present
         npm run test --if-present
 

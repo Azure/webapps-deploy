@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Bundled output (built during release)
+# dist/
+lib/
+
 # User-specific files
 *.suo
 *.user
@@ -261,7 +265,7 @@ FakesAssemblies/
 
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
-# node_modules/
+node_modules/
 
 # Visual Studio 6 build log
 *.plg
