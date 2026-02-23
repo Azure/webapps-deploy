@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy to Azure App Services
+name: Build and deploy to Azure App Services using v2
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@releases/v2
+        uses: azure/webapps-deploy@v2
         with:
           app-name: 'lwasv2-euap-dotnet-githubactionstest-v2'
           slot-name: 'Production'
@@ -91,7 +91,7 @@ jobs:
       
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@releases/v2
+        uses: azure/webapps-deploy@v2
         with:
           app-name: 'lwasv2-euap-node-githubactions-v2'
           slot-name: 'Production'
