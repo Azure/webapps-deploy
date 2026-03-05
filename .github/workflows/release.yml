@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release or revert to (e.g., v3.2.1)'
+        required: true
+        type: string
+      revert:
+        description: 'Revert releases/vX to this existing tag?'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Validate tag format
+        run: |
+          TAG="${{ inputs.tag }}"
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Invalid tag format: $TAG. Expected: v<major>.<minor>.<patch>"
+            exit 1
+          fi
+
+      - name: Parse version
+        id: version
+        run: |
+          TAG="${{ inputs.tag }}"
+          MAJOR=$(echo "$TAG" | cut -d. -f1)
+          echo "major=${MAJOR}" >> $GITHUB_OUTPUT
+          echo "branch=releases/${MAJOR}" >> $GITHUB_OUTPUT
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revert == true && inputs.tag || steps.version.outputs.branch }}
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Release new tag
+        if: ${{ inputs.revert == false }}
+        run: |
+          MAJOR="${{ steps.version.outputs.major }}"
+
+          # Update the major tag (e.g., v3) to point to same commit as inputs.tag
+          git tag -fa ${MAJOR} -m "Release ${{ inputs.tag }}"
+          git push origin ${MAJOR} --force
+
+          echo "## ✅ Release ${{ inputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Tag: \`${{ inputs.tag }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: \`${{ steps.version.outputs.branch }}\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: Revert to existing tag
+        if: ${{ inputs.revert == true }}
+        run: |
+          BRANCH="${{ steps.version.outputs.branch }}"
+          git push origin ${{ inputs.tag }}:refs/heads/${BRANCH} --force
+
+          echo "## ⏪ Reverted ${BRANCH} to ${{ inputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${BRANCH}\` now points to \`${{ inputs.tag }}\`" >> $GITHUB_STEP_SUMMARY
