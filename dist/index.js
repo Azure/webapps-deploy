@@ -1544,7 +1544,7 @@ main();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.VERSION = void 0;
 // Update this file before release.
-exports.VERSION = 'v3.0.7';
+exports.VERSION = 'v3.0.8';
 
 
 /***/ }),
