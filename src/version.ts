@@ -1,2 +1,2 @@
 // Update this file before release.
-export const VERSION = '2.2.18';
+export const VERSION = 'v2.2.19';
