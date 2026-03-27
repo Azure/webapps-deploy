@@ -45,7 +45,7 @@ jobs:
         docker logout env.CONTAINER_REGISTRY
 
     - name: Login to Azure Container Registry
-      uses: azure/docker-login@v1
+      uses: azure/docker-login@v2
       with:
         login-server: ${{ env.CONTAINER_REGISTRY }}
         username: ${{ secrets.WEBDEPLOY_TEST_ACR_USERNAME }}
