@@ -86,14 +86,15 @@ jobs:
         path: 'webapps-deploy'
         ref: ${{ github.event.pull_request.head.ref }}
 
-    - name: Installing dependencies and building latest changes in action
-      run: |
-        cd webapps-deploy
-        npm ci
-        npm run package
+    # - name: Installing dependencies and building latest changes in action
+    #   run: |
+    #     cd webapps-deploy
+    #     npm ci
+    #     npm run package
 
     - name: 'Deploy to Azure WebApp'
-      uses: ./webapps-deploy/
+      # uses: ./webapps-deploy/
+      uses: azure/webapps-deploy@v3
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
