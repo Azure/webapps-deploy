@@ -1,4 +1,4 @@
-# This workflow is triggered on push to master or releases/* branches and deploys a container image to an Azure Web App for Containers using a publish profile.
+# This workflow is  triggered on push to master or releases/* branches and deploys a container image to an Azure Web App for Containers using a publish profile.
 name: windows_container_publishprofile_deploy
 
 on:
