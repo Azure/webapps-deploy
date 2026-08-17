@@ -1,0 +1,99 @@
+name: windows_container_publishprofile_deploy
+
+on:
+  push:
+    branches:
+      - master
+      - releases/*
+    paths-ignore:
+      - '**.md'
+
+permissions:
+  contents: read
+
+env:
+  AZURE_WEBAPP_NAME: wincontainerswebapp  # set this to your application's name
+  CONTAINER_REGISTRY: webdeployprtestscontainerregistry.azurecr.io # set secret with Container Registry URL, example : xyz.azurecr.io
+
+jobs:
+  build-and-deploy:
+    environment: automation test
+    name: Deploy trusted push
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+    - name: 'Checkout Github Action'
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      with:
+        repository: GH-ACE/python_container_App
+        ref: main
+        path: 'python_container_App'
+        persist-credentials: false
+
+    - name: Azure authentication
+      uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2.3.1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Logout from Azure Container Registry
+      run: docker logout ${{ env.CONTAINER_REGISTRY }}
+
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@83efeb77770c98b620c73055fbb59b2847e17dc0 # v1
+      with:
+        login-server: ${{ env.CONTAINER_REGISTRY }}
+        username: ${{ secrets.WEBDEPLOY_TEST_ACR_USERNAME }}
+        password: ${{ secrets.WEBDEPLOY_TEST_ACR_PASSWORD }}
+
+    - name: Pull and tag an image and push it to ACR
+      run: |
+        cd python_container_App
+        docker pull mcr.microsoft.com/azure-app-service/windows/canary:5.0-nanoserver
+        docker tag mcr.microsoft.com/azure-app-service/windows/canary:5.0-nanoserver ${{ env.CONTAINER_REGISTRY }}/containerwebapp/canaryreplica:latest
+        docker push ${{ env.CONTAINER_REGISTRY }}/containerwebapp/canaryreplica:latest
+
+    - name: Set Web App ACR authentication
+      uses: Azure/appservice-settings@1808c4fbba4b8723107948a295d396a5c0e33dcd # v1
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        app-settings-json: |
+          [
+              {
+                  "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+                  "value": "${{ secrets.WEBDEPLOY_TEST_ACR_PASSWORD }}",
+                  "slotSetting": false
+              },
+              {
+                  "name": "DOCKER_REGISTRY_SERVER_URL",
+                  "value": "https://${{ env.CONTAINER_REGISTRY }}",
+                  "slotSetting": false
+              },
+              {
+                  "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+                  "value": "${{ secrets.WEBDEPLOY_TEST_ACR_USERNAME }}",
+                  "slotSetting": false
+              }
+          ]
+
+    - name: Checkout trusted action commit
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      with:
+        path: 'webapps-deploy'
+        persist-credentials: false
+
+    - name: Installing dependencies and building latest changes in action
+      run: |
+        cd webapps-deploy
+        npm ci
+        npm run package
+
+    - name: 'Deploy to Azure WebApp'
+      uses: ./webapps-deploy/
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        images: ${{ env.CONTAINER_REGISTRY }}/containerwebapp/canaryreplica:latest
