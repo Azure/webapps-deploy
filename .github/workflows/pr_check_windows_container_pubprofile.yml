@@ -1,3 +1,4 @@
+# A workflow to validate PRs for the Windows Container Publish Profile action. This workflow is triggered on pull requests to the master branch and release branches. It checks out the code from the PR branch, installs dependencies, and builds the latest changes in the action.
 name: pr_check_windows_container_publishprofile
 
 on:
