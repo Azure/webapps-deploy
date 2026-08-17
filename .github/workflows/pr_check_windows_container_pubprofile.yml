@@ -1,17 +1,7 @@
 name: pr_check_windows_container_publishprofile
 
 on:
-<<<<<<< HEAD
-  push:
-    branches:
-      - master
-      - releases/*
-    paths-ignore:
-      - '**.md'
-  pull_request_target:
-=======
   pull_request:
->>>>>>> 0552a5a9 (Split workflows (#572))
     branches:
       - master
       - 'releases/*'
@@ -29,12 +19,8 @@ jobs:
       with:
         repository: ${{ github.event.pull_request.head.repo.full_name }}
         path: 'webapps-deploy'
-<<<<<<< HEAD
-        ref: ${{ github.event.pull_request.head.ref }}
-=======
         ref: ${{ github.event.pull_request.head.sha }}
         persist-credentials: false
->>>>>>> 0552a5a9 (Split workflows (#572))
 
     - name: Installing dependencies and building latest changes in action
       run: |
