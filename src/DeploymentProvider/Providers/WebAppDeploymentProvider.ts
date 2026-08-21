@@ -16,14 +16,24 @@ export class WebAppDeploymentProvider extends BaseWebAppDeploymentProvider {
         let appPackage: Package = this.actionParams.package;
         let webPackage = appPackage.getPath();
 
-        const validTypes = ["war", "jar", "ear", "zip", "static"];
+        const validTypes = ["war", "jar", "ear", "zip", "static", "folder"];
 
         // kudu warm up
         await this.kuduServiceUtility.warmUp();
 
         // If provided, type paramater takes precidence over file package type
         if (this.actionParams.type != null && validTypes.includes(this.actionParams.type.toLowerCase())) {
-            core.debug("Initiated deployment via kudu service for webapp" + this.actionParams.type + "package : "+ webPackage);
+            if (this.actionParams.type.toLowerCase() === "folder") {
+                let tempPackagePath = utility.generateTemporaryFolderOrZipPath(`${process.env.RUNNER_TEMP}`, false);
+                webPackage = await zipUtility.archiveFolder(webPackage, "", tempPackagePath) as string;
+                core.debug("Compressed folder into zip " +  webPackage);
+                core.debug("Initiated deployment via kudu service for webapp package : "+ webPackage);
+                this.actionParams.type = "zip";
+            }
+            
+            else {
+                core.debug("Initiated deployment via kudu service for webapp" + this.actionParams.type + "package : "+ webPackage);
+            }
         }
 
         else {
