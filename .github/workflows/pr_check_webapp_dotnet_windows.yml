@@ -37,7 +37,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
     
     - uses: actions/checkout@master
       with:
@@ -46,7 +46,7 @@ jobs:
         path: 'dotnetsample'
 
     - name: Install Nuget
-      uses: nuget/setup-nuget@v1
+      uses: nuget/setup-nuget@296fd3ccf8528660c91106efefe2364482f86d6f # v1.2.0
       with:
         nuget-version: ${{ env.NUGET_VERSION}}
     - name: NuGet to restore dependencies as well as project-specific tools that are specified in the project file
@@ -56,12 +56,12 @@ jobs:
           nuget restore
       
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@c26a08ba26249b81327e26f6ef381897b6a8754d # v1.0.2
     
     - name: Run MSBuild
       run: msbuild .\dotnetsample\SampleWebApplication.sln
     
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
       name: Checkout from PR branch
       with: 
         repository: ${{ github.event.pull_request.head.repo.full_name }}
@@ -75,7 +75,7 @@ jobs:
         npm run package
     
     - name: Azure authentication
-      uses: azure/login@v2
+      uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2.3.1
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
