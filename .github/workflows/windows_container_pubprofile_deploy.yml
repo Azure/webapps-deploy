@@ -26,7 +26,7 @@ jobs:
       id-token: write
     steps:
     - name: 'Checkout Github Action'
-      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       with:
         repository: GH-ACE/python_container_App
         ref: main
@@ -44,7 +44,7 @@ jobs:
       run: docker logout ${{ env.CONTAINER_REGISTRY }}
 
     - name: Login to Azure Container Registry
-      uses: azure/docker-login@83efeb77770c98b620c73055fbb59b2847e17dc0 # v1
+      uses: azure/docker-login@83efeb77770c98b620c73055fbb59b2847e17dc0 # v1.0.1
       with:
         login-server: ${{ env.CONTAINER_REGISTRY }}
         username: ${{ secrets.WEBDEPLOY_TEST_ACR_USERNAME }}
@@ -58,7 +58,7 @@ jobs:
         docker push ${{ env.CONTAINER_REGISTRY }}/containerwebapp/canaryreplica:latest
 
     - name: Set Web App ACR authentication
-      uses: Azure/appservice-settings@1808c4fbba4b8723107948a295d396a5c0e33dcd # v1
+      uses: Azure/appservice-settings@1808c4fbba4b8723107948a295d396a5c0e33dcd # v1.1.1
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         app-settings-json: |
@@ -81,7 +81,7 @@ jobs:
           ]
 
     - name: Checkout trusted action commit
-      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       with:
         path: 'webapps-deploy'
         persist-credentials: false
