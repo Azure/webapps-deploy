@@ -1,0 +1,87 @@
+parameters:
+- name: jobName
+  type: string
+- name: displayName
+  type: string
+- name: actionRef
+  type: string
+- name: nodeVersion
+  type: string
+- name: dotnetAppName
+  type: string
+- name: dotnetPublishProfileVariable
+  type: string
+- name: nodeAppName
+  type: string
+- name: nodePublishProfileVariable
+  type: string
+
+jobs:
+- job: ${{ parameters.jobName }}
+  displayName: ${{ parameters.displayName }}
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: UseDotNet@2
+    displayName: Use .NET 8
+    inputs:
+      version: 8.x
+
+  - task: UseNode@1
+    displayName: Use Node.js ${{ parameters.nodeVersion }}
+    inputs:
+      version: ${{ parameters.nodeVersion }}
+
+  - bash: |
+      set -euo pipefail
+
+      cp -R __tests__/dotnetsampleapp "$(Agent.TempDirectory)/dotnetapp"
+      current_utc_time=$(date -u +"%Y-%m-%d %H:%M:%S %Z")
+      sed -i "s/<<<net-place-holder>>>/$current_utc_time/g" "$(Agent.TempDirectory)/dotnetapp/Controllers/HelloController.cs"
+      dotnet publish "$(Agent.TempDirectory)/dotnetapp/DOTNET_8_APP.csproj" \
+        --configuration Release \
+        --output "$(Agent.TempDirectory)/dotnet-package"
+
+      cp -R __tests__/nodesampleapp "$(Agent.TempDirectory)/nodeapp"
+      sed -i "s/<<<node-place-holder>>>/$current_utc_time/g" "$(Agent.TempDirectory)/nodeapp/server.js"
+      npm ci --prefix "$(Agent.TempDirectory)/nodeapp"
+      npm run build --if-present --prefix "$(Agent.TempDirectory)/nodeapp"
+      npm test --if-present --prefix "$(Agent.TempDirectory)/nodeapp"
+
+      git clone --depth 1 --branch "${ACTION_REF}" \
+        https://github.com/Azure/webapps-deploy.git \
+        "$(Agent.TempDirectory)/action-under-test"
+
+      action_entry=$(sed -n "s/^[[:space:]]*main:[[:space:]]*['\"]\\([^'\"]*\\)['\"].*/\\1/p" \
+        "$(Agent.TempDirectory)/action-under-test/action.yml")
+      if [ -z "$action_entry" ]; then
+        echo "Unable to determine the action entry point for ${ACTION_REF}."
+        exit 1
+      fi
+      echo "##vso[task.setvariable variable=actionEntry]$(Agent.TempDirectory)/action-under-test/$action_entry"
+    displayName: Prepare samples and ${{ parameters.actionRef }}
+    env:
+      ACTION_REF: ${{ parameters.actionRef }}
+
+  - script: node "$(actionEntry)"
+    displayName: Deploy .NET sample
+    env:
+      'INPUT_APP-NAME': ${{ parameters.dotnetAppName }}
+      'INPUT_SLOT-NAME': Production
+      'INPUT_PACKAGE': $(Agent.TempDirectory)/dotnet-package
+      'INPUT_PUBLISH-PROFILE': $(${{ parameters.dotnetPublishProfileVariable }})
+      GITHUB_REPOSITORY: Azure/webapps-deploy
+      GITHUB_EVENT_NAME: azure-pipelines
+
+  - script: node "$(actionEntry)"
+    displayName: Deploy Node.js sample
+    env:
+      'INPUT_APP-NAME': ${{ parameters.nodeAppName }}
+      'INPUT_SLOT-NAME': Production
+      'INPUT_PACKAGE': $(Agent.TempDirectory)/nodeapp
+      'INPUT_PUBLISH-PROFILE': $(${{ parameters.nodePublishProfileVariable }})
+      GITHUB_REPOSITORY: Azure/webapps-deploy
+      GITHUB_EVENT_NAME: azure-pipelines

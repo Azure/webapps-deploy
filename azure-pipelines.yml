@@ -1,0 +1,127 @@
+trigger:
+  branches:
+    include:
+    - master
+    - releases/*
+  paths:
+    exclude:
+    - '**/*.md'
+
+pr:
+  branches:
+    include:
+    - master
+    - releases/*
+
+schedules:
+- cron: '0 */3 * * *'
+  displayName: Published action validation
+  branches:
+    include:
+    - master
+  always: true
+
+variables:
+  azureServiceConnection: WebAppsDeploy-OGF-Testing
+  containerRegistryName: webdeployprtestscontainerregistry
+  containerRegistryServer: webdeployprtestscontainerregistry.azurecr.io
+  dotnetIntegrationAppName: dotnetwebappdeploy
+  windowsContainerAppName: wincontainerswebapp
+
+stages:
+- stage: Validate
+  displayName: Build and unit tests
+  jobs:
+  - job: CrossPlatform
+    displayName: Cross-platform validation
+    strategy:
+      matrix:
+        Linux:
+          imageName: ubuntu-latest
+        Windows:
+          imageName: windows-latest
+    pool:
+      vmImage: $(imageName)
+    steps:
+    - checkout: self
+      clean: true
+
+    - task: UseNode@1
+      displayName: Use Node.js 24
+      inputs:
+        version: 24.x
+
+    - script: npm ci
+      displayName: Install dependencies
+
+    - script: npm run package
+      displayName: Build and bundle action
+
+    - script: npm test
+      displayName: Run unit tests
+
+- stage: PublishedActionTests
+  displayName: Published action integration tests
+  dependsOn: Validate
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  jobs:
+  - template: .pipelines/templates/published-action-test.yml
+    parameters:
+      jobName: TestV2
+      displayName: Test v2
+      actionRef: v2
+      nodeVersion: 20.x
+      dotnetAppName: lwasv2-euap-dotnet-githubactionstest-v2
+      dotnetPublishProfileVariable: LWASV2_EUAP_DOTNET_GITHUBACTIONSTEST_V2
+      nodeAppName: lwasv2-euap-node-githubactions-v2
+      nodePublishProfileVariable: LWASV2_EUAP_NODE_GITHUBACTIONS_V2
+
+  - template: .pipelines/templates/published-action-test.yml
+    parameters:
+      jobName: TestV3
+      displayName: Test v3
+      actionRef: v3
+      nodeVersion: 18.x
+      dotnetAppName: lwasv2-euap-dotnet-githubactionstest-v3
+      dotnetPublishProfileVariable: LWASV2_EUAP_DOTNET_GITHUBACTIONSTEST_V3
+      nodeAppName: lwasv2-euap-node-githubactions-v3
+      nodePublishProfileVariable: LWASV2_EUAP_NODE_GITHUBACTIONS_V3
+
+  - template: .pipelines/templates/published-action-test.yml
+    parameters:
+      jobName: TestReleasesV2
+      displayName: Test releases/v2
+      actionRef: releases/v2
+      nodeVersion: 20.x
+      dotnetAppName: lwasv2-euap-dotnet-githubactionstest
+      dotnetPublishProfileVariable: LWASV2_EUAP_DOTNET_GITHUBACTIONSTEST
+      nodeAppName: lwasv2-euap-node-githubactions
+      nodePublishProfileVariable: LWASV2_EUAP_NODE_GITHUBACTIONS
+
+  - template: .pipelines/templates/published-action-test.yml
+    parameters:
+      jobName: TestReleasesV3
+      displayName: Test releases/v3
+      actionRef: releases/v3
+      nodeVersion: 18.x
+      dotnetAppName: lwasv2-euap-dotnet-githubactionstest-release-v3
+      dotnetPublishProfileVariable: LWASV2_EUAP_DOTNET_GITHUBACTIONSTEST_RELEASE_V3
+      nodeAppName: lwasv2-euap-node-githubactions-release-v3
+      nodePublishProfileVariable: LWASV2_EUAP_NODE_GITHUBACTIONS_RELEASE_V3
+
+- stage: CurrentActionIntegration
+  displayName: Current action integration tests
+  dependsOn: Validate
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  jobs:
+  - template: .pipelines/templates/current-dotnet-integration.yml
+    parameters:
+      azureServiceConnection: $(azureServiceConnection)
+      appName: $(dotnetIntegrationAppName)
+
+  - template: .pipelines/templates/current-windows-container-integration.yml
+    parameters:
+      azureServiceConnection: $(azureServiceConnection)
+      appName: $(windowsContainerAppName)
+      containerRegistryName: $(containerRegistryName)
+      containerRegistryServer: $(containerRegistryServer)
