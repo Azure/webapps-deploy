@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write
+      contents: read
       
     steps:
       - uses: actions/checkout@v4
@@ -45,13 +45,6 @@ jobs:
           name: .net-app
           path: myapp
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_DOTNETAPP1 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@releases/v3
@@ -59,12 +52,13 @@ jobs:
           app-name: 'lwasv2-euap-dotnet-githubactionstest'
           slot-name: 'Production'
           package: myapp
+          publish-profile: ${{ secrets.LWASV2_EUAP_DOTNET_GITHUBACTIONSTEST }}
 
   build-and-deploy-node-app:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -95,13 +89,6 @@ jobs:
           name: node-app
           path: nodeapp
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_NODEAPP1 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
-      
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@releases/v3
@@ -109,3 +96,4 @@ jobs:
           app-name: 'lwasv2-euap-node-githubactions'
           slot-name: 'Production'
           package: nodeapp
+          publish-profile: ${{ secrets.LWASV2_EUAP_NODE_GITHUBACTIONS }}
