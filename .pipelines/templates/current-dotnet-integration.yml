@@ -1,0 +1,58 @@
+parameters:
+- name: azureServiceConnection
+  type: string
+- name: appName
+  type: string
+
+jobs:
+- job: CurrentDotNet
+  displayName: Current action .NET deployment
+  pool:
+    vmImage: windows-latest
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: UseNode@1
+    displayName: Use Node.js 24
+    inputs:
+      version: 24.x
+
+  - task: NuGetToolInstaller@1
+    displayName: Use NuGet 5.3.1
+    inputs:
+      versionSpec: 5.3.1
+
+  - powershell: |
+      git clone --depth 1 https://github.com/Azure-Samples/dotnet-sample.git dotnetsample
+    displayName: Checkout .NET sample
+
+  - task: NuGetCommand@2
+    displayName: Restore .NET sample
+    inputs:
+      command: restore
+      restoreSolution: dotnetsample/SampleWebApplication.sln
+
+  - task: VSBuild@1
+    displayName: Build .NET sample
+    inputs:
+      solution: dotnetsample/SampleWebApplication.sln
+
+  - script: |
+      npm ci
+      npm run package
+    displayName: Build current action
+
+  - task: AzureCLI@2
+    displayName: Deploy with current action
+    inputs:
+      azureSubscription: ${{ parameters.azureServiceConnection }}
+      scriptType: ps
+      scriptLocation: inlineScript
+      inlineScript: node dist/index.js
+    env:
+      'INPUT_APP-NAME': ${{ parameters.appName }}
+      'INPUT_SLOT-NAME': Production
+      'INPUT_PACKAGE': $(Build.SourcesDirectory)\dotnetsample\SampleWebApplication
+      GITHUB_REPOSITORY: Azure/webapps-deploy
+      GITHUB_EVENT_NAME: azure-pipelines

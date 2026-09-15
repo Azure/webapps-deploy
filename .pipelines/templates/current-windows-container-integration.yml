@@ -1,0 +1,72 @@
+parameters:
+- name: azureServiceConnection
+  type: string
+- name: appName
+  type: string
+- name: containerRegistryName
+  type: string
+- name: containerRegistryServer
+  type: string
+
+jobs:
+- job: CurrentWindowsContainer
+  displayName: Current action Windows container deployment
+  pool:
+    vmImage: windows-latest
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: UseNode@1
+    displayName: Use Node.js 24
+    inputs:
+      version: 24.x
+
+  - powershell: |
+      git clone --depth 1 https://github.com/GH-ACE/python_container_App.git python_container_App
+      npm ci
+      npm run package
+    displayName: Prepare container sample and current action
+
+  - task: AzureCLI@2
+    displayName: Configure and deploy Windows container
+    inputs:
+      azureSubscription: ${{ parameters.azureServiceConnection }}
+      scriptType: ps
+      scriptLocation: inlineScript
+      inlineScript: |
+        $ErrorActionPreference = 'Stop'
+
+        az acr login --name '${{ parameters.containerRegistryName }}'
+
+        $sourceImage = 'mcr.microsoft.com/azure-app-service/windows/canary:5.0-nanoserver'
+        $targetImage = '${{ parameters.containerRegistryServer }}/containerwebapp/canaryreplica:latest'
+        docker pull $sourceImage
+        docker tag $sourceImage $targetImage
+        docker push $targetImage
+
+        $resourceGroup = az webapp list `
+          --query "[?name=='${{ parameters.appName }}'].resourceGroup | [0]" `
+          --output tsv
+        if (-not $resourceGroup) {
+          throw "Unable to find resource group for web app '${{ parameters.appName }}'."
+        }
+
+        az webapp config appsettings set `
+          --name '${{ parameters.appName }}' `
+          --resource-group $resourceGroup `
+          --settings `
+            DOCKER_REGISTRY_SERVER_PASSWORD="$env:WEBDEPLOY_TEST_ACR_PASSWORD" `
+            DOCKER_REGISTRY_SERVER_URL="https://${{ parameters.containerRegistryServer }}" `
+            DOCKER_REGISTRY_SERVER_USERNAME="$env:WEBDEPLOY_TEST_ACR_USERNAME"
+
+        node dist/index.js
+    env:
+      WEBDEPLOY_TEST_ACR_USERNAME: $(WEBDEPLOY_TEST_ACR_USERNAME)
+      WEBDEPLOY_TEST_ACR_PASSWORD: $(WEBDEPLOY_TEST_ACR_PASSWORD)
+      'INPUT_APP-NAME': ${{ parameters.appName }}
+      'INPUT_SLOT-NAME': Production
+      'INPUT_PUBLISH-PROFILE': $(AZURE_WEBAPP_PUBLISH_PROFILE)
+      'INPUT_IMAGES': ${{ parameters.containerRegistryServer }}/containerwebapp/canaryreplica:latest
+      GITHUB_REPOSITORY: Azure/webapps-deploy
+      GITHUB_EVENT_NAME: azure-pipelines
